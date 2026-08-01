@@ -1,8 +1,8 @@
 {
-  "name": "playwrightlearning",
+  "name": "playwrightautomation",
   "version": "1.0.0",
   "description": "",
-  "main": "Demo.js",
+  "main": "demo.js",
   "scripts": {},
   "keywords": [],
   "author": "",
