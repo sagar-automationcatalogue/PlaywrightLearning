@@ -15,5 +15,7 @@ console.log(result3);
 let result4 = ["javaScript",...tools, ...technologies, "automation","testing"];
 console.log(result4);
 
+console.log(technologies.at(-10));
+
 
 
