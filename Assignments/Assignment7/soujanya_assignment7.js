@@ -39,27 +39,28 @@ for (let i = 0; i < products.length; i++){
     let product_name =  products.at(i).name;
     console.log(product_name);
 }
+
 //2. Print products that are currently in stock.
 for (let i = 0; i < products.length; i++){
     if (products.at(i).inStock == true) {
         console.log(products.at(i));
     }
-
 }
+
 //3. Print products whose price is greater than 10000.
 for (let i = 0; i < products.length; i++){
     if (products.at(i).price > 10000){
         console.log(products.at(i));
     }
-
 }
+
 //4. Find the product named "Mobile".
 for (let i = 0; i < products.length; i++){
     if (products.at(i).name == "Mobile"){
         console.log(products.at(i));
     }
-
 }
+
 //5. Calculate the total price of all products.
 let total = 0;
 for (let i = 0; i < products.length; i++){
