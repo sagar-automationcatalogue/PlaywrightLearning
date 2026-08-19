@@ -1,5 +1,5 @@
 let x1=20;
-interface Person{
+type Person={
     name:string;
     age?:number;
     country?:string;
