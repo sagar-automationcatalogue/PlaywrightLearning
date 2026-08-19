@@ -4,7 +4,8 @@ test('Demo Web Shop Login Testcase', async ({ browser }) => {
   const context = await browser.newContext();
   const page = await context.newPage();
 
-  await page.goto('https://demowebshop.tricentis.com/register');
+  await page.goto('https://demowebshop.tricentis.com/');
+  await page.locator('.ico-register').click();
   await page.locator('#gender-female').click();
   await page.locator('#FirstName').fill('Soujanya');
   await page.locator('#LastName').fill('Nara');
