@@ -12,7 +12,6 @@ for (let i = 1; i < num.length; i++) {
     max = num[i];
   }
 }
-
 console.log("Minimum:", min); 
 console.log("Maximum:", max);
 
@@ -27,5 +26,4 @@ for (let i = 0; i < num1.length; i++) {
     total += num1[i] * 2;
   }
 }
-
 console.log("Total:", total); 
