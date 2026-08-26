@@ -3,10 +3,11 @@ import { test, expect } from '@playwright/test';
 test('open demo web shop', async ({ browser }) => {
     const context = await browser.newContext();
     const page = await context.newPage();
-    await page.goto('https://demowebshop.tricentis.com/');
+    await page.goto("https://demowebshop.tricentis.com/");
     await page.locator("//a[@href='/login'][text()='Log in']").click();
     await page.waitForTimeout(3000);
-
++
+                  
     const userEmailLocator = await page.locator(`#Email`);
     await userEmailLocator.fill('sagar.automationcatalogue8@gmail.com');
 
