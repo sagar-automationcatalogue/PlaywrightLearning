@@ -16,6 +16,14 @@ test('Playwright Chaining in-built Locators', async({page}) =>{
 
     await page.getByLabel('Mr.').check();
     await page.locator('//*[@id="password"]').fill('Admin@123');
-
+    await page.waitForTimeout(2000);
+    await page.locator('#days').selectOption('9');
+    await page.locator('#months').selectOption('4');
+    await page.waitForTimeout(2000);
+    await page.locator('#months').selectOption({label:'August'});
+    await page.waitForTimeout(2000);
+    await page.locator('#months').selectOption({value:'12'});
+    await page.waitForTimeout(2000);
+    await page.locator('#years').selectOption({index:5});
     await page.waitForTimeout(4000);
 })
