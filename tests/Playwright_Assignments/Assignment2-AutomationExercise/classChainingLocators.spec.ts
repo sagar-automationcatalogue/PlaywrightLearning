@@ -17,6 +17,7 @@ test('Playwright Chaining in-built Locators', async({page}) =>{
     await page.getByLabel('Mr.').check();
     await page.locator('//*[@id="password"]').fill('Admin@123');
 
+    await page.locator('#uniform-days').locator('#days')
     await page.locator('#days').selectOption('6');
 
     await page.waitForTimeout(4000);
