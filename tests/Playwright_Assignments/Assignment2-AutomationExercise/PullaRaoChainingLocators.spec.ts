@@ -1,0 +1,40 @@
+import {test} from '@playwright/test';
+
+test (`chaining locators test case`, async ({page})=>{
+
+    await page.goto(`https://www.automationexercise.com/`);
+    await page.getByRole(`link`, {name: ` Signup / Login`}).click();
+    await page.getByPlaceholder(`Name`).fill(`Pulla Rao`);
+    const signupform = page.locator(`.signup-form`);
+    await signupform.getByPlaceholder(`Email Address`).fill(`Pulla.Rao3@gmail.com`);
+    await signupform.getByRole(`button`, {name: `Signup`}).click();
+    await page.getByRole(`radio`, {name: `Mr.`}).check();
+    //await page.locator(`#password`).fill(`Admin@123`);
+    await page.locator(`//*[@id="password"]`).fill(`Admin@123`);
+    const selectdays = page.locator(`#days`);
+    await page.selectOption('#days', { index: 2 });
+    const selectmonth = page.locator(`#months`);
+    await page.selectOption(`#months`,{index: 4});
+    const selectyear = page.locator(`#years`);
+    await page.selectOption(`#years`, {index: 7});
+    await page.getByLabel(`Sign up for our newsletter!`).check();
+    await page.getByLabel(`Receive special offers from our partners!`).check();
+    const addresinformatoin = page.locator(`.required.form-group`);
+    await addresinformatoin.getByRole(`textbox`, {name: `First name `}).fill(`Pulla Rao`);
+    await addresinformatoin.getByRole('textbox',{name:`Last name `}).fill(`Athmakuri`);
+    await page.locator(`#company`).fill(`Deloitte`);
+    await page.locator(`.inline-infos`).fill(`Gachibowli, Hyderabad`);
+    const selectCountry = page.locator(`#country`);
+    await page.selectOption(`#country`,{index: 2});
+    await addresinformatoin.getByRole(`textbox`,{name:`State `}).fill(`Telangana`);
+    await addresinformatoin.getByRole(`textbox`,{name:`City `}).fill(`Cyberabad`);
+    await page.locator(`#zipcode`).fill(`zp`);
+    await addresinformatoin.getByRole(`textbox`,{name:`Mobile Number `}).fill(`987654321`);
+    await page.waitForTimeout(1000);
+    await page.locator(`//*[@id="form"]/div/div/div/div/form/button`).click();
+    await page.waitForTimeout(1000);
+    await page.locator(`//*[@id="form"]/div/div/div/div/a`).click();
+    await page.waitForTimeout(1000);
+    await page.getByRole(`link`,{name:` Logout`}).click();
+    await page.waitForTimeout(3000);
+});
