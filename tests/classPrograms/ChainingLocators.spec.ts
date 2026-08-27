@@ -1,12 +1,13 @@
 import {test} from '@playwright/test';
 
-test('Playwright Chaining in-built Locators', async({page}) =>{
+test('Playwright Chaining in-built Locators', async({browser}) =>{
+    const context = await browser.newContext();
+    const page = await context.newPage();
     await page.goto('http://automationexercise.com');
     //await page.getByText('Signup / Login').click();
 
     await page.getByRole('link', {name:'Signup / Login'}).click();
-    await page.getByPlaceholder('Name').fill('Brahmam');
-    //await page.getByPlaceholder('Email Address').nth(2).fill('Brahmam.test@gmail.com');
+    await page.getByPlaceholder('Name').fill('Brahmam');    
     const signupForm = await page.locator('.signup-form');
     await signupForm.getByPlaceholder('Email Address').fill('Brahmam.test2@gmail.com');
 
@@ -15,11 +16,11 @@ test('Playwright Chaining in-built Locators', async({page}) =>{
     await signupForm.getByRole('button',{name:'Signup'}).click();
 
     await page.getByLabel('Mr.').check();
+    await page.getByLabel('Mrs.').check();
     await page.locator('//*[@id="password"]').fill('Admin@123');
     await page.waitForTimeout(2000);
     await page.locator('#days').selectOption('9');
-    await page.locator('#months').selectOption('4');
-    await page.waitForTimeout(2000);
+    await page.locator('#months').selectOption('4');    
     await page.locator('#months').selectOption({label:'August'});
     await page.waitForTimeout(2000);
     await page.locator('#months').selectOption({value:'12'});
