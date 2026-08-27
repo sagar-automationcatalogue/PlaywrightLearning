@@ -15,8 +15,6 @@ test('Playwright Chaining in-built Locators', async({page}) =>{
     await page.locator('#years').selectOption('2021');
     await page.getByLabel('Sign up for our newsletter!').check();
     await page.getByLabel('Receive special offers from our partners!').check();
-
-
     const addressInformation = await page.locator('.required.form-group');
     await addressInformation.getByRole('textbox',{name:'First name' }).fill('soujanya');
     await addressInformation.getByRole('textbox',{name:'Last name' }).fill('Naravaneni');
