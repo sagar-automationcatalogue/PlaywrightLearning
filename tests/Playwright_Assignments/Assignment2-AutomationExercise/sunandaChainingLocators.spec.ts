@@ -9,7 +9,7 @@ test('Playwright Chaining in-built Locators', async ({ page }) => {
     const signupForm = await page.locator('.signup-form');
     await signupForm.getByPlaceholder('Email Address').fill('sunanda.ivatury@gmail.com');
     await signupForm.getByRole('button',{name:'Signup'}).click();
-
+    await page.waitForTimeout(2000);
     await page.locator('#id_gender2').click();
     await page.locator('#password').fill('12345678');
     await page.locator('#days').selectOption('8');
@@ -26,8 +26,11 @@ test('Playwright Chaining in-built Locators', async ({ page }) => {
     await page.locator('#city').fill('Hyderabad');
     await page.locator('#zipcode').fill('500090');
     await page.locator('#mobile_number').fill('7032806080');
+    await page.waitForTimeout(2000);
 
     await page.getByRole('button', {name:'Create Account'});
+
+    await page.waitForTimeout(3000);
 
 
 
