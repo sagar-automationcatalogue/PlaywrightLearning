@@ -27,8 +27,8 @@ test('playwright demo webshop test automation', async({page})=>{
        await page.locator('#payment-method-buttons-container').locator('.button-1.payment-method-next-step-button').click();
        await page.locator('#payment-info-buttons-container').locator('.button-1.payment-info-next-step-button').click();
        await page.locator('#confirm-order-buttons-container').locator('.button-1.confirm-order-next-step-button').click();
-       console.log( page.locator('.title').getByText('Your order has been successfully processed!'));
-      
+       const orderTitle = await  page.locator('.title').getByText('Your order has been successfully processed!').textContent();
+      console.log(orderTitle);
 
    // await 
 
