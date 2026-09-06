@@ -13,7 +13,7 @@ test("Demo webshop Login Testcase", async ({ browser }) => {
     await page.waitForTimeout(2000);
     await page.locator("#LastName").fill("Chamodi"); //Fill last name
     await page.waitForTimeout(2000);
-    await page.locator("#Email").fill("hashani123456@test.com"); //Fill email
+    await page.locator("#Email").fill("hashani13456@test.com"); //Fill email
     await page.waitForTimeout(2000);
 
     await page.locator("#Password").fill("Hashani1234"); //Fill password
@@ -29,7 +29,7 @@ test("Demo webshop Login Testcase", async ({ browser }) => {
 
     await page.locator(".ico-login").click();
 
-    await page.locator("#Email").fill("hashani123456@test.com");
+    await page.locator("#Email").fill("hashani13456@test.com");
     await page.waitForTimeout(2000);
     await page.locator("#Password").fill("Hashani1234");
     await page.waitForTimeout(2000);
