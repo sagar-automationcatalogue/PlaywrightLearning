@@ -3,6 +3,9 @@ export default defineConfig({
   testDir: './tests',  
   workers: 1,
   timeout:60_000,  
+  expect:{
+    timeout:20_000
+  },
   use: {
     browserName:'chromium',
     headless: false,
