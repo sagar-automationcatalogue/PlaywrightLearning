@@ -36,4 +36,6 @@ test(`TC_05_ProductReview: Product Detail → Quantity 4 → Add Cart → Submit
     
     await expect(bluetop_product_locator).toContainText(`Blue Top`);
     console.log(`Blue Top product is verified in products page`)
+
+    await page.locator(`//div[@class='productinfo text-center']/p[text()='Blue Top']/../../..//a[text()='View Product']`);
 })
