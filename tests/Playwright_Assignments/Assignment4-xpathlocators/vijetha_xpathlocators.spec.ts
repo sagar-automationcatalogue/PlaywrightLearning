@@ -1,7 +1,7 @@
 
 import {test} from '@playwright/test';
 
-test(`xpath locators`, async({page})=>{
+test(`Absolute xpath locators`, async({page})=>{
     await page.goto(`https://www.automationexercise.com/`);
 
     await page.locator(`xpath=html/body/header/div/div/div/div[2]/div/ul/li[4]/a`).click();

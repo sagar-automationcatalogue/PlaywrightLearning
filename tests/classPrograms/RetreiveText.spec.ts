@@ -11,7 +11,11 @@ test('Retriving text from multiple elements using single locator', async({page})
     console.log(allBrands.includes(`(4)\nBABYHUG`));
     
     for(let brand of allBrands){
-        console.log(brand);
+        /*let words = brand.split(")");
+        let finalBrandName = words[1].trim();
+        console.log(finalBrandName);*/
+        
+        console.log(brand.split(")")[1].trim());
     }
 
     await page.waitForTimeout(3000);
