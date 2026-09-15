@@ -13,3 +13,5 @@ test(`Playwright in-built locators`, async({page}) =>{
 
     await page.waitForTimeout(6000);
 });
+
+test()
