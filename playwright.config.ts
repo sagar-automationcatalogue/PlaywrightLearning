@@ -15,7 +15,8 @@ export default defineConfig({
     }*/
     viewport:null,
     launchOptions:{
-      args: [`--start-maximized`]
+      args: [`--start-maximized`],
+      slowMo: 1000,
     },
     screenshot:'on',
     video:'on',
