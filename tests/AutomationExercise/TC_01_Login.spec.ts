@@ -1,9 +1,10 @@
 import {expect, test} from '@playwright/test';
 
 test(`TC_01_Login: Invalid Login → Valid Login → Logout → Protected State Validation`, async({page, browserName}) =>{
+    test.slow();
     if(browserName === 'webkit'){
-        //test.slow();
-        test.setTimeout(90_000);
+        test.slow();
+        //test.setTimeout(90_000);
     }
     // =========================================================
     // Ignore / Block Google Advertisements

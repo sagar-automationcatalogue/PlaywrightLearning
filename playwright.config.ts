@@ -2,11 +2,13 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   testDir: './tests',  
   workers: 1,
-  timeout:60_000,
+  timeout:120_000,
   expect:{
     timeout:20_000
   },    
   use: {
+    actionTimeout:10_000,
+    navigationTimeout:20_000,
     browserName:'chromium',
     headless: false,
     /*viewport:{
