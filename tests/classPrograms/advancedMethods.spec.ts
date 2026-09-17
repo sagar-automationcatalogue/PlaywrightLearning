@@ -2,6 +2,8 @@ import {test} from '@playwright/test';
 
 test(`Learning some Advanced playwright methods`, async({page})=>{
     await page.goto(`https://playwrightlab.github.io/`);
+    await page.setDefaultTimeout(15_000);
+    await page.setDefaultNavigationTimeout(40_000);
     let title = await page.title();
     console.log(`Title of the application is ${title}`);
 
@@ -13,6 +15,7 @@ test(`Learning some Advanced playwright methods`, async({page})=>{
 
     await page.getByTestId(`tooltip-btn`).hover();
     let tooltip = await page.locator(`//div[@id='customTooltip']`).textContent();
+    
     console.log(tooltip);
     await page.waitForTimeout(4000);
 })

@@ -37,16 +37,15 @@ test(`TC_05_ProductReview: Product Detail → Quantity 4 → Add Cart → Submit
     console.log(`All products page is loaded`)
 
     //Auto-retrying assertion
-    //let bluetop_product_locator = await page.locator(`//div[@class='productinfo text-center']/p[1]`).first();
-    //await expect(bluetop_product_locator).toBeVisible({timeout:30_000});
+    let bluetop_product_locator = await page.locator(`//div[@class='productinfo text-center']/p[1]`).first();
+    await expect(bluetop_product_locator).toBeVisible({timeout:30_000});
+    console.log(`Blue Top product is verified in products page`)
     //await expect(bluetop_product_locator).toContainText(`Blue Top`);
 
     //Non-retrying assertion
-    let bluetop_product_locator_message = await page.locator(`//div[@class='productinfo text-center']/p[1]`).first().innerText();
-    expect(bluetop_product_locator_message).toBe('Blue Top');
-    
-    
-    console.log(`Blue Top product is verified in products page`)
-
-    await page.locator(`//div[@class='productinfo text-center']/p[text()='Blue Top']/../../..//a[text()='View Product']`);
+    //let bluetop_product_locator_message = await page.locator(`//div[@class='productinfo text-center']/p[1]`).first().innerText();
+    //expect(bluetop_product_locator_message).toBe('Blue Top');
+    const viewProduct_locator = await page.locator(`//div[@class='productinfo text-center']/p[text()='Blue Top']/../../..//a[text()='View Product']`);
+    await viewProduct_locator.waitFor({state:'visible'});
+    await viewProduct_locator.click();
 })
