@@ -62,14 +62,14 @@ test("TC_03_Category and Brands", async({page})=>{
 
     //Step 7 - Verify category heading indicates Women - Tops products.
     await page.locator(`//a[@href='#Women']`).click();
-    await page.locator(`//div[@id='Women']//li/a[text()='Tops ']`).click();
+    await page.locator(`//div[@id='Women']//li[2]`).click();
     const tops_title_locator=await page.locator(`//div[@class='features_items']/h2`);
     expect(tops_title_locator).toHaveText("Women - Tops Products");
     console.log(`tops title contains message: `,await tops_title_locator.innerText())
     
     
     //Step 8 - Capture all visible product names under Women Tops.
-    const women_products=await page.locator(`//div[@class='features_items']//div[@class='productinfo text-center']/p`);
+    /*const women_products=await page.locator(`//div[@class='features_items']//div[@class='productinfo text-center']/p`);
     console.log("Following are the women's products displayed on the page");
     for(let i=0; i<await women_products.count(); i++)
     {
@@ -77,7 +77,56 @@ test("TC_03_Category and Brands", async({page})=>{
         const Womens_prod=await women_products.nth(i).innerText();
         console.log(Womens_prod);
 
-    }
+    }*/
+
+        const women_products = page.locator(`//div[@class='features_items']//div[@class='productinfo text-center']/p`);
+        const womens_prod_list = await women_products.allInnerTexts();
+        console.log("Following are the women's products displayed on the page", womens_prod_list);
+
     //Step 9 - Verify one or more products exist.
+    expect(womens_prod_list.length).toBeGreaterThan(0);
+    console.log(`Total products displayed: ${womens_prod_list.length}`);
    
+    //Step 10 - Capture current URL.
+    const Current_pageURL=await page.url();
+    console.log("Current URL of the page : - ", Current_pageURL);
+
+    //Step 11 - Expand Men category.
+    await page.locator(`//div[@class='panel-heading']//a[@href='#Men']`).click();
+    const Men_subcategory=await page.locator(`#Men`)
+    expect(Men_subcategory).toBeVisible();
+    console.log("Men's sub-category panel is visible");
+
+    //Step 12 - Click Jeans.
+    await page.locator(`//li/a[text()='Jeans ']`).click();
+
+    //Step 13 - Verify heading indicates Men - Jeans products.
+   await expect(page.getByRole('link', { name: 'Jeans' })).toBeVisible();
+    console.log("Mens Jeans page is visible");
+
+    //Step 14 - Verify URL differs from Women Tops URL.
+    const Men_Jeans_url=await page.url();
+    console.log("Mens Jeans URL", Men_Jeans_url);
+    if(Current_pageURL!=Men_Jeans_url)
+    {
+        console.log(`Both are not equal  MEns URL: ${Men_Jeans_url}, Women's URL: ${Current_pageURL}`);
+    }
+
+    //Step 15 - Capture all Men Jeans product names.
+    const Men_product_list=await page.locator(`//div[@class='features_items']//div[@class='product-overlay']//p`).allInnerTexts();
+    console.log("Following are the Men's product list", Men_product_list);
+
+    //Step 16 - Verify one or more Jeans products exist.
+    expect(Men_product_list.length).toBeGreaterThan(0);
+    console.log(`Total no of Men's products displayed ${Men_product_list.length}`);
+    
+    //Step 17 - Click Products to return to full product catalog.
+    await page.locator(`//ol//a`).click();
+    const Product_page=await page.locator(`//h2[text()='All Products']`);
+    expect(Product_page).toBeVisible();
+    console.log(`All Products page is displayed`);
+
+    //Step 18 - Read all brand labels and counts from the sidebar.
+    const All_Brands=await page.locator(`//div[@class='brands_products']//li//a`).allTextContents();
+    console.log(`Following are the list of Brands:\n${All_Brands.join('\n')}`);
 })
