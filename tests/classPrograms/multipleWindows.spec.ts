@@ -10,9 +10,9 @@ test(`Learning Multiple windows/tabs switching`, async({browser})=>{
     await page.getByRole(`button`, {name:`Login`}).click();
     await page.getByRole(`link`, {name:`Onboarding`}).click();
 
-    const [newPage] = await Promise.all([
+    const [newPage] = await Promise.all([        
         context.waitForEvent(`page`, {timeout:20_000}),
-        page.getByRole(`link`,{name: `Leila Yasmin Hassan`}).click({timeout:20_000})
+        page.getByRole(`link`,{name: `Leila Yasmin Hassan`}).click({timeout:20_000})        
     ])     
     
 
