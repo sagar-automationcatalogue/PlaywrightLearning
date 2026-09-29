@@ -15,4 +15,7 @@ test(`Retrive all Products-GET Request`, async({request})=>{
     console.log(responseBody.products[4].price);
     console.log(responseBody.products[10].category.usertype.usertype);
     console.log(`Total Number of Products in the responsebody is: ${responseBody.products.length}`)
+
+    let allHeaders = await response.headers();
+    console.log(allHeaders);
 });
