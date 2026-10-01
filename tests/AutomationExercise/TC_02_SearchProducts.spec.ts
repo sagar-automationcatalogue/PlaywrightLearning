@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-
+/** Testcase developed by Brahmam - Incomplete */
 test('TC_AutomationExecise_02: Search Products → Validate All Results → Hover Product → Open Details', async ({ page }) => {
   await page.goto('https://www.automationexercise.com/products');
   await expect(page.getByRole('link', { name: 'Website for automation' })).toBeVisible();

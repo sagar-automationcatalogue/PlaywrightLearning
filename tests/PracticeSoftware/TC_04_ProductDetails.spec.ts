@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-
+/** Testcase developed by Vijetha - Incomplete */
 test(`TC_04_ProductDetails: Product Details → Quantity Controls → Specs → Add to Cart`, async({page})=>{
     await page.goto(`https://practicesoftwaretesting.com/`);
 

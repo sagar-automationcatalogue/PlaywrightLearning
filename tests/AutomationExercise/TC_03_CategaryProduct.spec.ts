@@ -1,4 +1,5 @@
 import {expect, test} from '@playwright/test'
+/** Testcase developed by Vijaya Durgi - Completed */
 test("TC_03_Category and Brands", async({page})=>{
 
     await page.route('**/*', async (route) => {
