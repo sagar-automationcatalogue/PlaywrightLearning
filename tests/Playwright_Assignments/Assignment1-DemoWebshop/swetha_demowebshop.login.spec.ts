@@ -15,7 +15,7 @@ test(`tricentis register click`,async ({browser})=>{
     await page.locator(`#LastName`).fill('basani');
     const mail=`basaniswetha123@gmail.com`
     const pwd=`swetha123`;
-    await page.locator(`#Email`).fill(mail);
+      await page.locator(`#Email`).fill(mail);
     
     await page.locator(`#Password`).fill(pwd);
     await page.locator(`#ConfirmPassword`).fill(pwd);
