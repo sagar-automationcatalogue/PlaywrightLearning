@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-
+/** Testcase developed by Soujanya - Completed */
 test(`TC 02 Dynamic registration validation and login`, async ({ page }) => {
     const registrationPassword = `Automation@123`;
     const mismatchPassword = `Automation@456`;
