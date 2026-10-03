@@ -5,15 +5,17 @@ test('TC_01_Authentication: Invalid Login, Valid Login and Logout', async ({ pag
 
 	// Step 1: Launch browser and open Demo Web Shop.
 	console.log('Launching Demo Web Shop');
-	await page.goto('https://demowebshop.tricentis.com/');
+	await page.goto('https://demowebshop.tricentis.com/');	
 
 	// Step 2: Verify the home page is loaded.
+	await expect(page).toHaveURL('https://demowebshop.tricentis.com/');
 	await expect(page.getByRole('heading', { name: 'Welcome to our store' })).toBeVisible();
 
 	// Step 3: Verify Register and Log in links are displayed.
 	await expect(page.getByRole('link', { name: 'Register', exact: true })).toBeVisible();
 	const loginLink = page.getByRole('link', { name: 'Log in', exact: true });
 	await expect(loginLink).toBeVisible();
+	console.log('Home page loaded and Register/Login links are visible');
 
 	// Step 4: Click Log in.
 	console.log('Opening the Login page');

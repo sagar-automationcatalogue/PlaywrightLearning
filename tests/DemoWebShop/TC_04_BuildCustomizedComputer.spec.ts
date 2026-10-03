@@ -1,107 +1,239 @@
-﻿import {expect, test} from '@playwright/test'
+import { expect, test } from '@playwright/test';
 
-test('TC_04_BuildCustomizedComputer: Build Customized Computer', async({page})=>{
- 
-  await page.goto('https://demowebshop.tricentis.com/');
-  await page.getByRole('link', { name: 'Log in' }).click();
-  await page.getByRole('textbox', { name: 'Email:' }).click();
-  await page.getByRole('textbox', { name: 'Email:' }).fill('sagar.automationcatalogue8@gmail.com');
-  await page.getByRole('textbox', { name: 'Password:' }).click();
-  await page.getByRole('textbox', { name: 'Password:' }).fill('Admin@123');
-  await page.getByRole('checkbox', { name: 'Remember me?' }).check();
-  await page.getByRole('button', { name: 'Log in' }).click();
+test('TC_04_BuildCustomizedComputer: Configure a computer, verify cart prices and remove it', async ({ page }) => {
+    const productName = 'Build your own expensive computer';
+    const requestedQuantity = 2;
 
-  await page.goto('https://demowebshop.tricentis.com/cart');
-  const removeButtons = page.locator('input[name="removefromcart"]');
-  const cartRowsCount = await page.locator('.cart-item-row').count();
-  if (cartRowsCount > 0) {
-    const count = await removeButtons.count();
-    for (let i = 0; i < count; i++) {
-      await removeButtons.nth(i).check();
+    // Step 1: Log in with the existing user.
+    await page.goto('https://demowebshop.tricentis.com/');
+    await page.getByRole('link', { name: 'Log in', exact: true }).click();
+    await page.getByLabel('Email:', { exact: true }).fill('sagar.automationcatalogue8@gmail.com');
+    await page.getByLabel('Password:', { exact: true }).fill('Admin@123');
+    await page.getByRole('button', { name: 'Log in', exact: true }).click();
+    await expect(page.getByRole('link', { name: 'sagar.automationcatalogue8@gmail.com', exact: true })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Log out', exact: true })).toBeVisible();
+    console.log('Step 1: Existing user is authenticated.');
+
+    // Record the initial cart so cleanup can verify that existing items are preserved.
+    await page.locator('#topcartlink').getByRole('link').click();
+    await expect(page.getByRole('heading', { name: 'Shopping cart', exact: true })).toBeVisible();
+    const cartRows = page.locator('.cart-item-row');
+    const initialCartRows = await cartRows.allInnerTexts();
+    const initialQuantities: string[] = [];
+    for (const row of await cartRows.all()) {
+        initialQuantities.push(await row.locator('.qty-input').inputValue());
     }
-    await page.getByRole('button', { name: 'Update shopping cart', exact: true }).click();
-    await expect(page.locator('.cart-item-row')).toHaveCount(0);
-  }
+    const headerCartQuantity = page.locator('#topcartlink .cart-qty');
+    const initialCartCountText = await headerCartQuantity.innerText();
+    const initialCartCount = Number(initialCartCountText.replace(/[^0-9]/g, ''));
+    expect(Number.isInteger(initialCartCount)).toBe(true);
 
-  const computersMenu = page.locator('.top-menu > li').filter({hasText: 'Computers'});
-  await computersMenu.hover();
-  await expect(computersMenu.getByRole('link', { name: 'Desktops', exact: true })).toBeVisible();
-  await expect(computersMenu.getByRole('link', { name: 'Notebooks', exact: true })).toBeVisible();
-  await expect(computersMenu.getByRole('link', { name: 'Accessories', exact: true })).toBeVisible();
+    // Match the name and configuration rather than a fixed row index.
+    const configuredComputerRow = cartRows.filter({
+        has: page.getByRole('link', { name: productName, exact: true })
+    }).filter({ hasText: 'Processor: Fast' })
+        .filter({ hasText: 'RAM: 8GB' })
+        .filter({ hasText: 'HDD: 400 GB' })
+        .filter({ hasText: 'Software: Image Viewer' })
+        .filter({ hasText: 'Software: Office Suite' })
+        .filter({ hasNotText: 'Other Office Suite' });
+    // Adding an identical existing configuration would merge quantities.
+    // Stop before changing the cart if that configuration is already present.
+    await expect(configuredComputerRow, 'The test configuration must not already be in the cart').toHaveCount(0);
+    console.log('Initial cart quantity:', initialCartCount);
 
-  await computersMenu.getByRole('link', { name: 'Desktops', exact: true }).click();
-  await expect(page.getByRole('heading', { name: 'Desktops', exact: true })).toBeVisible();
-  await expect(page.locator('.product-item')).not.toHaveCount(0);
+    // Step 2: Navigate to Computers using the main navigation.
+    await page.locator('.top-menu').getByRole('link', { name: 'Computers', exact: true }).click();
+    await expect(page).toHaveURL(/\/computers$/);
+    await expect(page.getByRole('heading', { name: 'Computers', exact: true })).toBeVisible();
 
-  const product = page.locator('.product-item').filter({hasText: 'Build your own expensive computer'});
-  await expect(product).toBeVisible();
+    // Step 3: Verify all three computer subcategories are available.
+    const subcategories = page.locator('.sub-category-grid');
+    await expect(subcategories.getByRole('link', { name: 'Desktops', exact: true })).toBeVisible();
+    await expect(subcategories.getByRole('link', { name: 'Notebooks', exact: true })).toBeVisible();
+    await expect(subcategories.getByRole('link', { name: 'Accessories', exact: true })).toBeVisible();
 
-  const catalogPriceText = await product.locator('.price.actual-price').innerText();
-  console.log(`Catalog price: ${catalogPriceText}`);
+    // Step 4: Open Desktops.
+    await subcategories.getByRole('link', { name: 'Desktops', exact: true }).click();
+    await expect(page).toHaveURL(/\/desktops$/);
+    await expect(page.getByRole('heading', { name: 'Desktops', exact: true })).toBeVisible();
 
-  await page.getByRole('link', { name: 'Build your own expensive computer', exact: true }).click();
-  const productTitle = await page.locator('.product-name').innerText();
-  console.log(`Product title: ${productTitle}`);
+    // Step 5: Verify desktop products are displayed.
+    const desktopProducts = page.locator('.product-grid .product-item');
+    await expect(desktopProducts.first()).toBeVisible();
+    expect(await desktopProducts.count()).toBeGreaterThan(0);
+    console.log('Steps 2-5: Computers subcategories verified and desktop products displayed.');
 
-  await expect(page.locator('.product-name')).toHaveText('Build your own expensive computer');
+    // Step 6: Locate the target computer by its product-title link.
+    const catalogProduct = desktopProducts.filter({
+        has: page.locator('.product-title').getByRole('link', { name: productName, exact: true })
+    });
+    await expect(catalogProduct).toHaveCount(1);
+    await expect(catalogProduct).toBeVisible();
 
-  const productAvailability = await page.locator('.stock .value').innerText();
-  console.log(`Product availability: ${productAvailability}`);
-  expect(productAvailability).toContain('In stock');
+    // Step 7: Capture the catalog/base displayed price.
+    const basePriceText = await catalogProduct.locator('.actual-price').innerText();
+    const basePrice = Number(basePriceText.replace(/[^0-9.]/g, ''));
+    expect(Number.isFinite(basePrice)).toBe(true);
+    expect(basePrice).toBe(1800);
+    console.log('Steps 6-7: Target computer found. Catalog base price:', basePrice);
 
-  await page.getByRole('radio', { name: 'Fast [+100.00]' }).check();
-  await page.getByRole('radio', { name: '8GB [+60.00]' }).check();
-  await page.getByRole('radio', { name: '400 GB [+100.00]' }).check();
-  await page.getByRole('checkbox', { name: 'Image Viewer [+5.00]' }).check();
-  await page.getByRole('checkbox', { name: 'Office Suite [+100.00]' }).check();
-  await expect(page.getByRole('checkbox', { name: 'Other Office Suite [+40.00]' })).not.toBeChecked();
+    // Step 8: Open the configurable product details page.
+    await catalogProduct.locator('.product-title').getByRole('link', { name: productName, exact: true }).click();
+    await expect(page.locator('.product-essential')).toBeVisible();
+    await expect(page.locator('.attributes')).toBeVisible();
 
-  const basePrice = Number.parseFloat((await page.locator('.product-price').innerText()).replace(/[^0-9.]/g, ''));
-  const expectedUnitPrice = basePrice + 100 + 60 + 100 + 5 + 100;
-  console.log(`Expected unit price: ${expectedUnitPrice}`);
+    // Step 9: Verify the product title.
+    await expect(page.getByRole('heading', { name: productName, exact: true })).toBeVisible();
 
-  await page.locator('#addtocart_74_EnteredQuantity').fill('2');
-  await expect(page.locator('#addtocart_74_EnteredQuantity')).toHaveValue('2');
-  await page.locator('#add-to-cart-button-74').click();
+    // Step 10: Verify availability and that configuration can be added to the cart.
+    await expect(page.locator('.stock .value')).toHaveText('In stock');
+    const productDetails = page.locator('.product-essential');
+    const addToCart = productDetails.getByRole('button', { name: 'Add to cart', exact: true });
+    await expect(addToCart).toBeEnabled();
+    console.log('Steps 8-10: Correct product details opened; computer is in stock.');
 
-  await expect(page.getByText('The product has been added to your shopping cart', { exact: false })).toBeVisible();
-  console.log('Configured product is added to cart');
+    // Step 11: Select Fast processor.
+    const fastProcessor = page.getByRole('radio', { name: /^Fast\s/ });
+    await fastProcessor.check();
+    await expect(fastProcessor).toBeChecked();
 
-  await page.locator('a.ico-cart').first().click();
-  await expect(page).toHaveURL('https://demowebshop.tricentis.com/cart');
+    // Step 12: Select 8 GB RAM (the application label is 8GB).
+    const ram8GB = page.getByRole('radio', { name: /^8GB\s/ });
+    await ram8GB.check();
+    await expect(ram8GB).toBeChecked();
 
-  const configuredRow = page.locator('.cart-item-row')
-    .filter({ hasText: 'Build your own expensive computer' })
-    .filter({ hasText: 'Software: Office Suite [+100.00]' })
-    .last();
+    // Step 13: Select 400 GB HDD.
+    const hdd400GB = page.getByRole('radio', { name: /^400 GB\s/ });
+    await hdd400GB.check();
+    await expect(hdd400GB).toBeChecked();
 
-  await expect(configuredRow).toBeVisible();
-  await expect(configuredRow).toContainText('Processor: Fast [+100.00]');
-  await expect(configuredRow).toContainText('RAM: 8GB [+60.00]');
-  await expect(configuredRow).toContainText('HDD: 400 GB [+100.00]');
-  await expect(configuredRow).toContainText('Software: Image Viewer [+5.00]');
-  await expect(configuredRow).toContainText('Software: Office Suite [+100.00]');
+    // Step 14: Select Image Viewer software.
+    const imageViewer = page.getByRole('checkbox', { name: /^Image Viewer\s/ });
+    await imageViewer.check();
+    await expect(imageViewer).toBeChecked();
 
-  const quantityField = configuredRow.locator('input[name^="itemquantity"]').first();
-  await expect(quantityField).toHaveValue('2');
+    // Step 15: Select Office Suite software.
+    const officeSuite = page.getByRole('checkbox', { name: /^Office Suite\s/ });
+    await officeSuite.check();
+    await expect(officeSuite).toBeChecked();
 
-  const unitPriceText = await configuredRow.locator('.unit-price').innerText();
-  const subtotalText = await configuredRow.locator('.subtotal').innerText();
-  const unitPrice = Number.parseFloat(unitPriceText.replace(/[^0-9.]/g, ''));
-  const subtotal = Number.parseFloat(subtotalText.replace(/[^0-9.]/g, ''));
-  const quantity = Number.parseInt(await quantityField.inputValue(), 10);
-  const expectedSubtotal = unitPrice * quantity;
+    // Step 16: Ensure unwanted software is not selected.
+    const otherOfficeSuite = page.getByRole('checkbox', { name: /^Other Office Suite\s/ });
+    await otherOfficeSuite.uncheck();
+    await expect(otherOfficeSuite).not.toBeChecked();
+    await expect(page.locator('.attributes input[type="checkbox"]:checked')).toHaveCount(2);
+    console.log('Steps 11-16: Fast processor, 8GB RAM, 400GB HDD, Image Viewer and Office Suite selected.');
 
-  expect(unitPrice).toBe(expectedUnitPrice);
-  expect(subtotal).toBe(expectedSubtotal);
-  console.log(`Cart unit price: ${unitPriceText}; subtotal: ${subtotalText}`);
+    // Step 17: Read additions from the selected option labels and calculate the unit price.
+    // Example label: Fast [+100.00]. Only the value inside [+...] is the addition.
+    const selectedOptionLabels = [
+        await page.locator('.attributes label').filter({ hasText: /^Fast\s/ }).innerText(),
+        await page.locator('.attributes label').filter({ hasText: /^8GB\s/ }).innerText(),
+        await page.locator('.attributes label').filter({ hasText: /^400 GB\s/ }).innerText(),
+        await page.locator('.attributes label').filter({ hasText: /^Image Viewer\s/ }).innerText(),
+        await page.locator('.attributes label').filter({ hasText: /^Office Suite\s/ }).innerText()
+    ];
+    let expectedUnitPrice = basePrice;
+    for (const optionLabel of selectedOptionLabels) {
+        const additionMatch = optionLabel.match(/\[\+([\d,.]+)\]/);
+        expect(additionMatch, 'Selected option should show a price addition').not.toBeNull();
+        const optionAddition = Number(additionMatch![1].replace(/,/g, ''));
+        expect(Number.isFinite(optionAddition)).toBe(true);
+        expectedUnitPrice += optionAddition;
+    }
+    expect(expectedUnitPrice).toBe(2165);
+    console.log('Step 17: Base price plus selected additions:', expectedUnitPrice);
 
-  await configuredRow.locator('input[name="removefromcart"]').check();
-  await page.getByRole('button', { name: 'Update shopping cart', exact: true }).click();
+    // Step 18: Set quantity to 2.
+    const productQuantity = productDetails.getByLabel('Qty:', { exact: true });
+    await productQuantity.fill(String(requestedQuantity));
+    await expect(productQuantity).toHaveValue('2');
 
-  await expect(page.locator('.cart-item-row')
-    .filter({ hasText: 'Build your own expensive computer' })
-    .filter({ hasText: 'Software: Office Suite [+100.00]' }))
-    .toHaveCount(0);
-  console.log('Configured computer is removed from the cart');
+    // Cleanup in finally also runs when an assertion after adding the product fails.
+    try {
+        // Step 19: Add the configured computer to the cart.
+        await addToCart.click();
+
+        // Step 20: Verify the success notification.
+        const notification = page.locator('#bar-notification');
+        await expect(notification).toBeVisible();
+        await expect(notification).toContainText('The product has been added to your shopping cart');
+        console.log('Steps 18-20: Two configured computers successfully added to the cart.');
+
+        // Step 21: Verify the header cart count increased by the requested quantity.
+        await expect(headerCartQuantity).toHaveText(`(${initialCartCount + requestedQuantity})`);
+
+        // Step 22: Open Shopping Cart.
+        await page.locator('#topcartlink').getByRole('link').click();
+        await expect(page).toHaveURL(/\/cart$/);
+        await expect(page.getByRole('heading', { name: 'Shopping cart', exact: true })).toBeVisible();
+
+        // Step 23: Locate the configured row by product name and configuration.
+        await expect(configuredComputerRow).toHaveCount(1);
+        await expect(configuredComputerRow).toBeVisible();
+
+        // Step 24: Verify all configuration attributes shown in the cart.
+        const attributes = configuredComputerRow.locator('.attributes');
+        await expect(attributes).toContainText('Processor: Fast');
+        await expect(attributes).toContainText('RAM: 8GB');
+        await expect(attributes).toContainText('HDD: 400 GB');
+        await expect(attributes).toContainText('Software: Image Viewer');
+        await expect(attributes).toContainText('Software: Office Suite');
+        await expect(attributes).not.toContainText('Other Office Suite');
+        console.log('Steps 21-24: Cart count and configured computer attributes verified.');
+
+        // Step 25: Verify the cart quantity is 2.
+        const cartQuantity = configuredComputerRow.locator('.qty-input');
+        await expect(cartQuantity).toHaveValue('2');
+        const quantity = Number(await cartQuantity.inputValue());
+
+        // Step 26: Read the displayed unit price.
+        const unitPriceText = await configuredComputerRow.locator('.product-unit-price').innerText();
+        console.log('Step 26: Displayed unit price:', unitPriceText);
+
+        // Step 27: Read the displayed line subtotal.
+        const subtotalText = await configuredComputerRow.locator('.product-subtotal').innerText();
+        console.log('Step 27: Displayed subtotal:', subtotalText);
+
+        // Step 28: Convert currency strings to numbers.
+        const unitPrice = Number(unitPriceText.replace(/[^0-9.]/g, ''));
+        const subtotal = Number(subtotalText.replace(/[^0-9.]/g, ''));
+        expect(Number.isFinite(unitPrice)).toBe(true);
+        expect(Number.isFinite(subtotal)).toBe(true);
+        expect(unitPrice).toBe(expectedUnitPrice);
+
+        // Step 29: Calculate the expected subtotal programmatically.
+        const expectedSubtotal = unitPrice * quantity;
+        expect(expectedSubtotal).toBe(expectedUnitPrice * requestedQuantity);
+        console.log('Steps 28-29: Expected subtotal =', unitPrice, 'x', quantity, '=', expectedSubtotal);
+
+        // Step 30: Compare the calculated subtotal with the displayed subtotal.
+        expect(subtotal).toBeCloseTo(expectedSubtotal, 2);
+        console.log('Step 30: UI subtotal matches the calculation.');
+    } finally {
+        // Step 31: Remove only the configured computer added by this test.
+        await page.goto('https://demowebshop.tricentis.com/cart');
+        await expect(page.getByRole('heading', { name: 'Shopping cart', exact: true })).toBeVisible();
+        if (await configuredComputerRow.count() === 1) {
+            await configuredComputerRow.getByRole('checkbox').check();
+            await page.getByRole('button', { name: 'Update shopping cart', exact: true }).click();
+        }
+        await expect(configuredComputerRow).toHaveCount(0);
+        console.log('Step 31: Configured computer removed.');
+
+        // Step 32: Verify the cart returns to its original state.
+        await expect(headerCartQuantity).toHaveText(initialCartCountText);
+        await expect(cartRows).toHaveCount(initialCartRows.length);
+        expect(await cartRows.allInnerTexts()).toEqual(initialCartRows);
+        const remainingQuantities: string[] = [];
+        for (const row of await cartRows.all()) {
+            remainingQuantities.push(await row.locator('.qty-input').inputValue());
+        }
+        expect(remainingQuantities).toEqual(initialQuantities);
+        if (initialCartRows.length === 0) {
+            await expect(page.getByText('Your Shopping Cart is empty!', { exact: true })).toBeVisible();
+        }
+        console.log('Step 32: Original cart state restored. Cleanup successful.');
+    }
 });

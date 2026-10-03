@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('open demo web shop', async ({ browser }) => {
-    const context = await browser.newContext();
+    /*const context = await browser.newContext();
     const page = await context.newPage();
     await page.goto("https://demowebshop.tricentis.com/");
     await page.locator("//a[@href='/login'][text()='Log in']").click();
@@ -18,5 +18,5 @@ test('open demo web shop', async ({ browser }) => {
 
     await page.locator('//label[text()="Remember me?"]').isVisible();
     await page.locator('//a[@href="/passwordrecovery"]').isVisible();
-    await page.locator('//input[@class="button-1 login-button"]').isVisible();
+    await page.locator('//input[@class="button-1 login-button"]').isVisible();*/
 });

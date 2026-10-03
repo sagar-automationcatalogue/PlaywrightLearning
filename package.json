@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "demo.js",
-  "scripts": {},
+  "scripts": {
+    "test:automationexercise": "playwright test tests/AutomationExercise",
+    "test:demowebshop": "playwright test tests/DemoWebShop",
+    "test:OrangeHRM": "playwright test tests/OrangeHRM"    
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
