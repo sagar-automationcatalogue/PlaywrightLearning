@@ -1,9 +1,9 @@
 import { test, expect } from '@playwright/test';
 
 test('TC_11_RecruitmentValidation - Validate live Recruitment vacancy state', async ({ page }) => {
-  const loginUrl = 'https://automation44-trials8101.orangehrmlive.com/auth/login';
-  const recruitmentUrl = 'https://automation44-trials8101.orangehrmlive.com/client/#/recruitment/candidates/';
-  const vacanciesUrl = 'https://automation44-trials8101.orangehrmlive.com/client/#/recruitment/vacancies';
+  const loginUrl = 'https://automaetesting-trials821.orangehrmlive.com/auth/login';
+  const recruitmentUrl = 'https://automaetesting-trials821.orangehrmlive.com/client/#/recruitment/candidates/';
+  const vacanciesUrl = 'https://automaetesting-trials821.orangehrmlive.com/client/#/recruitment/vacancies';
   const vacancyName = `Playwright Vacancy ${Date.now()}`;
 
   console.log('Step 1: Open OrangeHRM login page');

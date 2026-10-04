@@ -1,8 +1,8 @@
 import { test, expect } from '@playwright/test';
 
 test('TC_07_EmployeeValidation - Validate Directory employee search and details', async ({ page }) => {
-  const loginUrl = 'https://automation44-trials8101.orangehrmlive.com/auth/login';
-  const directoryUrl = 'https://automation44-trials8101.orangehrmlive.com/client/#/corporate_directory/directory';
+  const loginUrl = 'https://automaetesting-trials821.orangehrmlive.com/auth/login';
+  const directoryUrl = 'https://automaetesting-trials821.orangehrmlive.com/client/#/corporate_directory/directory';
   const partialEmployeeName = 'Mazie';
   const employeeName = 'Mazie Abraham';
 

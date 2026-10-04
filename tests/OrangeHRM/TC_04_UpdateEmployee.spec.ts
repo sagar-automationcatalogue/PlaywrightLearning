@@ -15,7 +15,7 @@ test('TC_04_UpdateEmployee - Update employee personal and contact details', asyn
   const newMobile = '9876543210';
 
   // Step 1: Open OrangeHRM login page
-  await page.goto('https://automation44-trials8101.orangehrmlive.com/auth/login');
+  await page.goto('https://automaetesting-trials821.orangehrmlive.com/');
   await expect(page.locator('.form-header')).toBeVisible({ timeout: 20000 });
 
   // Step 2: Login as Admin
