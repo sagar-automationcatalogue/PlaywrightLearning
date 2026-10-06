@@ -4,9 +4,15 @@
   "description": "",
   "main": "demo.js",
   "scripts": {
-    "test:automationexercise": "playwright test tests/AutomationExercise",
-    "test:demowebshop": "playwright test tests/DemoWebShop",
-    "test:OrangeHRM": "playwright test tests/OrangeHRM"    
+    "test:AutomationExercise": "playwright test tests/ui/AutomationExercise",
+    "test:DemoWebShop": "playwright test tests/ui/DemoWebShop",
+    "test:OrangeHRM": "playwright test tests/ui/OrangeHRM",
+    "test:PracticeSoftware": "playwright test tests/ui/PracticeSoftware",
+    "test:ExpandTesting": "playwright test tests/ui/ExpandTesting",
+    "test:SauceDemo": "playwright test tests/ui/SauceDemo",
+    "test:Smoke": "playwright test --grep @smoke",
+    "test:Sanity": "playwright test --grep @sanity",
+    "test:Regression": "playwright test --grep @regression"
   },
   "keywords": [],
   "author": "",
