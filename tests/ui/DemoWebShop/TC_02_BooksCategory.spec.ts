@@ -1,16 +1,17 @@
 import { expect, test } from '@playwright/test';
+import { TC_02_BooksCategory } from '../../../test-data/demoWebShop.ts';
 
 test('@sanity TC_02_BooksCategory: Verify sorting, price filtering, page size and view', async ({ page }) => {
     // Step 1: Open Demo Web Shop and verify the home page.
     console.log('Opening Demo Web Shop');
     await page.goto('https://demowebshop.tricentis.com/');
-    await expect(page.getByRole('heading', { name: 'Welcome to our store' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: TC_02_BooksCategory.homeHeading })).toBeVisible();
     console.log('Home page is displayed');
 
     // Steps 2-3: Open Books and verify the category heading.
     await page.getByRole('link', { name: 'Books', exact: true }).first().click();
     await expect(page).toHaveURL('https://demowebshop.tricentis.com/books');
-    await expect(page.getByRole('heading', { name: 'Books' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: TC_02_BooksCategory.booksHeading })).toBeVisible();
     console.log('Books category page is displayed');
 
     // Steps 4-5: Capture the product names and verify that products are displayed.
@@ -20,7 +21,7 @@ test('@sanity TC_02_BooksCategory: Verify sorting, price filtering, page size an
 
     // Steps 6-10: Sort product names from A to Z and compare with a sorted copy.
     const sortDropdown = page.locator('#products-orderby');
-    await sortDropdown.selectOption({ label: 'Name: A to Z' });
+    await sortDropdown.selectOption({ label: TC_02_BooksCategory.sortByName });
     await expect(page).toHaveURL(/orderby=5/);
 
     const sortedProductNames = await page.locator('.product-title').allInnerTexts();
@@ -34,7 +35,7 @@ test('@sanity TC_02_BooksCategory: Verify sorting, price filtering, page size an
     console.log('Product names are in alphabetical order');
 
     // Steps 11-14: Sort by price and verify each price is no lower than the previous one.
-    await sortDropdown.selectOption({ label: 'Price: Low to High' });
+    await sortDropdown.selectOption({ label: TC_02_BooksCategory.sortByPrice });
     await expect(page).toHaveURL(/orderby=10/);
 
     const priceTexts = await page.locator('.actual-price').allInnerTexts();
@@ -92,9 +93,9 @@ test('@sanity TC_02_BooksCategory: Verify sorting, price filtering, page size an
     console.log(`Product view changed to ${viewToSelect}`);
 
     // Steps 15-17: Apply the price filter and verify any returned prices are in range.
-    await page.getByRole('link', { name: '25.00 - 50.00', exact: true }).click();
+    await page.getByRole('link', { name: TC_02_BooksCategory.priceFilterLabel, exact: true }).click();
     await expect(page).toHaveURL(/price=25-50/);
-    await expect(page.getByRole('link', { name: 'Remove Filter', exact: true })).toBeVisible();
+    await expect(page.getByRole('link', { name: TC_02_BooksCategory.removeFilterLabel, exact: true })).toBeVisible();
 
     const filteredPriceTexts = await page.locator('.actual-price').allInnerTexts();
     const filteredPrices = filteredPriceTexts.map((priceText) =>
@@ -105,15 +106,15 @@ test('@sanity TC_02_BooksCategory: Verify sorting, price filtering, page size an
     expect(filteredPrices.every((price) => Number.isFinite(price))).toBeTruthy();
 
     for (const price of filteredPrices) {
-        expect(price).toBeGreaterThanOrEqual(25);
-        expect(price).toBeLessThanOrEqual(50);
+        expect(price).toBeGreaterThanOrEqual(TC_02_BooksCategory.minPrice);
+        expect(price).toBeLessThanOrEqual(TC_02_BooksCategory.maxPrice);
     }
-    console.log(`Price filter returned ${filteredProductCount} products; all returned prices are within 25.00 - 50.00`);
+    console.log(`Price filter returned ${filteredProductCount} products; all returned prices are within ${TC_02_BooksCategory.priceFilterLabel}`);
 
     // Steps 22-23: Remove the filter and verify that the broader product list returns.
-    await page.getByRole('link', { name: 'Remove Filter', exact: true }).click();
+    await page.getByRole('link', { name: TC_02_BooksCategory.removeFilterLabel, exact: true }).click();
     await expect(page).not.toHaveURL(/price=25-50/);
-    await expect(page.getByRole('heading', { name: 'Books' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: TC_02_BooksCategory.booksHeading })).toBeVisible();
 
     const restoredProductNames = await page.locator('.product-title').allInnerTexts();
     expect(restoredProductNames.length).toBeGreaterThan(filteredProductCount);

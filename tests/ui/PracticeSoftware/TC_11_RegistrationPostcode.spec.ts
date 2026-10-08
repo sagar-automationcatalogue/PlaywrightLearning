@@ -1,4 +1,6 @@
 import { expect, test } from '@playwright/test';
+import { TC_11_RegistrationPostcode } from '../../../test-data/practiceSoftware.ts';
+
 test('@regresion TC_11_RegistrationPostcode: Mock Postcode Lookup → Validate Password → Register', async ({ browser }) => {
     const toolshopUrl = 'https://practicesoftwaretesting.com/';
     const context = await browser.newContext();
@@ -8,8 +10,8 @@ test('@regresion TC_11_RegistrationPostcode: Mock Postcode Lookup → Validate P
         postcodeLookupIntercepted = true;
         const lookupUrl = new URL(route.request().url());
         expect(lookupUrl.searchParams.get('country')).toBe('AT');
-        expect(lookupUrl.searchParams.get('postcode')).toBe('1010');
-        expect(lookupUrl.searchParams.get('house_number')).toBe('42');
+        expect(lookupUrl.searchParams.get('postcode')).toBe(TC_11_RegistrationPostcode.registration.postcode);
+        expect(lookupUrl.searchParams.get('house_number')).toBe(TC_11_RegistrationPostcode.registration.houseNumber);
         await route.fulfill({
             status: 200,
             contentType: 'application/json',
@@ -22,19 +24,24 @@ test('@regresion TC_11_RegistrationPostcode: Mock Postcode Lookup → Validate P
     await page.goto(`${toolshopUrl}auth/register`);
     await expect(page.getByRole('heading', { name: /customer registration/i })).toBeVisible();
     const country = page.getByLabel(/country/i).first();
-    await country.selectOption({ label: 'Austria' });
+    await country.selectOption({ label: TC_11_RegistrationPostcode.country });
 
     const stamp = Date.now();
+    const email = `${TC_11_RegistrationPostcode.emailPrefix}${stamp}${TC_11_RegistrationPostcode.emailDomain}`;
     const values: Array<[RegExp, string]> = [
-        [/first name/i, 'Playwright'], [/last name/i, 'Student'],
-        [/date of birth|birth/i, '1995-05-15'], [/email/i, `playwright.student.${stamp}@example.com`],
-        [/postal|zip/i, '1010'], [/house|building|number/i, '42'], [/phone/i, '0123456789'],
+        [/first name/i, TC_11_RegistrationPostcode.registration.firstName],
+        [/last name/i, TC_11_RegistrationPostcode.registration.lastName],
+        [/date of birth|birth/i, TC_11_RegistrationPostcode.registration.dateOfBirth],
+        [/email/i, email],
+        [/postal|zip/i, TC_11_RegistrationPostcode.registration.postcode],
+        [/house|building|number/i, TC_11_RegistrationPostcode.registration.houseNumber],
+        [/phone/i, TC_11_RegistrationPostcode.registration.phone],
     ];
     for (const [label, value] of values) {
         const input = page.getByLabel(label).first();
         if (await input.count() && await input.isEditable()) {
             if (await input.evaluate(element => element.tagName.toLowerCase()) === 'select') {
-                await input.selectOption({ label: /country/i.test(label.source) ? 'Austria' : value });
+                await input.selectOption({ label: /country/i.test(label.source) ? TC_11_RegistrationPostcode.country : value });
             } else await input.fill(value);
         }
     }
@@ -43,22 +50,22 @@ test('@regresion TC_11_RegistrationPostcode: Mock Postcode Lookup → Validate P
     const street = page.getByLabel(/street/i);
     const city = page.getByLabel(/city/i);
     const state = page.getByLabel(/state/i);
-    if (!(await street.inputValue())) await street.fill('Mock Automation Street');
-    if (!(await city.inputValue())) await city.fill('Mock City');
-    if (!(await state.inputValue())) await state.fill('Mock State');
-    await expect(city).toHaveValue('Mock City');
-    await expect(state).toHaveValue('Mock State');
+    if (!(await street.inputValue())) await street.fill(TC_11_RegistrationPostcode.registration.street);
+    if (!(await city.inputValue())) await city.fill(TC_11_RegistrationPostcode.registration.city);
+    if (!(await state.inputValue())) await state.fill(TC_11_RegistrationPostcode.registration.state);
+    await expect(city).toHaveValue(TC_11_RegistrationPostcode.registration.city);
+    await expect(state).toHaveValue(TC_11_RegistrationPostcode.registration.state);
     const weakPassword = page.getByLabel(/^password$/i).first();
     const confirmation = page.getByLabel(/confirm.*password/i).first();
-    if (await weakPassword.count()) await weakPassword.fill('playwright');
-    if (await confirmation.count()) await confirmation.fill('playwright');
+    if (await weakPassword.count()) await weakPassword.fill(TC_11_RegistrationPostcode.registration.weakPassword);
+    if (await confirmation.count()) await confirmation.fill(TC_11_RegistrationPostcode.registration.weakPassword);
     const submit = page.getByRole('button', { name: /register|sign up/i });
     await submit.click();
     await expect(page.getByText(/password.*(length|character|number|uppercase|special)|weak password/i).first()).toBeVisible();
 
-    const validPassword = 'W9!rL3#qV6$zP2@t';
+    const validPassword = TC_11_RegistrationPostcode.validPassword;
     if (await weakPassword.count()) {
-        await weakPassword.fill('');
+        await weakPassword.fill(TC_11_RegistrationPostcode.emptyValue);
         await weakPassword.pressSequentially(validPassword);
         await weakPassword.press('Tab');
     }
@@ -77,7 +84,7 @@ test('@regresion TC_11_RegistrationPostcode: Mock Postcode Lookup → Validate P
     await expect(page).toHaveURL(/auth\/login|account/);
     expect(postcodeLookupIntercepted).toBe(true);
     if (await page.getByPlaceholder('Your email').count()) {
-        await page.getByPlaceholder('Your email').fill(`playwright.student.${stamp}@example.com`);
+        await page.getByPlaceholder('Your email').fill(email);
         await page.getByPlaceholder('Your password').fill(validPassword);
         await page.getByRole('button', { name: 'Login' }).click();
         await expect(page).toHaveURL(/account/);

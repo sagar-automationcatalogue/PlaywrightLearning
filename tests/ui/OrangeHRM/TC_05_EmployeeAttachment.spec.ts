@@ -1,53 +1,52 @@
 import { test, expect } from '@playwright/test';
+import { TC_05_EmployeeAttachment } from '../../../test-data/orangeHRM.ts';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 
 test('@regression TC_05_EmployeeAttachment - Upload, download and delete employee attachment', async ({ page }) => {
   const applicationUrl = 'https://automaetesting-trials821.orangehrmlive.com/';
-  const employeeName = 'Mazie Abraham';
-  const fileName = 'Playwright-Cheat-Sheet.pdf';
   const pdfFilePath = path.resolve(
   process.cwd(),
   'PlaywrightLearning',
-  'test-data',
-  fileName
+  'test-data','pdfs',
+  TC_05_EmployeeAttachment.fileName
 );
-  const downloadedFilePath = path.resolve(process.cwd(), 'test-results', 'downloads', fileName);
+  const downloadedFilePath = path.resolve(process.cwd(), 'test-results', 'downloads', TC_05_EmployeeAttachment.fileName);
 
   console.log('Step 1: Open OrangeHRM and log in as Admin');
   await page.goto(applicationUrl, { waitUntil: 'domcontentloaded' });
   const usernameField = page.getByPlaceholder('Username');
   const passwordField = page.getByPlaceholder('Password');
   await expect(usernameField).toBeVisible();
-  await usernameField.fill('admin');
-  await passwordField.fill('Admin@123');
+  await usernameField.fill(TC_05_EmployeeAttachment.adminUsername);
+  await passwordField.fill(TC_05_EmployeeAttachment.adminPassword);
   await page.getByRole('button', { name: 'Login' }).click({ noWaitAfter: true });
   await expect(page.getByRole('link', { name: 'Employee Management', exact: true })).toBeVisible();
   console.log('Admin is authenticated');
 
-  console.log('Step 2: Open Employee List and search for', employeeName);
+  console.log('Step 2: Open Employee List and search for', TC_05_EmployeeAttachment.employeeName);
   await page.getByRole('link', { name: 'Employee Management', exact: true }).click({ noWaitAfter: true });
   await expect(page).toHaveURL(/pim\/employees/i);
   await expect(page.locator('#employeeListTable')).toBeVisible();
   const employeeNameSearch = page.locator('#employee_name_quick_filter_employee_list_value');
-  await employeeNameSearch.pressSequentially('Mazie');
-  const employeeSuggestion = page.locator('#employee_name_quick_filter_employee_list_dropdown .angucomplete-row').filter({ hasText: employeeName }).first();
+  await employeeNameSearch.pressSequentially(TC_05_EmployeeAttachment.partialEmployeeName);
+  const employeeSuggestion = page.locator('#employee_name_quick_filter_employee_list_dropdown .angucomplete-row').filter({ hasText: TC_05_EmployeeAttachment.employeeName }).first();
   await expect(employeeSuggestion).toBeVisible();
   await employeeSuggestion.click({ noWaitAfter: true });
   await page.locator('.employee-navbar-button').first().click({ noWaitAfter: true });
-  const employeeRow = page.locator('#employeeListTable tbody tr').filter({ hasText: employeeName }).first();
+  const employeeRow = page.locator('#employeeListTable tbody tr').filter({ hasText: TC_05_EmployeeAttachment.employeeName }).first();
   await expect(employeeRow).toBeVisible();
   console.log('Target employee appears in the Employee List');
 
   console.log('Step 3: Open the employee profile and Personal Details');
-  await employeeRow.getByText(employeeName, { exact: true }).click({ noWaitAfter: true });
+  await employeeRow.getByText(TC_05_EmployeeAttachment.employeeName, { exact: true }).click({ noWaitAfter: true });
   await expect(page.getByRole('link', { name: 'Personal Details' }).first()).toBeVisible();
   await page.getByRole('link', { name: 'Personal Details' }).first().click();
   await page.waitForLoadState('networkidle');
   await expect(page.getByRole('heading', { name: 'Personal Details' })).toBeVisible();
   await expect(page.locator('#firstName')).toBeVisible();
-  await expect(page.getByText(employeeName, { exact: true }).first()).toBeVisible();
-  console.log('Personal Details opened for', employeeName);
+  await expect(page.getByText(TC_05_EmployeeAttachment.employeeName, { exact: true }).first()).toBeVisible();
+  console.log('Personal Details opened for', TC_05_EmployeeAttachment.employeeName);
 
   console.log('Step 4: Find Attachments on the Personal Details page');
   const attachmentsHeading = page.getByText(/Attachments/i).last();
@@ -58,9 +57,9 @@ test('@regression TC_05_EmployeeAttachment - Upload, download and delete employe
   await expect(attachmentsHeading).toBeInViewport();
   const attachmentTable = page.locator('table:visible').filter({ has: page.getByText('File Name', { exact: true }) }).first();
   await attachmentTable.scrollIntoViewIfNeeded();
-  const attachmentRows = attachmentTable.locator('tbody tr:visible').filter({ hasNotText: 'Sorry, No Data Found!' });
+  const attachmentRows = attachmentTable.locator('tbody tr:visible').filter({ hasNotText: TC_05_EmployeeAttachment.noDataMessage });
   const baselineAttachmentCount = await attachmentRows.count();
-  const baselineMatchingAttachmentCount = await attachmentRows.filter({ hasText: fileName }).count();
+  const baselineMatchingAttachmentCount = await attachmentRows.filter({ hasText: TC_05_EmployeeAttachment.fileName }).count();
   console.log('Attachments section is visible. Baseline attachment count:', baselineAttachmentCount);
   await attachmentTable.scrollIntoViewIfNeeded();
   await expect(attachmentTable).toBeInViewport();
@@ -74,21 +73,21 @@ test('@regression TC_05_EmployeeAttachment - Upload, download and delete employe
   }
   await expect(fileInput).toBeAttached();
   await fileInput.setInputFiles(pdfFilePath);
-  await expect(fileInput).toHaveValue(/Playwright-Cheat-Sheet\.pdf/i);
-  console.log('Selected the requested PDF:', fileName);
+  await expect(fileInput).toHaveValue(new RegExp(TC_05_EmployeeAttachment.fileName.replace(/\./g, '\\.'), 'i'));
+  console.log('Selected the requested PDF:', TC_05_EmployeeAttachment.fileName);
 
   const descriptionField = page.locator('textarea').first();
   if (await descriptionField.count()) {
-    await descriptionField.fill('Uploaded by Playwright automation');
-    await expect(descriptionField).toHaveValue('Uploaded by Playwright automation');
+    await descriptionField.fill(TC_05_EmployeeAttachment.description);
+    await expect(descriptionField).toHaveValue(TC_05_EmployeeAttachment.description);
     console.log('Attachment description entered');
   }
 
   console.log('Step 4: Save the attachment and verify it was added');
   await page.locator('#modal-save-button').click();
-  const uploadedAttachmentRow = attachmentRows.filter({ hasText: fileName }).first();
+  const uploadedAttachmentRow = attachmentRows.filter({ hasText: TC_05_EmployeeAttachment.fileName }).first();
   await expect(uploadedAttachmentRow).toBeVisible();
-  await expect(page.locator('body')).toContainText(/success|saved|uploaded/i);
+  await expect(page.locator('body')).toContainText(TC_05_EmployeeAttachment.uploadSuccessPattern);
   await expect(attachmentRows).toHaveCount(baselineAttachmentCount + 1);
   console.log('Upload succeeded; attachment count increased by one');
 
@@ -103,7 +102,7 @@ test('@regression TC_05_EmployeeAttachment - Upload, download and delete employe
     downloadButton.click(),
   ]);
   const suggestedFileName = download.suggestedFilename();
-  expect(suggestedFileName).toContain(fileName);
+  expect(suggestedFileName).toContain(TC_05_EmployeeAttachment.fileName);
   await download.saveAs(downloadedFilePath);
   const downloadedFile = await fs.stat(downloadedFilePath);
   expect(downloadedFile.isFile()).toBe(true);
@@ -131,13 +130,12 @@ test('@regression TC_05_EmployeeAttachment - Upload, download and delete employe
   if (await confirmDeleteButton.isVisible()) {
     await confirmDeleteButton.click();
   }
-  await expect(attachmentRows.filter({ hasText: fileName })).toHaveCount(baselineMatchingAttachmentCount);
+  await expect(attachmentRows.filter({ hasText: TC_05_EmployeeAttachment.fileName })).toHaveCount(baselineMatchingAttachmentCount);
   await expect(attachmentRows).toHaveCount(baselineAttachmentCount);
-  await expect(page.locator('body')).toContainText(/success|deleted|removed/i);
+  await expect(page.locator('body')).toContainText(TC_05_EmployeeAttachment.deleteSuccessPattern);
   console.log('Attachment was deleted and the original attachment count was restored');
   console.log('TC_05_EmployeeAttachment completed successfully');
 });
-
 
 
 

@@ -1,12 +1,7 @@
 import {expect, test} from '@playwright/test';
+import { TC_01_ValidateLogin } from '../../../test-data/automationExercise.ts';
+
 /** Testcase developed by Soujanya - Completed */
-
-const TC_01_ValidateLogin={
-    email:"sagar.automationcatalogue8@gmail.com",
-    wrongPassword:"WrongPassword@123",
-    password:"Admin@123"
-}
-
 test(`@smoke TC_01_ValidateLogin: Invalid Login → Valid Login → Logout → Protected State Validation`, async({page, browserName}) =>{
     test.slow();
     if(browserName === 'webkit'){
@@ -58,7 +53,7 @@ test(`@smoke TC_01_ValidateLogin: Invalid Login → Valid Login → Logout → P
     await expect(passwordField).toBeVisible();
     await expect(passwordField).toBeEnabled();
     console.log('Email and password fields are visible and enabled');
-    await emailField.fill('sagar.automationcatalogue8@gmail.com');
+    await emailField.fill(TC_01_ValidateLogin.email);
     expect(await emailField.inputValue()).toBe(TC_01_ValidateLogin.email);
     console.log('Registered email entered successfully');
 
@@ -68,15 +63,15 @@ test(`@smoke TC_01_ValidateLogin: Invalid Login → Valid Login → Logout → P
     const loginButton = page.locator(`//button[@data-qa='login-button']`);
     await loginButton.click();
     console.log('Login submitted with invalid password');
-    const loginError = page.getByText('Your email or password is incorrect!');
+    const loginError = page.getByText(TC_01_ValidateLogin.loginError);
     await expect(loginError).toBeVisible();
     console.log('Invalid login error is displayed');
     expect(page.url()).toContain('/login');
     console.log('User remains on the Login page');
-    await emailField.fill('');
-    await passwordField.fill('');
-    expect(await emailField.inputValue()).toBe('');
-    expect(await passwordField.inputValue()).toBe('');
+    await emailField.fill(TC_01_ValidateLogin.emptyValue);
+    await passwordField.fill(TC_01_ValidateLogin.emptyValue);
+    expect(await emailField.inputValue()).toBe(TC_01_ValidateLogin.emptyValue);
+    expect(await passwordField.inputValue()).toBe(TC_01_ValidateLogin.emptyValue);
     console.log('Email and password fields are cleared');
     await emailField.fill(TC_01_ValidateLogin.email);
     expect(await emailField.inputValue()).toBe(TC_01_ValidateLogin.email);

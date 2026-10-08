@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { TC_02_ProductSearch } from '../../../test-data/practiceSoftware.ts';
 
 test('@sanity TC_02_ProductSearch: Search → Sort → Pagination → Reset', async ({ page }) => {
     const homeUrl = 'https://practicesoftwaretesting.com/';
@@ -17,29 +18,32 @@ test('@sanity TC_02_ProductSearch: Search → Sort → Pagination → Reset', as
 
     const searchInput = page.getByPlaceholder('Search');
     await expect(searchInput).toBeVisible();
-    await searchInput.fill('pliers');
-    await expect(searchInput).toHaveValue('pliers');
+    await searchInput.fill(TC_02_ProductSearch.searchTerms.primary);
+    await expect(searchInput).toHaveValue(TC_02_ProductSearch.searchTerms.primary);
     await page.getByRole('button', { name: 'Search', exact: true }).click();
 
-    await expect(page.getByRole('heading', { name: /searched for: pliers/i })).toBeVisible();
+    await expect(page.getByRole('heading', {
+        name: new RegExp(`searched for: ${TC_02_ProductSearch.searchTerms.primary}`, 'i')
+    })).toBeVisible();
     await expect.poll(async () => {
         const names = (await page.locator('.card .card-title').allInnerTexts()).map(name => name.trim()).filter(Boolean);
-        return names.length > 0 && names.every(name => /pliers/i.test(name));
+        return names.length > 0 && names.every(name => new RegExp(TC_02_ProductSearch.searchTerms.primary, 'i').test(name));
     }).toBe(true);
     const pliersNames = (await page.locator('.card .card-title').allInnerTexts()).map(name => name.trim()).filter(Boolean);
     expect(pliersNames.length).toBeGreaterThan(0);
-    expect(pliersNames.every(name => /pliers/i.test(name))).toBe(true);
+    expect(pliersNames.every(name => new RegExp(TC_02_ProductSearch.searchTerms.primary, 'i').test(name))).toBe(true);
     console.log('Pliers search results:', pliersNames);
 
     const activeUrl = page.url();
-    if (/search|pliers/i.test(activeUrl)) {
-        expect(activeUrl).toMatch(/search|pliers/i);
+    const activeUrlPattern = new RegExp(`search|${TC_02_ProductSearch.searchTerms.primary}`, 'i');
+    if (activeUrlPattern.test(activeUrl)) {
+        expect(activeUrl).toMatch(activeUrlPattern);
     }
 
     // Sort product names A-Z and compare the displayed order with localeCompare.
     const sortDropdown = page.getByLabel('sort');
     await expect(sortDropdown).toBeVisible();
-    await sortDropdown.selectOption({ label: 'Name (A - Z)' });
+    await sortDropdown.selectOption({ label: TC_02_ProductSearch.sortByName });
     await expect.poll(async () => {
         const names = (await page.locator('.card .card-title').allInnerTexts()).map(name => name.trim()).filter(Boolean);
         return JSON.stringify(names) === JSON.stringify([...names].sort((left, right) => left.localeCompare(right)));
@@ -49,7 +53,7 @@ test('@sanity TC_02_ProductSearch: Search → Sort → Pagination → Reset', as
     expect(namesSortedByUi).toEqual(expectedNames);
 
     // Sort by ascending price and verify every adjacent pair is ordered.
-    await sortDropdown.selectOption({ label: 'Price (Low - High)' });
+    await sortDropdown.selectOption({ label: TC_02_ProductSearch.sortByPrice });
     const displayedCards = page.locator('.card').filter({ has: page.locator('.card-title') });
     await expect.poll(async () => {
         const currentPriceTexts = await displayedCards.allInnerTexts();
@@ -97,18 +101,20 @@ test('@sanity TC_02_ProductSearch: Search → Sort → Pagination → Reset', as
 
     // Clear the query and confirm the broader catalog is restored.
     await page.getByRole('button', { name: 'X', exact: true }).click();
-    await expect(searchInput).toHaveValue('');
+    await expect(searchInput).toHaveValue(TC_02_ProductSearch.emptyValue);
     await expect.poll(async () => (await page.locator('.card .card-title').allInnerTexts()).map(name => name.trim()).filter(Boolean).length)
         .toBeGreaterThanOrEqual(initialCount);
 
     // Run an independent hammer search, then clear it again.
-    await searchInput.fill('hammer');
-    await expect(searchInput).toHaveValue('hammer');
+    await searchInput.fill(TC_02_ProductSearch.searchTerms.alternate);
+    await expect(searchInput).toHaveValue(TC_02_ProductSearch.searchTerms.alternate);
     await page.getByRole('button', { name: 'Search', exact: true }).click();
-    await expect(page.getByRole('heading', { name: /searched for: hammer/i })).toBeVisible();
+    await expect(page.getByRole('heading', {
+        name: new RegExp(`searched for: ${TC_02_ProductSearch.searchTerms.alternate}`, 'i')
+    })).toBeVisible();
     await expect.poll(async () => (await page.locator('.card .card-title').allInnerTexts()).map(name => name.trim()).filter(Boolean).length).toBeGreaterThan(0);
     const hammerNames = (await page.locator('.card .card-title').allInnerTexts()).map(name => name.trim()).filter(Boolean);
-    expect(hammerNames.some(name => /hammer/i.test(name))).toBe(true);
+    expect(hammerNames.some(name => new RegExp(TC_02_ProductSearch.searchTerms.alternate, 'i').test(name))).toBe(true);
 
     await page.getByRole('button', { name: 'X', exact: true }).click();
     await expect(searchInput).toHaveValue('');

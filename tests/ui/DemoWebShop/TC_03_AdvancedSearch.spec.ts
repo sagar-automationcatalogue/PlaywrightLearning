@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { TC_03_AdvancedSearch } from '../../../test-data/demoWebShop.ts';
 
 test('@regression TC_03_AdvancedSearch: Advanced Search with Category, Subcategory and Price', async ({ page }) => {
     // Step 1: Open Demo Web Shop and verify the home page.
@@ -13,10 +14,10 @@ test('@regression TC_03_AdvancedSearch: Advanced Search with Category, Subcatego
     await expect(storeSearch).toBeVisible();
 
     // Step 3: Enter computer and submit the store search.
-    await storeSearch.fill('computer');
-    await expect(storeSearch).toHaveValue('computer');
+    await storeSearch.fill(TC_03_AdvancedSearch.keyword);
+    await expect(storeSearch).toHaveValue(TC_03_AdvancedSearch.keyword);
     await page.locator('.search-box').getByRole('button', { name: 'Search', exact: true }).click();
-    await expect(page).toHaveURL(/\/search\?q=computer/i);
+    await expect(page).toHaveURL(new RegExp(`/search\\?q=${TC_03_AdvancedSearch.keyword}`, 'i'));
 
     // Step 4: Verify the Search Results page is displayed.
     await expect(page.getByRole('heading', { name: 'Search', exact: true })).toBeVisible();
@@ -39,7 +40,7 @@ test('@regression TC_03_AdvancedSearch: Advanced Search with Category, Subcatego
     // Step 7: Verify at least one product name relates to computer.
     let hasComputerResult = false;
     for (const productName of basicResultNames) {
-        if (productName.toLowerCase().includes('computer')) {
+        if (productName.toLowerCase().includes(TC_03_AdvancedSearch.keyword)) {
             hasComputerResult = true;
         }
     }
@@ -59,13 +60,13 @@ test('@regression TC_03_AdvancedSearch: Advanced Search with Category, Subcatego
 
     // Step 10: Enter computer as the keyword.
     const keyword = page.getByLabel('Search keyword:', { exact: true });
-    await keyword.fill('computer');
-    await expect(keyword).toHaveValue('computer');
+    await keyword.fill(TC_03_AdvancedSearch.keyword);
+    await expect(keyword).toHaveValue(TC_03_AdvancedSearch.keyword);
 
     // Step 11: Select Computers as the category.
     const category = page.getByLabel('Category:', { exact: true });
-    await category.selectOption({ label: 'Computers' });
-    await expect(category.locator('option:checked')).toHaveText('Computers');
+    await category.selectOption({ label: TC_03_AdvancedSearch.category });
+    await expect(category.locator('option:checked')).toHaveText(TC_03_AdvancedSearch.category);
 
     // Step 12: Enable Automatically search sub categories.
     const subcategories = page.getByLabel('Automatically search sub categories', { exact: true });
@@ -74,26 +75,26 @@ test('@regression TC_03_AdvancedSearch: Advanced Search with Category, Subcatego
 
     // Step 13: Enter 700 in From price (this field has no associated label).
     const fromPrice = page.locator('#Pf');
-    await fromPrice.fill('700');
-    await expect(fromPrice).toHaveValue('700');
+    await fromPrice.fill(TC_03_AdvancedSearch.minPrice);
+    await expect(fromPrice).toHaveValue(TC_03_AdvancedSearch.minPrice);
 
     // Step 14: Enter 1900 in To price (this field has no associated label).
     const toPrice = page.locator('#Pt');
-    await toPrice.fill('1900');
-    await expect(toPrice).toHaveValue('1900');
+    await toPrice.fill(TC_03_AdvancedSearch.maxPrice);
+    await expect(toPrice).toHaveValue(TC_03_AdvancedSearch.maxPrice);
 
     // Step 15: Enable Search in product descriptions.
     const descriptions = page.getByLabel('Search In product descriptions', { exact: true });
     await descriptions.check();
     await expect(descriptions).toBeChecked();
-    console.log('Steps 10-15: Keyword computer, category Computers, price 700-1900,');
+    console.log(`Steps 10-15: Keyword ${TC_03_AdvancedSearch.keyword}, category ${TC_03_AdvancedSearch.category}, price ${TC_03_AdvancedSearch.minPrice}-${TC_03_AdvancedSearch.maxPrice},`);
     console.log('subcategory search and description search are selected.');
 
     // Step 16: Click the Search button in the search form.
     const searchButton = page.locator('.search-input').getByRole('button', { name: 'Search', exact: true });
     await searchButton.click();
     await expect(page).toHaveURL(/\/search\?/);
-    expect(new URL(page.url()).searchParams.get('Isc')).toBe('true');
+    expect(new URL(page.url()).searchParams.get('Isc')).toBe(TC_03_AdvancedSearch.subcategorySearchEnabled);
 
     // Step 17: Verify advanced search returns one or more products.
     await expect(searchResults).toBeVisible();
@@ -119,10 +120,10 @@ test('@regression TC_03_AdvancedSearch: Advanced Search with Category, Subcatego
     }
     console.log('Step 19: Numeric prices:', prices);
 
-    // Step 20: Verify every displayed price is between 700 and 1900, inclusive.
+    // Step 20: Verify every displayed price is within the requested range, inclusive.
     for (const price of prices) {
-        expect(price).toBeGreaterThanOrEqual(700);
-        expect(price).toBeLessThanOrEqual(1900);
+        expect(price).toBeGreaterThanOrEqual(Number(TC_03_AdvancedSearch.minPrice));
+        expect(price).toBeLessThanOrEqual(Number(TC_03_AdvancedSearch.maxPrice));
     }
     console.log('Step 20: All displayed prices are within the requested range.');
 
@@ -137,10 +138,10 @@ test('@regression TC_03_AdvancedSearch: Advanced Search with Category, Subcatego
 
     // Step 23: Execute the same search with subcategory search disabled.
     await searchButton.click();
-    expect(new URL(page.url()).searchParams.get('Isc')).toBe('false');
+    expect(new URL(page.url()).searchParams.get('Isc')).toBe(TC_03_AdvancedSearch.subcategorySearchDisabled);
     await expect(searchResults).toBeVisible();
     // The live store returns no matches for the parent category alone.
-    await expect(searchResults.getByText('No products were found that matched your criteria.', { exact: true })).toBeVisible();
+    await expect(searchResults.getByText(TC_03_AdvancedSearch.noProductsMessage, { exact: true })).toBeVisible();
     await expect(products).toHaveCount(0);
     const secondAdvancedResultNames = await products.locator('.product-title').allInnerTexts();
     console.log('Steps 22-23: Products without subcategory search:', secondAdvancedResultNames);
@@ -158,11 +159,11 @@ test('@regression TC_03_AdvancedSearch: Advanced Search with Category, Subcatego
     // Step 25: Verify all advanced-search controls preserve the chosen criteria.
     await expect(advancedSearch).toBeChecked();
     await expect(page.locator('#advanced-search-block')).toBeVisible();
-    await expect(keyword).toHaveValue('computer');
-    await expect(category.locator('option:checked')).toHaveText('Computers');
+    await expect(keyword).toHaveValue(TC_03_AdvancedSearch.keyword);
+    await expect(category.locator('option:checked')).toHaveText(TC_03_AdvancedSearch.category);
     await expect(subcategories).not.toBeChecked();
-    await expect(fromPrice).toHaveValue('700');
-    await expect(toPrice).toHaveValue('1900');
+    await expect(fromPrice).toHaveValue(TC_03_AdvancedSearch.minPrice);
+    await expect(toPrice).toHaveValue(TC_03_AdvancedSearch.maxPrice);
     await expect(descriptions).toBeChecked();
     console.log('Step 25: All advanced-search criteria are preserved after the second search.');
 });

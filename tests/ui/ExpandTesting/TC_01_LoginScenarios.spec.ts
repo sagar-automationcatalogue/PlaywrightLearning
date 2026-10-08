@@ -1,11 +1,5 @@
 import { expect, test } from '@playwright/test';
-
-const TC_01_LoginScenarios = {  
-  invalidUsername: 'wrongUser',
-  validUsername: 'practice',
-  validPassword: 'SuperSecretPassword!',
-  invalidPassword: 'WrongPassword'
-}
+import { TC_01_LoginScenarios } from '../../../test-data/expnadTesting.ts';
 
 test('@smoke TC_01_LoginScenarios: Invalid Login, Valid Login, Secure Area, and Logout', async ({ page }) => {
 	const loginUrl = 'https://practice.expandtesting.com/login';

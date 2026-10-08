@@ -1,18 +1,19 @@
 import { test, expect } from '@playwright/test';
+import { TC_11_RecruitmentValidation } from '../../../test-data/orangeHRM.ts';
 
 test('@regression TC_11_RecruitmentValidation - Validate live Recruitment vacancy state', async ({ page }) => {
   const loginUrl = 'https://automaetesting-trials821.orangehrmlive.com/auth/login';
   const recruitmentUrl = 'https://automaetesting-trials821.orangehrmlive.com/client/#/recruitment/candidates/';
   const vacanciesUrl = 'https://automaetesting-trials821.orangehrmlive.com/client/#/recruitment/vacancies';
-  const vacancyName = `Playwright Vacancy ${Date.now()}`;
+  const vacancyName = `${TC_11_RecruitmentValidation.vacancyNamePrefix}${Date.now()}`;
 
   console.log('Step 1: Open OrangeHRM login page');
   await page.goto(loginUrl);
   await expect(page.getByPlaceholder('Username')).toBeVisible({ timeout: 20000 });
 
   console.log('Step 2: Login as admin');
-  await page.getByPlaceholder('Username').fill('admin');
-  await page.getByPlaceholder('Password').fill('Admin@123');
+  await page.getByPlaceholder('Username').fill(TC_11_RecruitmentValidation.adminUsername);
+  await page.getByPlaceholder('Password').fill(TC_11_RecruitmentValidation.adminPassword);
   await page.getByRole('button', { name: 'Login' }).click();
   await page.waitForURL(/.*dashboard/, { timeout: 30000 });
   await expect(page).toHaveURL(/.*dashboard/);
@@ -90,8 +91,8 @@ test('@regression TC_11_RecruitmentValidation - Validate live Recruitment vacanc
 
   if (descriptionFieldVisible) {
     console.log('Step 9: Enter vacancy description');
-    await descriptionField.fill('This vacancy is created for Playwright validation automation testing.');
-    await expect(descriptionField).toHaveValue(/Playwright|validation|automation/i);
+    await descriptionField.fill(TC_11_RecruitmentValidation.vacancyDescription);
+    await expect(descriptionField).toHaveValue(TC_11_RecruitmentValidation.descriptionPattern);
     console.log('Description entered successfully.');
   } else {
     console.log('Description field is not visible in this live app state.');
@@ -103,7 +104,7 @@ test('@regression TC_11_RecruitmentValidation - Validate live Recruitment vacanc
   if (saveButtonVisible) {
     console.log('Step 10: Save the vacancy');
     await saveButton.click();
-    await expect(page.locator('body')).toContainText(/success|saved|saved successfully|Vacancy/i, { timeout: 30000 });
+    await expect(page.locator('body')).toContainText(TC_11_RecruitmentValidation.vacancySaveResponsePattern, { timeout: 30000 });
     console.log('Vacancy save action was attempted and the live page responded.');
   } else {
     console.log('Save button is not visible in the current live app state.');

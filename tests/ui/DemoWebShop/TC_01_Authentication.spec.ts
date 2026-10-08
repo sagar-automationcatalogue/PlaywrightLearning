@@ -1,15 +1,14 @@
 import { expect, test } from '@playwright/test';
+import { TC_01_Authentication} from '../../../test-data/demoWebShop.ts';
 
 test('@smoke TC_01_Authentication: Invalid Login, Valid Login and Logout', async ({ page }) => {
-	const email = 'sagar.automationcatalogue8@gmail.com';
-
 	// Step 1: Launch browser and open Demo Web Shop.
 	console.log('Launching Demo Web Shop');
 	await page.goto('https://demowebshop.tricentis.com/');	
 
 	// Step 2: Verify the home page is loaded.
 	await expect(page).toHaveURL('https://demowebshop.tricentis.com/');
-	await expect(page.getByRole('heading', { name: 'Welcome to our store' })).toBeVisible();
+	await expect(page.getByRole('heading', { name: TC_01_Authentication.headings.home })).toBeVisible();
 
 	// Step 3: Verify Register and Log in links are displayed.
 	await expect(page.getByRole('link', { name: 'Register', exact: true })).toBeVisible();
@@ -23,7 +22,7 @@ test('@smoke TC_01_Authentication: Invalid Login, Valid Login and Logout', async
 	await expect(page).toHaveURL('https://demowebshop.tricentis.com/login');
 
 	// Step 5: Verify the login page heading is displayed.
-	const loginHeading = page.getByRole('heading', { name: 'Welcome, Please Sign In!' });
+	const loginHeading = page.getByRole('heading', { name: TC_01_Authentication.headings.login });
 	await expect(loginHeading).toBeVisible();
 
 	const emailField = page.getByRole('textbox', { name: 'Email:' });
@@ -31,12 +30,12 @@ test('@smoke TC_01_Authentication: Invalid Login, Valid Login and Logout', async
 
 	// Step 6: Enter the registered email.
 	console.log('Entering credentials for the invalid login attempt');
-	await emailField.fill(email);
-	await expect(emailField).toHaveValue(email);
+	await emailField.fill(TC_01_Authentication.email);
+	await expect(emailField).toHaveValue(TC_01_Authentication.email);
 
 	// Step 7: Enter the invalid password from the supplied test data.
-	await passwordField.fill('WrongPassword!123');
-	await expect(passwordField).toHaveValue('WrongPassword!123');
+	await passwordField.fill(TC_01_Authentication.invalidPassword);
+	await expect(passwordField).toHaveValue(TC_01_Authentication.invalidPassword);
 
 	// Step 8: Click Log in.
 	await page.getByRole('button', { name: 'Log in', exact: true }).click();
@@ -50,11 +49,11 @@ test('@smoke TC_01_Authentication: Invalid Login, Valid Login and Logout', async
 
 	// Step 11: Clear the password field.
 	await passwordField.clear();
-	await expect(passwordField).toHaveValue('');
+	await expect(passwordField).toHaveValue(TC_01_Authentication.emptyValue);
 
 	// Step 12: Enter the valid password.
-	await passwordField.fill('Admin@123');
-	await expect(passwordField).toHaveValue('Admin@123');
+	await passwordField.fill(TC_01_Authentication.validPassword);
+	await expect(passwordField).toHaveValue(TC_01_Authentication.validPassword);
 
 	// Step 13: Select Remember me.
 	const rememberMeCheckbox = page.getByRole('checkbox', { name: 'Remember me?' });
@@ -66,7 +65,7 @@ test('@smoke TC_01_Authentication: Invalid Login, Valid Login and Logout', async
 	await page.getByRole('button', { name: 'Log in', exact: true }).click();
 
 	// Steps 15-16: Verify the account email and Log out are displayed.
-	const accountEmailLink = page.getByRole('link', { name: email, exact: true });
+	const accountEmailLink = page.getByRole('link', { name: TC_01_Authentication.email, exact: true });
 	const logoutLink = page.getByRole('link', { name: 'Log out', exact: true });
 	await expect(accountEmailLink).toBeVisible();
 	await expect(logoutLink).toBeVisible();
@@ -76,12 +75,12 @@ test('@smoke TC_01_Authentication: Invalid Login, Valid Login and Logout', async
 	const accountUrl = page.url();
 
 	// Step 18: Verify the customer/account page is displayed.
-	await expect(page.getByRole('heading', { name: 'My account - Customer info' })).toBeVisible();
+	await expect(page.getByRole('heading', { name: TC_01_Authentication.headings.account })).toBeVisible();
 
 	// Step 19: Navigate back to the home page while the session remains active.
 	await page.getByRole('link', { name: 'Tricentis Demo Web Shop' }).click();
 	await expect(page).toHaveURL('https://demowebshop.tricentis.com/');
-	await expect(page.getByRole('heading', { name: 'Welcome to our store' })).toBeVisible();
+	await expect(page.getByRole('heading', { name: TC_01_Authentication.headings.home })).toBeVisible();
 	await expect(accountEmailLink).toBeVisible();
 
 	// Step 20: Click Log out.

@@ -1,18 +1,17 @@
 import { test, expect } from '@playwright/test';
+import { TC_07_EmployeeValidation } from '../../../test-data/orangeHRM.ts';
 
-test('@regressionTC_07_EmployeeValidation - Validate Directory employee search and details', async ({ page }) => {
+test('@regression TC_07_EmployeeValidation - Validate Directory employee search and details', async ({ page }) => {
   const loginUrl = 'https://automaetesting-trials821.orangehrmlive.com/auth/login';
   const directoryUrl = 'https://automaetesting-trials821.orangehrmlive.com/client/#/corporate_directory/directory';
-  const partialEmployeeName = 'Mazie';
-  const employeeName = 'Mazie Abraham';
 
   console.log('Step 1: Open OrangeHRM login page');
   await page.goto(loginUrl);
   await expect(page.getByPlaceholder('Username')).toBeVisible();
 
   console.log('Step 2: Login to OrangeHRM');
-  await page.getByPlaceholder('Username').fill('admin');
-  await page.getByPlaceholder('Password').fill('Admin@123');
+  await page.getByPlaceholder('Username').fill(TC_07_EmployeeValidation.adminUsername);
+  await page.getByPlaceholder('Password').fill(TC_07_EmployeeValidation.adminPassword);
   await page.getByRole('button', { name: 'Login' }).click();
   await page.waitForURL(/.*dashboard/, { timeout: 30000 });
   await expect(page).toHaveURL(/.*dashboard/);
@@ -39,38 +38,38 @@ test('@regressionTC_07_EmployeeValidation - Validate Directory employee search a
   const directorySearchInput = page.locator('#_value');
   const searchInputExists = (await directorySearchInput.count()) > 0;
 
-  let filteredEmployeeCard = page.locator('.employee-card').filter({ hasText: partialEmployeeName }).first();
+  let filteredEmployeeCard = page.locator('.employee-card').filter({ hasText: TC_07_EmployeeValidation.partialEmployeeName }).first();
 
   if (searchInputExists) {
     await expect(directorySearchInput).toBeVisible();
-    await directorySearchInput.fill(partialEmployeeName);
+    await directorySearchInput.fill(TC_07_EmployeeValidation.partialEmployeeName);
     const suggestionRows = page.locator('.angucomplete-row');
     if ((await suggestionRows.count()) > 0) {
-      const suggestionMatch = suggestionRows.filter({ hasText: employeeName }).first();
+      const suggestionMatch = suggestionRows.filter({ hasText: TC_07_EmployeeValidation.employeeName }).first();
       await expect(suggestionMatch).toBeVisible({ timeout: 30000 });
       await suggestionMatch.click();
-      console.log('Autocomplete suggestion selected for:', employeeName);
+      console.log('Autocomplete suggestion selected for:', TC_07_EmployeeValidation.employeeName);
     }
     const searchIcon = page.locator('.corporate-search-icon').first();
     if ((await searchIcon.count()) > 0) {
       await searchIcon.click();
     }
-    filteredEmployeeCard = page.locator('.employee-card').filter({ hasText: employeeName }).first();
+    filteredEmployeeCard = page.locator('.employee-card').filter({ hasText: TC_07_EmployeeValidation.employeeName }).first();
   }
 
   await expect(filteredEmployeeCard).toBeVisible({ timeout: 30000 });
   const filteredEmployeeText = await filteredEmployeeCard.textContent();
-  expect(filteredEmployeeText).toContain(partialEmployeeName);
+  expect(filteredEmployeeText).toContain(TC_07_EmployeeValidation.partialEmployeeName);
   console.log('Directory result is visible for the selected employee name pattern');
 
   console.log('Step 6: Verify employee name and details from the visible card');
-  expect(filteredEmployeeText).toContain(employeeName);
+  expect(filteredEmployeeText).toContain(TC_07_EmployeeValidation.employeeName);
 
   console.log('Step 7: Verify employee name and details from the card');
   const cardText = await filteredEmployeeCard.textContent();
-  expect(cardText).toContain(employeeName);
+  expect(cardText).toContain(TC_07_EmployeeValidation.employeeName);
 
-  const jobTitleMatch = cardText.match(new RegExp(`${employeeName}\\s*([^\\(]+)\\s*\\(`));
+  const jobTitleMatch = cardText.match(new RegExp(`${TC_07_EmployeeValidation.employeeName}\\s*([^\\(]+)\\s*\\(`));
   if (jobTitleMatch) {
     console.log('Job title found on card:', jobTitleMatch[1].trim());
     expect(jobTitleMatch[1].trim().length).toBeGreaterThan(0);
@@ -88,11 +87,11 @@ test('@regressionTC_07_EmployeeValidation - Validate Directory employee search a
 
   console.log('Step 8: Open employee detail view');
   await filteredEmployeeCard.click();
-  await expect(page.locator('body')).toContainText(employeeName, { timeout: 30000 });
+  await expect(page.locator('body')).toContainText(TC_07_EmployeeValidation.employeeName, { timeout: 30000 });
   console.log('Employee details view is visible');
 
   const detailText = await page.locator('body').innerText();
-  expect(detailText).toContain(employeeName);
+  expect(detailText).toContain(TC_07_EmployeeValidation.employeeName);
   console.log('Employee name verified in details view');
 
   console.log('Step 9: Close or return to directory results');
@@ -104,7 +103,7 @@ test('@regressionTC_07_EmployeeValidation - Validate Directory employee search a
   console.log('Step 10: Reset directory filters when available');
   const resetInput = page.locator('#_value');
   if ((await resetInput.count()) > 0) {
-    await resetInput.fill('');
+    await resetInput.fill(TC_07_EmployeeValidation.emptyValue);
     const resetSearchIcon = page.locator('.corporate-search-icon').first();
     if ((await resetSearchIcon.count()) > 0) {
       await resetSearchIcon.click();

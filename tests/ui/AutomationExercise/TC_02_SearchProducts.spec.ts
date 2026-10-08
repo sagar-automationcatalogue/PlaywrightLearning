@@ -1,9 +1,5 @@
 import { expect, test } from '@playwright/test';
-
-const TC_02_AutomationExercise = {
-  category:"top",
-  jeanCategory:"jean"
-}
+import { TC_02_AutomationExercise } from '../../../test-data/automationExercise.ts';
 
 /** Testcase developed by Brahmam - Completed */
 test('@sanity TC_02_AutomationExercise: Search Products, Validate Results, Hover and Open Details', async ({ page }) => {
@@ -63,7 +59,7 @@ test('@sanity TC_02_AutomationExercise: Search Products, Validate Results, Hover
       await expect(page).toHaveURL(/\/product_details\/\d+$/);
       const relatedProductDetails = page.locator('.product-information');
       await expect(relatedProductDetails.getByRole('heading', { name: productName, exact: true })).toBeVisible();
-      await expect(relatedProductDetails.getByText(/^Category:/)).toContainText(/>\s*Tops\b/i);
+      await expect(relatedProductDetails.getByText(/^Category:/)).toContainText(TC_02_AutomationExercise.expectedRelatedCategory);
       console.log('Top-related category verified for:', productName);
       await page.goBack();
       await expect(page.getByRole('heading', { name: /^SEARCHED PRODUCTS$/i })).toBeVisible();
@@ -77,7 +73,7 @@ test('@sanity TC_02_AutomationExercise: Search Products, Validate Results, Hover
   const searchedPrices = await productPrices.allTextContents();
   console.log('Prices of searched products:', searchedPrices);
   for (const price of searchedPrices) {
-    expect(price.trim()).toMatch(/^Rs\.\s*\d+(\.\d{1,2})?$/);
+    expect(price.trim()).toMatch(TC_02_AutomationExercise.pricePattern);
   }
   console.log('All searched product prices have a valid currency and numeric value.');
 

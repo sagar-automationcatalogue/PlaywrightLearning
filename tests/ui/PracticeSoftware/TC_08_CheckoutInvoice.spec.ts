@@ -1,4 +1,6 @@
 import { expect, test } from '@playwright/test';
+import { TC_08_CheckoutInvoice } from '../../../test-data/practiceSoftware.ts';
+
 test('@regression TC_08_CheckoutInvoice: Validate Payment → Place Order → Inspect Invoice', async ({ page }) => {
     const toolshopUrl = 'https://practicesoftwaretesting.com/';
     await page.goto(`${toolshopUrl}checkout`);
@@ -12,19 +14,19 @@ test('@regression TC_08_CheckoutInvoice: Validate Payment → Place Order → In
     await page.goto(toolshopUrl);
     await expect(page.getByRole('menubar', { name: 'Main menu' })).toBeVisible();
     await expect.poll(async () => page.locator('.card:visible .card-title').count()).toBeGreaterThan(0);
-    await page.getByRole('textbox', { name: 'Search' }).fill('Combination Pliers');
+    await page.getByRole('textbox', { name: 'Search' }).fill(TC_08_CheckoutInvoice.productName);
     await page.getByRole('button', { name: 'Search', exact: true }).click();
-    await expect(page.getByRole('heading', { name: /searched for: Combination Pliers/i })).toBeVisible();
-    await page.locator('.card:visible').filter({ has: page.getByRole('heading', { name: 'Combination Pliers', exact: true }) }).getByRole('heading', { name: 'Combination Pliers', exact: true }).click();
+    await expect(page.getByRole('heading', { name: new RegExp(`searched for: ${TC_08_CheckoutInvoice.productName}`, 'i') })).toBeVisible();
+    await page.locator('.card:visible').filter({ has: page.getByRole('heading', { name: TC_08_CheckoutInvoice.productName, exact: true }) }).getByRole('heading', { name: TC_08_CheckoutInvoice.productName, exact: true }).click();
     await expect(page).toHaveURL(/\/product\//);
     const quantity = page.getByRole('spinbutton');
-    if (await quantity.count()) await quantity.fill('2');
+    if (await quantity.count()) await quantity.fill(TC_08_CheckoutInvoice.quantity);
     await page.getByRole('button', { name: /add to cart/i }).click();
     const cartLink = page.getByRole('link', { name: /^cart\s*\d*$/i });
     await expect(cartLink).toBeVisible();
     await cartLink.click();
     await expect(page).toHaveURL(/checkout/);
-    await expect(page.getByRole('row').filter({ hasText: 'Combination Pliers' })).toBeVisible();
+    await expect(page.getByRole('row').filter({ hasText: TC_08_CheckoutInvoice.productName })).toBeVisible();
     await page.getByRole('button', { name: 'Proceed to checkout' }).click();
     const loginEmail = page.getByPlaceholder('Your email');
     const alreadyLoggedIn = page.getByText(/you are already logged in/i);
@@ -32,8 +34,8 @@ test('@regression TC_08_CheckoutInvoice: Validate Payment → Place Order → In
         .getByRole('menuitem').last().getByRole('button');
     if (!(await alreadyLoggedIn.count()) && !(await signedInMenuButton.count())
         && await loginEmail.first().isVisible().catch(() => false)) {
-        await loginEmail.first().fill('playwright.practice.learner@example.com');
-        await page.getByPlaceholder('Your password').first().fill('W9!rL3#qV6$zP2@t');
+        await loginEmail.first().fill(TC_08_CheckoutInvoice.accountEmail);
+        await page.getByPlaceholder('Your password').first().fill(TC_08_CheckoutInvoice.accountPassword);
         await page.getByRole('button', { name: 'Login' }).click();
     }
     const advanceCheckout = page.getByRole('button', { name: 'Proceed to checkout' });
@@ -42,9 +44,12 @@ test('@regression TC_08_CheckoutInvoice: Validate Payment → Place Order → In
     await expect(page.getByLabel(/street/i).first()).toBeVisible();
 
     const addressFields: Array<[RegExp, string]> = [
-        [/street|address/i, '101 Playwright Automation Street'],
-        [/city/i, 'Hyderabad'], [/state|province/i, 'Telangana'],
-        [/country/i, 'India'], [/postal|zip/i, '500081'], [/house number/i, '101'],
+        [/street|address/i, TC_08_CheckoutInvoice.shippingAddress.street],
+        [/city/i, TC_08_CheckoutInvoice.shippingAddress.city],
+        [/state|province/i, TC_08_CheckoutInvoice.shippingAddress.state],
+        [/country/i, TC_08_CheckoutInvoice.shippingAddress.country],
+        [/postal|zip/i, TC_08_CheckoutInvoice.shippingAddress.postcode],
+        [/house number/i, TC_08_CheckoutInvoice.shippingAddress.houseNumber],
     ];
     for (const [label, value] of addressFields) {
         const field = page.getByLabel(label).first();
@@ -62,7 +67,7 @@ test('@regression TC_08_CheckoutInvoice: Validate Payment → Place Order → In
     }
 
     const paymentMethod = page.getByLabel(/payment method/i);
-    await paymentMethod.selectOption({ label: 'Cash on Delivery' });
+    await paymentMethod.selectOption({ label: TC_08_CheckoutInvoice.paymentMethod });
     const checkPayment = page.getByRole('button', { name: /check payment/i });
     await expect(checkPayment).toBeEnabled();
     await checkPayment.click();

@@ -1,9 +1,5 @@
 import { expect, test } from '@playwright/test';
-
-const TC_03_CategoryProducts={
-  brandPolo:"Polo",
-  brandHM:"H&M"
-}
+import { TC_03_CategoryProducts } from '../../../test-data/automationExercise.ts';
 
 /** Testcase developed by Vijaya Durgi - Completed */
 test('@regression TC_03_CategoryProducts:', async ({ page }) => {

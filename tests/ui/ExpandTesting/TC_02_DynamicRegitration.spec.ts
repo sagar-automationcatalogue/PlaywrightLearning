@@ -1,11 +1,7 @@
 import { expect, test } from "@playwright/test";
-/** Testcase developed by Soujanya - Completed */
-const TC_02_DynamicRegistration={
-    registrationPassword:"Automation@123",
-    mismatchPassword:"Automation@456",
-    username:``
-}
+import { TC_02_DynamicRegistration } from "../../../test-data/expnadTesting.ts";
 
+/** Testcase developed by Soujanya - Completed */
 test(`@sanity TC_02_DynamicRegistration validation and login`, async ({ page }) => {
 
     // Steps 1-2: Open the registration page and verify its controls.
@@ -20,33 +16,33 @@ test(`@sanity TC_02_DynamicRegistration validation and login`, async ({ page }) 
     await expect(confirmPasswordField).toBeVisible();
     await expect(registerButton).toBeVisible();
 
-    await expect(usernameField).toHaveValue(``);
-    await expect(passwordField).toHaveValue(``);
-    await expect(confirmPasswordField).toHaveValue(``);
+    await expect(usernameField).toHaveValue(TC_02_DynamicRegistration.emptyValue);
+    await expect(passwordField).toHaveValue(TC_02_DynamicRegistration.emptyValue);
+    await expect(confirmPasswordField).toHaveValue(TC_02_DynamicRegistration.emptyValue);
     // Steps 3-4: Submit the empty form and verify required-field validation.
     await registerButton.click();
-    await expect(page.getByText(`All fields are required.`)).toBeVisible();
+    await expect(page.getByText(TC_02_DynamicRegistration.messages.requiredFields)).toBeVisible();
     console.log(`Required-field validation verified`);
 
     // Steps 5-10: Submit without a password and verify the missing-field error.
-    TC_02_DynamicRegistration.username = `student-${Date.now()}`;
+    TC_02_DynamicRegistration.username = `${TC_02_DynamicRegistration.usernamePrefix}${Date.now()}`;
     console.log(`Generated registration username: ${TC_02_DynamicRegistration.username}`);
     await usernameField.fill(TC_02_DynamicRegistration.username);
     await confirmPasswordField.fill(TC_02_DynamicRegistration.registrationPassword);
     await expect(usernameField).toHaveValue(TC_02_DynamicRegistration.username);
-    await expect(passwordField).toHaveValue(``);
+    await expect(passwordField).toHaveValue(TC_02_DynamicRegistration.emptyValue);
     await expect(confirmPasswordField).toHaveValue(TC_02_DynamicRegistration.registrationPassword);
     await registerButton.click();
-    await expect(page.getByText(`All fields are required.`)).toBeVisible();
+    await expect(page.getByText(TC_02_DynamicRegistration.messages.requiredFields)).toBeVisible();
     console.log(`Missing-password validation verified`);
 
     // Step 11: Clear the registration fields and verify they are reset.
-    await usernameField.fill(``);
-    await passwordField.fill(``);
-    await confirmPasswordField.fill(``);
-    await expect(usernameField).toHaveValue(``);
-    await expect(passwordField).toHaveValue(``);
-    await expect(confirmPasswordField).toHaveValue(``);
+    await usernameField.fill(TC_02_DynamicRegistration.emptyValue);
+    await passwordField.fill(TC_02_DynamicRegistration.emptyValue);
+    await confirmPasswordField.fill(TC_02_DynamicRegistration.emptyValue);
+    await expect(usernameField).toHaveValue(TC_02_DynamicRegistration.emptyValue);
+    await expect(passwordField).toHaveValue(TC_02_DynamicRegistration.emptyValue);
+    await expect(confirmPasswordField).toHaveValue(TC_02_DynamicRegistration.emptyValue);
     // Steps 12-16: Submit mismatched passwords and verify the mismatch error.
     await usernameField.fill(TC_02_DynamicRegistration.username);
     await passwordField.fill(TC_02_DynamicRegistration.registrationPassword);
@@ -55,7 +51,7 @@ test(`@sanity TC_02_DynamicRegistration validation and login`, async ({ page }) 
     await expect(passwordField).toHaveValue(TC_02_DynamicRegistration.registrationPassword);
     await expect(confirmPasswordField).toHaveValue(TC_02_DynamicRegistration.mismatchPassword);
     await registerButton.click();
-    await expect(page.getByText(`Passwords do not match.`)).toBeVisible();
+    await expect(page.getByText(TC_02_DynamicRegistration.messages.passwordsDoNotMatch)).toBeVisible();
     console.log(`Password mismatch validation verified`);
 
     // Steps 17-20: Correct the confirmation and verify successful registration.
@@ -67,7 +63,7 @@ test(`@sanity TC_02_DynamicRegistration validation and login`, async ({ page }) 
     await expect(confirmPasswordField).toHaveValue(TC_02_DynamicRegistration.registrationPassword);
     await registerButton.click();
     await expect(page).toHaveURL(`https://practice.expandtesting.com/login`);
-    await expect(page.getByText(`Successfully registered, you can log in now.`)).toBeVisible();
+    await expect(page.getByText(TC_02_DynamicRegistration.messages.registrationSuccess)).toBeVisible();
     console.log(`Registration successful`);
 
     // Steps 21-26: Log in with the new account and verify secure-area access.
@@ -77,7 +73,7 @@ test(`@sanity TC_02_DynamicRegistration validation and login`, async ({ page }) 
     await expect(passwordField).toHaveValue(TC_02_DynamicRegistration.registrationPassword);
     await page.getByRole(`button`, { name: `Login` }).click();
     await expect(page).toHaveURL(`https://practice.expandtesting.com/secure`);
-    await expect(page.getByText(`You logged into a secure area!`)).toBeVisible();
+    await expect(page.getByText(TC_02_DynamicRegistration.messages.loginSuccess)).toBeVisible();
     await expect(page.getByRole(`link`, { name: `Logout` })).toBeVisible();
     console.log(`First login successful`);
 
@@ -95,7 +91,7 @@ test(`@sanity TC_02_DynamicRegistration validation and login`, async ({ page }) 
     await expect(passwordField).toHaveValue(TC_02_DynamicRegistration.registrationPassword);
     await page.getByRole(`button`, { name: `Login` }).click();
     await expect(page).toHaveURL(`https://practice.expandtesting.com/secure`);
-    await expect(page.getByText(`You logged into a secure area!`)).toBeVisible();
+    await expect(page.getByText(TC_02_DynamicRegistration.messages.loginSuccess)).toBeVisible();
     console.log(`Second login successful`);
 
     await page.getByRole(`link`, { name: `Logout` }).click();
