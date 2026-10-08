@@ -1,9 +1,10 @@
 import { expect, test } from '@playwright/test';
+import { TC_01_Login } from '../../../test-data/practiceSoftware.ts';
 
 test('@smoke TC_01_Login: Invalid Login → Valid Login → Account → Logout → Protected Route', async ({ page }) => {
     const homeUrl = 'https://practicesoftwaretesting.com/';
-    const email = `playwright.login.${Date.now()}@example.com`;
-    const validPassword = 'W9!rL3#qV6$zP2@t';
+    const email = `${TC_01_Login.emailPrefix}${Date.now()}${TC_01_Login.emailDomain}`;
+    const validPassword = TC_01_Login.validPassword;
 
     // Register a fresh learner account so this test does not depend on the
     // shared demo account's lockout state.
@@ -15,27 +16,28 @@ test('@smoke TC_01_Login: Invalid Login → Valid Login → Account → Logout �
             state: 'Vienna', country: 'Austria', postcode: '1010',
         }) });
     });
-    await page.getByLabel(/country/i).first().selectOption({ label: 'Austria' });
+    await page.getByLabel(/country/i).first().selectOption({ label: TC_01_Login.registration.country });
     const registrationValues: Array<[RegExp, string]> = [
-        [/first name/i, 'Playwright'], [/last name/i, 'Learner'],
-        [/date of birth|birth/i, '1995-05-15'], [/email/i, email],
-        [/postal|zip/i, '1010'], [/house|building|number/i, '42'], [/phone/i, '0123456789'],
+        [/first name/i, TC_01_Login.registration.firstName], [/last name/i, TC_01_Login.registration.lastName],
+        [/date of birth|birth/i, TC_01_Login.registration.dateOfBirth], [/email/i, email],
+        [/postal|zip/i, TC_01_Login.registration.postcode], [/house|building|number/i, TC_01_Login.registration.houseNumber],
+        [/phone/i, TC_01_Login.registration.phone],
     ];
     for (const [label, value] of registrationValues) {
         const field = page.getByLabel(label).first();
         if (await field.count() && await field.isEditable()) await field.fill(value);
     }
-    await page.getByLabel(/street/i).fill('Playwright Training Street');
-    await page.getByLabel(/city/i).fill('Vienna');
-    await page.getByLabel(/state/i).fill('Vienna');
+    await page.getByLabel(/street/i).fill(TC_01_Login.registration.street);
+    await page.getByLabel(/city/i).fill(TC_01_Login.registration.city);
+    await page.getByLabel(/state/i).fill(TC_01_Login.registration.state);
     const registrationPassword = page.getByLabel(/^password$/i).first();
     const registrationConfirmation = page.getByLabel(/confirm.*password/i).first();
-    await registrationPassword.fill('playwright');
-    if (await registrationConfirmation.count()) await registrationConfirmation.fill('playwright');
+    await registrationPassword.fill(TC_01_Login.registration.weakPassword);
+    if (await registrationConfirmation.count()) await registrationConfirmation.fill(TC_01_Login.registration.weakPassword);
     const registrationButton = page.getByRole('button', { name: /register|sign up/i });
     await registrationButton.click();
     await expect(page.getByText(/password.*(length|character|number|uppercase|special)|weak password/i).first()).toBeVisible();
-    await registrationPassword.fill('');
+    await registrationPassword.fill(TC_01_Login.emptyValue);
     await registrationPassword.pressSequentially(validPassword);
     await registrationPassword.press('Tab');
     if (await registrationConfirmation.count()) await registrationConfirmation.fill(validPassword);
@@ -76,8 +78,8 @@ test('@smoke TC_01_Login: Invalid Login → Valid Login → Account → Logout �
     // Submit an invalid password and verify the account stays unauthenticated.
     await emailField.fill(email);
     await expect(emailField).toHaveValue(email);
-    await passwordField.fill('WrongPassword@123');
-    await expect(passwordField).toHaveValue('WrongPassword@123');
+    await passwordField.fill(TC_01_Login.invalidLoginPassword);
+    await expect(passwordField).toHaveValue(TC_01_Login.invalidLoginPassword);
     const invalidLoginResponse = page.waitForResponse(response =>
         response.request().method() === 'POST' && /login/i.test(response.url()),
     );
@@ -92,8 +94,8 @@ test('@smoke TC_01_Login: Invalid Login → Valid Login → Account → Logout �
     // Clear the form and sign in with the registered credentials.
     await emailField.clear();
     await passwordField.clear();
-    await expect(emailField).toHaveValue('');
-    await expect(passwordField).toHaveValue('');
+    await expect(emailField).toHaveValue(TC_01_Login.emptyValue);
+    await expect(passwordField).toHaveValue(TC_01_Login.emptyValue);
     await emailField.fill(email);
     await passwordField.fill(validPassword);
     await loginButton.click();

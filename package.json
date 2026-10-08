@@ -12,7 +12,7 @@
     "test:SauceDemo": "playwright test tests/ui/SauceDemo",
     "test:Smoke": "playwright test --grep @smoke",
     "test:Sanity": "playwright test --grep @sanity",
-    "test:Regression": "playwright test --grep @regression"
+    "test:Regression": "playwright test --grep @regression"    
   },
   "keywords": [],
   "author": "",

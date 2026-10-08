@@ -1,34 +1,7 @@
 import {expect,test} from "@playwright/test";
+import { TC_03_WebInputsFormValidations } from "../../../test-data/expnadTesting.ts";
+
 /** Developed by Surekha - Incomplete */
-
-const TC_03_WebInputsFormValidations = {    
-    emptyValue: ``,
-    inputs: {
-        number: `12345`,
-        text: `Playwright Automation`,
-        password: `Automation@123`,
-        date: `2026-09-15`
-    },
-    formValidation: {
-        contactName: `Playwright Student`,
-        contactNumber: `012-3456789`,
-        pickupDate: `2026-09-20`,
-        paymentMethod: `cashondelivery`,
-        requiredMessages: {
-            contactName: `Please enter your Contact name.`,
-            contactNumber: `Please provide your Contact number.`,
-            pickupDate: `Please provide valid Date.`,
-            paymentMethod: `Please select the Paymeny Method.`
-        },
-        successMessage: `Thank you for validating your ticket`
-    },
-    dropdownValues: {
-        simple: `1`,
-        elementsPerPage: `100`,
-        country: `IN`
-    }
-};
-
 test(`@regression TC_03_WebInputsFormValidation:`,async({page,browserName})=>{
         if(browserName === 'webkit'){
         //test.slow();

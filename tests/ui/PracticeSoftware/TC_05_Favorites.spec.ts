@@ -1,8 +1,10 @@
 import { expect, test } from '@playwright/test';
+import { TC_05_Favorites } from '../../../test-data/practiceSoftware.ts';
+
 test('@sanity TC_05_Favorites: Add Multiple Products → Validate → Remove', async ({ page }) => {
     const toolshopUrl = 'https://practicesoftwaretesting.com/';
-    const email = 'playwright.practice.learner@example.com';
-    const password = 'W9!rL3#qV6$zP2@t';
+    const email = TC_05_Favorites.email;
+    const password = TC_05_Favorites.password;
     await page.goto(`${toolshopUrl}auth/register`);
     await expect(page.getByRole('heading', { name: /customer registration/i })).toBeVisible();
     if (await page.getByRole('heading', { name: /customer registration/i }).count()) {
@@ -12,31 +14,32 @@ test('@sanity TC_05_Favorites: Add Multiple Products → Validate → Remove', a
                 state: 'Vienna', country: 'Austria', postcode: '1010',
             }) });
         });
-        await page.getByLabel(/country/i).first().selectOption({ label: 'Austria' });
+        await page.getByLabel(/country/i).first().selectOption({ label: TC_05_Favorites.registration.country });
         const registrationValues: Array<[RegExp, string]> = [
-            [/first name/i, 'Playwright'], [/last name/i, 'Learner'],
-            [/date of birth|birth/i, '1995-05-15'], [/email/i, email],
-            [/postal|zip/i, '1010'], [/house|building|number/i, '42'], [/phone/i, '0123456789'],
+            [/first name/i, TC_05_Favorites.registration.firstName], [/last name/i, TC_05_Favorites.registration.lastName],
+            [/date of birth|birth/i, TC_05_Favorites.registration.dateOfBirth], [/email/i, email],
+            [/postal|zip/i, TC_05_Favorites.registration.postcode], [/house|building|number/i, TC_05_Favorites.registration.houseNumber],
+            [/phone/i, TC_05_Favorites.registration.phone],
         ];
         for (const [label, value] of registrationValues) {
             const field = page.getByLabel(label).first();
             if (await field.count() && await field.isEditable()) await field.fill(value);
         }
-        await page.getByLabel(/street/i).fill('Playwright Training Street');
+        await page.getByLabel(/street/i).fill(TC_05_Favorites.registration.street);
         const registrationCity = page.getByLabel(/city/i);
         const registrationState = page.getByLabel(/state/i);
-        if (!(await registrationCity.inputValue())) await registrationCity.fill('Vienna');
-        if (!(await registrationState.inputValue())) await registrationState.fill('Vienna');
-        await expect(registrationCity).toHaveValue('Vienna');
-        await expect(registrationState).toHaveValue('Vienna');
+        if (!(await registrationCity.inputValue())) await registrationCity.fill(TC_05_Favorites.registration.city);
+        if (!(await registrationState.inputValue())) await registrationState.fill(TC_05_Favorites.registration.state);
+        await expect(registrationCity).toHaveValue(TC_05_Favorites.registration.city);
+        await expect(registrationState).toHaveValue(TC_05_Favorites.registration.state);
         const passwordField = page.getByLabel(/^password$/i).first();
         const confirmation = page.getByLabel(/confirm.*password/i).first();
-        await passwordField.fill('playwright');
-        if (await confirmation.count()) await confirmation.fill('playwright');
+        await passwordField.fill(TC_05_Favorites.registration.weakPassword);
+        if (await confirmation.count()) await confirmation.fill(TC_05_Favorites.registration.weakPassword);
         const registerButton = page.getByRole('button', { name: /register|sign up/i });
         await registerButton.click();
         await expect(page.getByText(/password.*(length|character|number|uppercase|special)|weak password/i).first()).toBeVisible();
-        await passwordField.fill('');
+        await passwordField.fill(TC_05_Favorites.emptyValue);
         await passwordField.pressSequentially(password);
         await passwordField.press('Tab');
         if (await confirmation.count()) await confirmation.fill(password);
@@ -70,7 +73,7 @@ test('@sanity TC_05_Favorites: Add Multiple Products → Validate → Remove', a
     await page.goto(toolshopUrl);
     await expect.poll(async () => page.locator('.card:visible .card-title').count()).toBeGreaterThan(0);
 
-    await page.getByRole('textbox', { name: 'Search' }).fill('Combination Pliers');
+    await page.getByRole('textbox', { name: 'Search' }).fill(TC_05_Favorites.searchTerms.firstProduct);
     await page.getByRole('button', { name: 'Search', exact: true }).click();
     await expect(page.getByRole('heading', { name: /searched for: Combination Pliers/i })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Combination Pliers', exact: true })).toBeVisible();
@@ -92,7 +95,7 @@ test('@sanity TC_05_Favorites: Add Multiple Products → Validate → Remove', a
 
     await page.goto(toolshopUrl);
     await expect.poll(async () => page.locator('.card:visible .card-title').count()).toBeGreaterThan(0);
-    await page.getByRole('textbox', { name: 'Search' }).fill('Hammer');
+    await page.getByRole('textbox', { name: 'Search' }).fill(TC_05_Favorites.searchTerms.secondProduct);
     await page.getByRole('button', { name: 'Search', exact: true }).click();
     await expect(page.getByRole('heading', { name: /searched for: Hammer/i })).toBeVisible();
     const hammerCards = page.locator('a[href*="/product/"]').filter({ hasText: /hammer/i });
@@ -151,7 +154,7 @@ test('@sanity TC_05_Favorites: Add Multiple Products → Validate → Remove', a
     await expect(page.getByRole('heading', { name: selectedHammerName, exact: true })).toHaveCount(0);
 
     await page.goto(toolshopUrl);
-    await page.getByRole('textbox', { name: 'Search' }).fill('Combination Pliers');
+    await page.getByRole('textbox', { name: 'Search' }).fill(TC_05_Favorites.searchTerms.firstProduct);
     await page.getByRole('button', { name: 'Search', exact: true }).click();
     await expect(page.getByRole('heading', { name: /searched for: Combination Pliers/i })).toBeVisible();
     await page.locator('.card:visible').filter({ has: page.getByRole('heading', { name: 'Combination Pliers', exact: true }) }).getByRole('heading', { name: 'Combination Pliers', exact: true }).click();

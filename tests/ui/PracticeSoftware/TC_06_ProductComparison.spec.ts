@@ -1,4 +1,6 @@
 import { expect, test } from '@playwright/test';
+import { TC_06_ProductComparison } from '../../../test-data/practiceSoftware.ts';
+
 test('@regressionTC_06_ProductComparison: Compare Three Products → Validate Matrix → Clear', async ({ page }) => {
     const toolshopUrl = 'https://practicesoftwaretesting.com/';
     await page.goto(toolshopUrl);
@@ -14,9 +16,11 @@ test('@regressionTC_06_ProductComparison: Compare Three Products → Validate Ma
         await page.goto(toolshopUrl);
     }
 
-    await page.getByRole('textbox', { name: 'Search' }).fill('pliers');
+    await page.getByRole('textbox', { name: 'Search' }).fill(TC_06_ProductComparison.searchTerm);
     await page.getByRole('button', { name: 'Search', exact: true }).click();
-    await expect(page.getByRole('heading', { name: /searched for: pliers/i })).toBeVisible();
+    await expect(page.getByRole('heading', {
+        name: new RegExp(`searched for: ${TC_06_ProductComparison.searchTerm}`, 'i')
+    })).toBeVisible();
     await expect.poll(async () => page.locator('a[href*="/product/"] h5').count()).toBeGreaterThan(0);
     const preferredNames = ['Combination Pliers', 'Pliers', 'Long Nose Pliers', 'Slip Joint Pliers'];
     const availableNames = (await page.locator('a[href*="/product/"] h5').allInnerTexts())

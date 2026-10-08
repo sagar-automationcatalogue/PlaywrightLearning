@@ -1,8 +1,9 @@
 import { expect, test } from '@playwright/test';
-const API_BASE = 'https://api.practicesoftwaretesting.com';
+import { TC_12_ApiUiContract } from '../../../test-data/practiceSoftware.ts';
 
 test('@regression TC_12_ApiUiContract: Product Search API ↔ Catalog UI ↔ Details API', async ({ page, request }) => {
-    const term = 'pliers';
+    const API_BASE = 'https://api.practicesoftwaretesting.com';
+    const term = TC_12_ApiUiContract.searchTerm;
     const apiResponse = await request.get(`${API_BASE}/products/search`, { params: { q: term } });
     expect(apiResponse.ok()).toBeTruthy();
     const apiPayload = await apiResponse.json() as {
@@ -30,13 +31,15 @@ test('@regression TC_12_ApiUiContract: Product Search API ↔ Catalog UI ↔ Det
     await expect.poll(async () => page.locator('.card:visible .card-title').count()).toBeGreaterThan(0);
     await page.getByRole('textbox', { name: 'Search' }).fill(term);
     await page.getByRole('button', { name: 'Search', exact: true }).click();
-    await expect(page.getByRole('heading', { name: /searched for: pliers/i })).toBeVisible();
+    await expect(page.getByRole('heading', {
+        name: new RegExp(`searched for: ${TC_12_ApiUiContract.searchTerm}`, 'i')
+    })).toBeVisible();
     await expect.poll(async () => page.locator('a[href*="/product/"] h5').count()).toBeGreaterThan(0);
     const uiNames = (await page.locator('a[href*="/product/"] h5').allInnerTexts())
         .map(name => name.trim())
         .filter(name => apiProducts.some(product => product.name === name));
     expect(uiNames.length).toBeGreaterThan(0);
-    expect(uiNames.some(name => /pliers/i.test(name))).toBeTruthy();
+    expect(uiNames.some(name => new RegExp(TC_12_ApiUiContract.searchTerm, 'i').test(name))).toBeTruthy();
     const overlap = uiNames.some(name => apiProducts.some(product => product.name === name));
     expect(overlap).toBeTruthy();
 

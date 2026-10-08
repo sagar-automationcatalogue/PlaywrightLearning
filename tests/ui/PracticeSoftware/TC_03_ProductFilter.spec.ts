@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { TC_03_ProductFilter } from '../../../test-data/practiceSoftware.ts';
 
 test('@sanity TC_03_ProductFilter - Category + Brand + Price filtering', async ({ page }) => {
   await page.goto('https://practicesoftwaretesting.com/');
@@ -53,7 +54,7 @@ test('@sanity TC_03_ProductFilter - Category + Brand + Price filtering', async (
   expect(initialProductCount).toBeGreaterThan(0);
 
   console.log('3. Locate the category filter section');
-  const handToolsCheckbox = page.getByRole('checkbox', { name: 'Hand Tools' });
+  const handToolsCheckbox = page.getByRole('checkbox', { name: TC_03_ProductFilter.category });
   await expect(handToolsCheckbox).toBeVisible();
 
   console.log('4. Select Hand Tools category');
@@ -69,7 +70,7 @@ test('@sanity TC_03_ProductFilter - Category + Brand + Price filtering', async (
   console.log('7. Verify category filtering does not increase beyond the baseline');
   expect(categoryFilteredCount).toBeLessThanOrEqual(initialProductCount);
 
-  const pliersCheckbox = page.getByRole('checkbox', { name: 'Pliers' });
+  const pliersCheckbox = page.getByRole('checkbox', { name: TC_03_ProductFilter.subcategory });
   if (await pliersCheckbox.isVisible().catch(() => false)) {
     console.log('8. Select Pliers subcategory');
     await pliersCheckbox.check();
@@ -125,8 +126,8 @@ test('@sanity TC_03_ProductFilter - Category + Brand + Price filtering', async (
   console.log(`17. Current price range values: min=${minBefore}, max=${maxBefore}`);
 
   console.log('18-19. Move the minimum price toward 10 and maximum price toward 50');
-  await moveSliderTo('ngx-slider', 10);
-  await moveSliderTo('ngx-slider-max', 50);
+  await moveSliderTo('ngx-slider', TC_03_ProductFilter.priceRange.filteredMinimum);
+  await moveSliderTo('ngx-slider-max', TC_03_ProductFilter.priceRange.filteredMaximum);
 
   console.log('20. Wait for product results to stabilize');
   await expect.poll(async () => await getProductCount(), { timeout: 30000 }).toBeGreaterThan(0);
@@ -136,7 +137,10 @@ test('@sanity TC_03_ProductFilter - Category + Brand + Price filtering', async (
   expect(displayedPrices.length).toBeGreaterThan(0);
 
   console.log('22-24. Normalize and validate displayed prices against the active range');
-  const invalidPriceList = displayedPrices.filter((price) => price < 10 || price > 50);
+  const invalidPriceList = displayedPrices.filter(
+    (price) => price < TC_03_ProductFilter.priceRange.filteredMinimum
+      || price > TC_03_ProductFilter.priceRange.filteredMaximum
+  );
   expect(invalidPriceList).toHaveLength(0);
 
   console.log('25. Open one filtered product detail page');
@@ -180,8 +184,8 @@ test('@sanity TC_03_ProductFilter - Category + Brand + Price filtering', async (
     }
   }
 
-  await moveSliderTo('ngx-slider', 0);
-  await moveSliderTo('ngx-slider-max', 200);
+  await moveSliderTo('ngx-slider', TC_03_ProductFilter.priceRange.resetMinimum);
+  await moveSliderTo('ngx-slider-max', TC_03_ProductFilter.priceRange.resetMaximum);
 
   console.log('31. Verify the catalog returns toward the initial baseline');
   const finalProductCount = await getProductCount();

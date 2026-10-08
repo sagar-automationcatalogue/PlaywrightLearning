@@ -1,10 +1,8 @@
 import { expect, test } from '@playwright/test';
+import { TC_07_MultiProductCart } from '../../../test-data/practiceSoftware.ts';
+
 test('@regression TC_07_MultiProductCart: CRUD → Quantity → Subtotals → Total', async ({ page }) => {
     const toolshopUrl = 'https://practicesoftwaretesting.com/';
-    const products: Array<{ search: string; preferred: string | RegExp; quantity: number }> = [
-        { search: 'pliers', preferred: /pliers/i, quantity: 1 },
-        { search: 'Hammer', preferred: /hammer/i, quantity: 1 },
-    ];
     // Start with the guest cart and clear any retained rows first.
     await page.goto(`${toolshopUrl}checkout`);
     const oldRows = page.getByRole('row').filter({ has: page.locator('input[type="number"]') });
@@ -25,7 +23,8 @@ test('@regression TC_07_MultiProductCart: CRUD → Quantity → Subtotals → To
     }
 
     const selectedProducts: Array<{ name: string; quantity: number }> = [];
-    for (const product of products) {
+    const preferredProductPatterns = [/pliers/i, /hammer/i];
+    for (const [productIndex, product] of TC_07_MultiProductCart.products.entries()) {
         await page.goto(toolshopUrl);
         await expect(page.getByRole('menubar', { name: 'Main menu' })).toBeVisible();
         await expect.poll(async () => page.locator('.card:visible .card-title').count()).toBeGreaterThan(0);
@@ -38,9 +37,7 @@ test('@regression TC_07_MultiProductCart: CRUD → Quantity → Subtotals → To
             .map(name => name.trim())
             .filter(name => product.search.toLowerCase().split(' ').every(word => name.toLowerCase().includes(word)));
         for (const name of candidates) {
-            const preferredMatch = typeof product.preferred === 'string'
-                ? name === product.preferred
-                : product.preferred.test(name);
+            const preferredMatch = preferredProductPatterns[productIndex].test(name);
             if (!preferredMatch) continue;
             const productCard = page.locator('.card:visible').filter({ has: page.getByRole('heading', { name, exact: true }) });
             await productCard.getByRole('heading', { name, exact: true }).click();
@@ -117,9 +114,9 @@ test('@regression TC_07_MultiProductCart: CRUD → Quantity → Subtotals → To
     const hammerName = selectedProducts.find(({ name }) => /hammer/i.test(name))?.name;
     expect(hammerName).toBeTruthy();
     const hammerRow = rows.filter({ hasText: hammerName! });
-    await hammerRow.getByRole('spinbutton').fill('1');
+    await hammerRow.getByRole('spinbutton').fill(TC_07_MultiProductCart.emptyCartQuantity);
     await hammerRow.getByRole('spinbutton').press('Enter');
-    await expect(hammerRow.getByRole('spinbutton')).toHaveValue('1');
+    await expect(hammerRow.getByRole('spinbutton')).toHaveValue(TC_07_MultiProductCart.emptyCartQuantity);
     const adjustedExpectedTotal = [...expectedByProduct.values()].reduce((sum, subtotal) => sum + subtotal, 0);
     await expect.poll(async () => {
         const matches = [...(await totalRow.innerText()).matchAll(/[$€£]\s*([\d,]+(?:\.\d{1,2})?)/g)];

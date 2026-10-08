@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { TC_01_LoginOrangeHrm } from '../../../test-data/orangeHRM.ts';
 
 test('@smoke TC_01_LoginOrangeHrm: Login → Valid Login → Dashboard → Logout', async ({ page }) => {
     console.log('Step 1: Open the OrangeHRM login page');
@@ -18,32 +19,32 @@ test('@smoke TC_01_LoginOrangeHrm: Login → Valid Login → Dashboard → Logou
     await expect(loginButton).toBeEnabled();
 
     console.log('Step 3: Submit an invalid password');
-    await username.fill('admin');
-    await expect(username).toHaveValue('admin');
-    await password.fill('WrongPassword@123');
-    await expect(password).toHaveValue('WrongPassword@123');
+    await username.fill(TC_01_LoginOrangeHrm.username);
+    await expect(username).toHaveValue(TC_01_LoginOrangeHrm.username);
+    await password.fill(TC_01_LoginOrangeHrm.invalidPassword);
+    await expect(password).toHaveValue(TC_01_LoginOrangeHrm.invalidPassword);
     await loginButton.click({ noWaitAfter: true });
 
     const errorMessage = page.locator('.toast-message');
     await expect(errorMessage).toBeVisible();
-    await expect(errorMessage).toContainText(/invalid|credential|password/i);
+    await expect(errorMessage).toContainText(TC_01_LoginOrangeHrm.invalidCredentialsPattern);
     await expect(page).toHaveURL(/securityAuthentication\/retryLogin/i);
     await expect(loginButton).toBeVisible();
-    await expect(page.getByText('Dashboard', { exact: true })).toHaveCount(0);
+    await expect(page.getByText(TC_01_LoginOrangeHrm.dashboardText, { exact: true })).toHaveCount(0);
     console.log('Invalid credentials were rejected; the login page remains visible');
 
     console.log('Step 4: Clear the fields and log in with valid credentials');
-    await expect(username).toHaveValue('');
-    await expect(password).toHaveValue('');
+    await expect(username).toHaveValue(TC_01_LoginOrangeHrm.emptyValue);
+    await expect(password).toHaveValue(TC_01_LoginOrangeHrm.emptyValue);
 
-    await username.fill('admin');
-    await expect(username).toHaveValue('admin');
-    await password.fill('Admin@123');
-    await expect(password).toHaveValue('Admin@123');
+    await username.fill(TC_01_LoginOrangeHrm.username);
+    await expect(username).toHaveValue(TC_01_LoginOrangeHrm.username);
+    await password.fill(TC_01_LoginOrangeHrm.validPassword);
+    await expect(password).toHaveValue(TC_01_LoginOrangeHrm.validPassword);
     await loginButton.click({ noWaitAfter: true });
 
     await expect(page).toHaveURL(/dashboard/i);
-    await expect(page.getByText('Dashboard', { exact: true }).first()).toBeVisible();
+    await expect(page.getByText(TC_01_LoginOrangeHrm.dashboardText, { exact: true }).first()).toBeVisible();
     console.log('Valid login succeeded and the Dashboard is visible');
 
     console.log('Step 5: Open the logged-in user menu and log out');
@@ -64,6 +65,6 @@ test('@smoke TC_01_LoginOrangeHrm: Login → Valid Login → Dashboard → Logou
     console.log('Step 6: Use browser Back and verify protected content stays unavailable');
     await page.goBack();
     await expect(loginButton).toBeVisible();
-    await expect(page.getByText('Dashboard', { exact: true })).toHaveCount(0);
+    await expect(page.getByText(TC_01_LoginOrangeHrm.dashboardText, { exact: true })).toHaveCount(0);
     console.log('Protected dashboard content is not accessible after logout');
 });

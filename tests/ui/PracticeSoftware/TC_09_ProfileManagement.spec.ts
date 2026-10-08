@@ -1,8 +1,10 @@
 import { expect, test } from '@playwright/test';
+import { TC_09_ProfileManagement } from '../../../test-data/practiceSoftware.ts';
+
 test('@regressionTC_09_ProfileManagement: Edit Profile → Reject Mismatched Password → Restore', async ({ page }) => {
     const toolshopUrl = 'https://practicesoftwaretesting.com/';
-    const registeredEmail = `playwright.profile.learner.${Date.now()}@example.com`;
-    const password = 'W9!rL3#qV6$zP2@t';
+    const registeredEmail = `${TC_09_ProfileManagement.emailPrefix}${Date.now()}${TC_09_ProfileManagement.emailDomain}`;
+    const password = TC_09_ProfileManagement.password;
     await page.goto(`${toolshopUrl}auth/register`);
     await expect(page.getByRole('heading', { name: /customer registration/i })).toBeVisible();
     if (await page.getByRole('heading', { name: /customer registration/i }).count()) {
@@ -12,31 +14,35 @@ test('@regressionTC_09_ProfileManagement: Edit Profile → Reject Mismatched Pas
                 state: 'Vienna', country: 'Austria', postcode: '1010',
             }) });
         });
-        await page.getByLabel(/country/i).first().selectOption({ label: 'Austria' });
+        await page.getByLabel(/country/i).first().selectOption({ label: TC_09_ProfileManagement.registration.country });
         const registrationValues: Array<[RegExp, string]> = [
-            [/first name/i, 'Playwright'], [/last name/i, 'Learner'],
-            [/date of birth|birth/i, '1995-05-15'], [/email/i, registeredEmail],
-            [/postal|zip/i, '1010'], [/house|building|number/i, '42'], [/phone/i, '0123456789'],
+            [/first name/i, TC_09_ProfileManagement.registration.firstName],
+            [/last name/i, TC_09_ProfileManagement.registration.lastName],
+            [/date of birth|birth/i, TC_09_ProfileManagement.registration.dateOfBirth],
+            [/email/i, registeredEmail],
+            [/postal|zip/i, TC_09_ProfileManagement.registration.postcode],
+            [/house|building|number/i, TC_09_ProfileManagement.registration.houseNumber],
+            [/phone/i, TC_09_ProfileManagement.registration.phone],
         ];
         for (const [label, value] of registrationValues) {
             const field = page.getByLabel(label).first();
             if (await field.count() && await field.isEditable()) await field.fill(value);
         }
-        await page.getByLabel(/street/i).fill('Playwright Training Street');
+        await page.getByLabel(/street/i).fill(TC_09_ProfileManagement.registration.street);
         const registrationCity = page.getByLabel(/city/i);
         const registrationState = page.getByLabel(/state/i);
-        if (!(await registrationCity.inputValue())) await registrationCity.fill('Vienna');
-        if (!(await registrationState.inputValue())) await registrationState.fill('Vienna');
-        await expect(registrationCity).toHaveValue('Vienna');
-        await expect(registrationState).toHaveValue('Vienna');
+        if (!(await registrationCity.inputValue())) await registrationCity.fill(TC_09_ProfileManagement.registration.city);
+        if (!(await registrationState.inputValue())) await registrationState.fill(TC_09_ProfileManagement.registration.state);
+        await expect(registrationCity).toHaveValue(TC_09_ProfileManagement.registration.city);
+        await expect(registrationState).toHaveValue(TC_09_ProfileManagement.registration.state);
         const passwordField = page.getByLabel(/^password$/i).first();
         const confirmation = page.getByLabel(/confirm.*password/i).first();
-        await passwordField.fill('playwright');
-        if (await confirmation.count()) await confirmation.fill('playwright');
+        await passwordField.fill(TC_09_ProfileManagement.registration.weakPassword);
+        if (await confirmation.count()) await confirmation.fill(TC_09_ProfileManagement.registration.weakPassword);
         const registerButton = page.getByRole('button', { name: /register|sign up/i });
         await registerButton.click();
         await expect(page.getByText(/password.*(length|character|number|uppercase|special)|weak password/i).first()).toBeVisible();
-        await passwordField.fill('');
+        await passwordField.fill(TC_09_ProfileManagement.emptyValue);
         await passwordField.pressSequentially(password);
         await passwordField.press('Tab');
         if (await confirmation.count()) await confirmation.fill(password);
@@ -55,13 +61,13 @@ test('@regressionTC_09_ProfileManagement: Edit Profile → Reject Mismatched Pas
     await expect(page).toHaveURL(/account\/profile/);
 
     const fields = [
-        { label: /first name/i, temporary: 'Playwright' },
-        { label: /last name/i, temporary: 'Automation' },
-        { label: /phone/i, temporary: '9876543210' },
-        { label: /street/i, temporary: '202 Playwright Profile Street' },
-        { label: /city/i, temporary: 'Hyderabad' },
-        { label: /state|province/i, temporary: 'Telangana' },
-        { label: /postal|zip/i, temporary: '500081' },
+        { label: /first name/i, temporary: TC_09_ProfileManagement.temporaryProfile.firstName },
+        { label: /last name/i, temporary: TC_09_ProfileManagement.temporaryProfile.lastName },
+        { label: /phone/i, temporary: TC_09_ProfileManagement.temporaryProfile.phone },
+        { label: /street/i, temporary: TC_09_ProfileManagement.temporaryProfile.street },
+        { label: /city/i, temporary: TC_09_ProfileManagement.temporaryProfile.city },
+        { label: /state|province/i, temporary: TC_09_ProfileManagement.temporaryProfile.state },
+        { label: /postal|zip/i, temporary: TC_09_ProfileManagement.temporaryProfile.postcode },
     ];
     const originalValues = new Map<string, string>();
     for (const field of fields) {
@@ -82,9 +88,9 @@ test('@regressionTC_09_ProfileManagement: Edit Profile → Reject Mismatched Pas
     }
 
     const passwordFields = [
-        [/current password/i, 'welcome01'],
-        [/new password/i, 'Automation@456'],
-        [/confirm.*password/i, 'Automation@789'],
+        [/current password/i, TC_09_ProfileManagement.passwordChange.current],
+        [/new password/i, TC_09_ProfileManagement.passwordChange.new],
+        [/confirm.*password/i, TC_09_ProfileManagement.passwordChange.confirmation],
     ] as const;
     let passwordFormFound = true;
     for (const [label, value] of passwordFields) {
@@ -96,7 +102,7 @@ test('@regressionTC_09_ProfileManagement: Edit Profile → Reject Mismatched Pas
         const savePassword = page.getByRole('button', { name: /change password|update password|save/i }).last();
         await savePassword.click();
         await expect(page.getByText(/match|same|password/i).last()).toBeVisible();
-        for (const [label] of passwordFields) await page.getByLabel(label).first().fill('');
+        for (const [label] of passwordFields) await page.getByLabel(label).first().fill(TC_09_ProfileManagement.emptyValue);
     }
 
     for (const field of fields) {
