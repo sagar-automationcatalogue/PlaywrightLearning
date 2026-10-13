@@ -1,4 +1,4 @@
-import { Locator, Page } from "@playwright/test";
+import { Locator, Page,expect } from "@playwright/test";
 
 export class DemoWebShop_CheckoutPage {
     private billingAddress: Locator;
@@ -40,4 +40,63 @@ export class DemoWebShop_CheckoutPage {
         this.confirmOrderHdr = page.getByRole('heading', { name: 'Confirm order', exact: true });
         this.confirmOrderBtn = page.locator('#confirm-order-buttons-container').getByRole('button', { name: 'Confirm', exact: true });
     }
+
+    async selectBillingAddress(): Promise<void>{
+        console.log('Selecting the existing billing address');        
+        await expect(this.billingAddress).toBeVisible();        
+        await expect(this.savedBillingAddresses.first()).toBeAttached();
+        const savedBillingAddressId = await this.savedBillingAddresses.first().getAttribute('value');
+        if (savedBillingAddressId === null) {
+            throw new Error('The saved billing address does not have a selectable value.');
+        }
+        await this.billingAddress.selectOption(savedBillingAddressId);
+        await expect(this.selectedBillingAddress).not.toHaveText(/new address/i);
+        await this.billingContinueBtn.click();
+    }
+
+    async selectShippingAddress(): Promise<void>{
+        console.log('Selecting the existing shipping address');        
+        await expect(this.shippingAddress).toBeVisible();        
+        await expect(this.savedShippingAddresses.first()).toBeAttached();
+        const savedShippingAddressId = await this.savedShippingAddresses.first().getAttribute('value');
+        if (savedShippingAddressId === null) {
+            throw new Error('The saved shipping address does not have a selectable value.');
+        }
+        await this.shippingAddress.selectOption(savedShippingAddressId);
+        await expect(this.selectedShippingAddress).not.toHaveText(/new address/i);
+        await this.shippingContinueBtn.click();
+    }
+
+    async selectDeliveryOption(): Promise<void>{
+        console.log('Selecting an available delivery option');        
+        await expect(this.deliveryOptions.first()).toBeVisible();
+        await this.deliveryOptions.first().check();
+        await expect(this.deliveryOptions.first()).toBeChecked();
+        await this.shippingMethodContinueBtn.click();
+    }
+
+    async selectPaymentOption(): Promise<void>{
+        console.log('Selecting Cash on delivery when available, otherwise the first payment option');
+        
+        if (await this.cashOnDelivery.count() > 0) {
+            await this.cashOnDelivery.first().check();
+            await expect(this.cashOnDelivery.first()).toBeChecked();
+            console.log('Cash on delivery selected');
+        } else {            
+            await expect(this.paymentOptions.first()).toBeVisible();
+            await this.paymentOptions.first().check();
+            await expect(this.paymentOptions.first()).toBeChecked();
+            console.log('Cash on delivery is unavailable; selected the first available payment option');
+        }
+        await this.paymentMethodContinueBtn.click();
+        console.log('Continuing through the payment information step');
+        await this.paymentInfoContinueBtn.click();
+    }
+
+    async confirmOrder(): Promise<void>{
+        console.log('Confirming the order');
+        await expect(this.confirmOrderHdr).toBeVisible();
+        await this.confirmOrderBtn.click()
+    }
+
 }
