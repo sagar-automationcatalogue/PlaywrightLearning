@@ -1,3 +1,10 @@
+export const OrangeHRM_Data = {
+  username: 'Admin',
+  pwd: 'Admin@123'
+}
+
+
+
 export const TC_01_LoginOrangeHrm = {
     username: 'admin',
     invalidPassword: 'WrongPassword@123',
