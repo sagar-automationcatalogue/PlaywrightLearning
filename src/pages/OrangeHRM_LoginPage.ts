@@ -15,8 +15,8 @@ export class OrangeHRM_LoginPage{
     }
 
     async login(){
-        this.usernameInput.fill(OrangeHRM_Data.username);
-        this.pwdInput.fill(OrangeHRM_Data.pwd)
-        this.loginBtn.click();
+        await this.usernameInput.fill(OrangeHRM_Data.username);
+        await this.pwdInput.fill(OrangeHRM_Data.pwd)
+        await this.loginBtn.click();
     }
 }
