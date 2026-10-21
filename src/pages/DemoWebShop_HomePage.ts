@@ -1,5 +1,5 @@
 import { Page, Locator, expect } from "@playwright/test";
-import { TC_01_Authentication } from "../../test-data/demoWebShop";
+import { TC_01_Authentication, TC_02_BooksCategory } from "../../test-data/demoWebShop";
 
 export class DemoWebShop_HomePage{
     page: Page;
@@ -8,6 +8,7 @@ export class DemoWebShop_HomePage{
     private registerLnk: Locator;   
     private demoWebShopLnk: Locator;    
     private accountEmailLink: Locator;
+    private booksHomeHeading: Locator;
 
     constructor(page: Page){
         this.page = page;
@@ -16,6 +17,14 @@ export class DemoWebShop_HomePage{
         this.registerLnk = page.getByRole('link', { name: 'Register', exact: true });
         this.demoWebShopLnk = page.getByRole('link', { name: 'Tricentis Demo Web Shop' });
         this.accountEmailLink = page.getByRole('link', { name: TC_01_Authentication.email, exact: true });
+        this.booksHomeHeading = page.getByRole('heading', { name: TC_02_BooksCategory.homeHeading });
+    }
+
+    async openDemoWebShopAndVerifyHomePage(): Promise<void>{
+        console.log('Opening Demo Web Shop');
+        await this.page.goto('https://demowebshop.tricentis.com/');
+        await expect(this.booksHomeHeading).toBeVisible();
+        console.log('Home page is displayed');
     }
 
     async clickLoginLink(): Promise<void>{
