@@ -12,7 +12,7 @@
     "test:SauceDemo": "playwright test tests/ui/SauceDemo",
     "test:Smoke": "playwright test --grep @smoke",
     "test:Sanity": "playwright test --grep @sanity",
-    "test:Regression": "playwright test --grep @regression"    
+    "test:Regression": "playwright test --grep @regression"
   },
   "keywords": [],
   "author": "",
@@ -21,5 +21,8 @@
   "devDependencies": {
     "@playwright/test": "^1.62.1",
     "@types/node": "^26.1.1"
+  },
+  "dependencies": {
+    "dotenv": "^18.0.9"
   }
 }

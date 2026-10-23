@@ -1,5 +1,7 @@
 import { expect, Locator, Page } from "@playwright/test";
 import { TC_01_ValidateLogin } from "../../test-data/automationExercise";
+import { automationExerciseBaseURL } from "../config/EnvironmentConfig";
+import {URLConfig} from "../config/URLConfig";
 
 export class AutomationExercise_LoginPage {
     private page: Page;
@@ -86,7 +88,8 @@ export class AutomationExercise_LoginPage {
         await this.page.locator('//a[contains(@href, "/logout")]').click();
         console.log("Logout clicked");
         await expect(this.signupLoginLink).toBeVisible();
-        await expect(this.page).toHaveURL("https://www.automationexercise.com/login");
+        const loginURL = automationExerciseBaseURL + URLConfig.UI.AutomationExercise.loginURL;
+        await expect(this.page).toHaveURL(loginURL);
         await expect(this.loginForm).toBeVisible();
         console.log("User is navigated to login page and Login form is displayed");
         await expect(this.loggedInAs).not.toBeVisible();
