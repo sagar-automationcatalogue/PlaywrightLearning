@@ -1,5 +1,5 @@
 import { test } from '@playwright/test';
-import { ExpandTesting_LoginPage } from '../../../src/pages/ExpandTesting_LoginPage.ts';
+import { ExpandTesting_LoginPage } from '../../../src/pages/ExpandTesting_LoginPage';
 
 test('@smoke TC_01_LoginScenarios: Invalid Login, Valid Login, Secure Area, and Logout', async ({ page }) => {
 	const loginPage = new ExpandTesting_LoginPage(page);

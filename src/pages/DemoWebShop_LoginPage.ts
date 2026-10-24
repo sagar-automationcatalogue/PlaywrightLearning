@@ -1,5 +1,7 @@
 import { Page, Locator, expect } from "@playwright/test";
 import {TC_01_Authentication} from "../../test-data/demoWebShop";
+import { URLConfig } from "../config/URLConfig";
+import { Constants } from "../constants/constants";
 
 export class DemoWebShop_LoginPage{
     page: Page;
@@ -20,7 +22,7 @@ export class DemoWebShop_LoginPage{
         this.loginBtn = page.getByRole('button', { name: 'Log in', exact: true });
         this.userNameLnk = page.getByRole('link', { name: TC_01_Authentication.email, exact: true });
         this.logoutLnk = page.getByRole('link', { name: 'Log out', exact: true });
-        this.loginHdr = page.getByRole('heading', { name: TC_01_Authentication.headings.login });
+        this.loginHdr = page.getByRole('heading', { name: Constants.DemoWebShop.headings.login, exact: true });
         this.loginErrorTxt = page.locator('.validation-summary-errors');
         this.rememberMeChkbx = page.getByRole('checkbox', { name: 'Remember me?' });
         this.accountEmailLink = page.getByRole('link', { name: TC_01_Authentication.email, exact: true });
@@ -38,7 +40,7 @@ export class DemoWebShop_LoginPage{
 
     async enterPassword(pwd: string){
         await this.pwdInput.clear();
-	    await expect(this.pwdInput).toHaveValue(TC_01_Authentication.emptyValue);
+	    await expect(this.pwdInput).toHaveValue(Constants.emptyValue);
         await this.pwdInput.fill(pwd);
 	    await expect(this.pwdInput).toHaveValue(pwd);
     }
@@ -57,7 +59,7 @@ export class DemoWebShop_LoginPage{
         console.log('Verifying the invalid login result');	    
 	    await expect(this.loginErrorTxt).toBeVisible();
 	    await expect(this.loginErrorTxt).not.toBeEmpty();
-	    await expect(this.page).toHaveURL(/\/login/);
+	    await expect(this.page).toHaveURL(new RegExp(URLConfig.UI.DemoWebShop.loginURL));
     }
 
     async checkRememberMe(): Promise<void>{        

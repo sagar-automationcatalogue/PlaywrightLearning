@@ -1,5 +1,5 @@
 import { test } from '@playwright/test';
-import { AutomationExercise_ProductReviewPage } from '../../../src/pages/AutomationExercise_ProductReviewPage.ts';
+import { AutomationExercise_ProductReviewPage } from '../../../src/pages/AutomationExercise_ProductReviewPage';
 
 test(`@regression TC_05_ProductReview: Product Detail → Quantity 4 → Add Cart → Submit Product Review`, async ({ page, browserName }) => {
     const productReviewPage = new AutomationExercise_ProductReviewPage(page);

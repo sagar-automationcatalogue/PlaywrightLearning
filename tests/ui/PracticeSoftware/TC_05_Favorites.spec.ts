@@ -1,14 +1,15 @@
 import { test } from '@playwright/test';
-import { TC_05_Favorites } from '../../../test-data/practiceSoftware.ts';
-import { PracticeSoftware_RegistrationPage } from '../../../src/pages/PracticeSoftware_RegistrationPage.ts';
-import { PracticeSoftware_LoginPage } from '../../../src/pages/PracticeSoftware_LoginPage.ts';
-import { PracticeSoftware_HomePage } from '../../../src/pages/PracticeSoftware_HomePage.ts';
-import { PracticeSoftware_CataloguePage } from '../../../src/pages/PracticeSoftware_CataloguePage.ts';
-import { PracticeSoftware_ProductPage } from '../../../src/pages/PracticeSoftware_ProductPage.ts';
-import { PracticeSoftware_FavoritesPage } from '../../../src/pages/PracticeSoftware_FavoritesPage.ts';
+import { TC_05_Favorites } from '../../../test-data/practiceSoftware';
+import { PracticeSoftware_RegistrationPage } from '../../../src/pages/PracticeSoftware_RegistrationPage';
+import { PracticeSoftware_LoginPage } from '../../../src/pages/PracticeSoftware_LoginPage';
+import { PracticeSoftware_HomePage } from '../../../src/pages/PracticeSoftware_HomePage';
+import { PracticeSoftware_CataloguePage } from '../../../src/pages/PracticeSoftware_CataloguePage';
+import { PracticeSoftware_ProductPage } from '../../../src/pages/PracticeSoftware_ProductPage';
+import { PracticeSoftware_FavoritesPage } from '../../../src/pages/PracticeSoftware_FavoritesPage';
+import { practiceSoftwareTestingBaseURL } from '../../../src/config/EnvironmentConfig';
 
 test('@sanity TC_05_Favorites: Add Multiple Products → Validate → Remove', async ({ page }) => {
-    const toolshopUrl = 'https://practicesoftwaretesting.com/';
+    const toolshopUrl = practiceSoftwareTestingBaseURL;
     const email = TC_05_Favorites.email;
     const password = TC_05_Favorites.password;
     const registrationPage = new PracticeSoftware_RegistrationPage(page);

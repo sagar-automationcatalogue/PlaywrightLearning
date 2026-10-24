@@ -1,5 +1,4 @@
 import { Page, Locator, expect } from "@playwright/test";
-import { TC_06_LoginUserValidation } from '../../test-data/orangeHRM';
 
 export class OrangeHRM_SystemUserPage{
     page: Page;
@@ -16,16 +15,9 @@ export class OrangeHRM_SystemUserPage{
     private passwordInput: Locator;
     private confirmPasswordInput: Locator;
     private modalSaveButton: Locator;
-    private closeButton: Locator;
-    private filterButton: Locator;
-    private usernameFilter: Locator;
-    private statusDropdown: Locator;
-    private allStatusOption: Locator;
-    private searchButton: Locator;
-    private userRow: (username: string) => Locator;
-    private editIcon: Locator;
-    private userStatusOption: (status: string) => Locator;
-    private saveButton: Locator;
+    private closeButton: Locator;    
+    private userRow: (username: string) => Locator;    
+    private userStatusOption: (status: string) => Locator;    
 
     constructor(page: Page){
         this.page = page;
@@ -43,18 +35,9 @@ export class OrangeHRM_SystemUserPage{
         this.passwordInput = page.getByPlaceholder('Enter Password');
         this.confirmPasswordInput = page.getByPlaceholder('Confirm Password');
         this.modalSaveButton = page.locator('#modal-save-button');
-        this.closeButton = page.locator('button.btn.btn-close');
-        this.filterButton = page.getByText('oxd_filter');
-        this.usernameFilter = page.locator('#systemuser_uname_filter');
-        this.statusDropdown = page.locator('#status_inputfileddiv input.select-dropdown');
-        this.allStatusOption = page.locator('#status_inputfileddiv ul.dropdown-content li span', {
-            hasText: new RegExp(`^${TC_06_LoginUserValidation.allStatus}$`)
-        });
-        this.searchButton = page.getByRole('link', { name: 'Search' });
-        this.userRow = (username: string) => page.getByRole('row', { name: new RegExp(username, 'i') }).first();
-        this.editIcon = page.locator("//i[text()='ohrm_edit']").first();
-        this.userStatusOption = (status: string) => page.getByText(status, { exact: true });
-        this.saveButton = page.getByText('Save');
+        this.closeButton = page.locator('button.btn.btn-close');        
+        this.userRow = (username: string) => page.getByRole('row', { name: new RegExp(username, 'i') }).first();        
+        this.userStatusOption = (status: string) => page.getByText(status, { exact: true });        
     }
 
     async createUser(
@@ -92,24 +75,5 @@ export class OrangeHRM_SystemUserPage{
         if (await this.closeButton.isVisible()) {
             await this.closeButton.click();
         }
-    }
-
-    async setUserStatus(
-        username: string,
-        status: typeof TC_06_LoginUserValidation.statuses[keyof typeof TC_06_LoginUserValidation.statuses]
-    ): Promise<void>{
-        await this.filterButton.click();
-        await this.usernameFilter.fill(username);
-        await this.statusDropdown.click();
-        await this.allStatusOption.click();
-        await expect(this.statusDropdown).toHaveValue(TC_06_LoginUserValidation.allStatus);
-        await this.page.waitForTimeout(2000);
-        await this.searchButton.click();
-        await expect(this.userRow(username)).toBeVisible();
-
-        await this.editIcon.click();
-        await this.userStatusOption(status).click();
-        await this.page.waitForTimeout(3000);
-        await this.saveButton.click();
     }
 }

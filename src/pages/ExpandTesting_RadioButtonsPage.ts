@@ -1,4 +1,6 @@
 import { expect, Locator, Page } from "@playwright/test";
+import { expandTestingBaseURL, joinBaseURL } from "../config/EnvironmentConfig";
+import { URLConfig } from "../config/URLConfig";
 
 export class ExpandTesting_RadioButtonsPage {
     private page: Page;
@@ -24,8 +26,8 @@ export class ExpandTesting_RadioButtonsPage {
     }
 
     async selectColorAndSportAndVerifyExclusivity(): Promise<void> {
-        await this.page.goto("https://practice.expandtesting.com/radio-buttons");
-        await expect(this.page).toHaveURL("https://practice.expandtesting.com/radio-buttons");
+        await this.page.goto(joinBaseURL(expandTestingBaseURL, URLConfig.UI.ExpandTesting.radioButtonsURL));
+        await expect(this.page).toHaveURL(joinBaseURL(expandTestingBaseURL, URLConfig.UI.ExpandTesting.radioButtonsURL));
         await this.blueColor.check();
         await this.tennisSport.check();
         await expect(this.blueColor).toBeChecked();

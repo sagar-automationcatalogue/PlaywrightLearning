@@ -17,7 +17,7 @@ export class AutomationExercise_HomePage {
     }
 
     async openAndVerifyHomePage(): Promise<void> {
-        await this.page.goto(automationExerciseBaseURL || 'https://automationexercise.com');
+        await this.page.goto(automationExerciseBaseURL);
         console.log("Home page is loaded successfully");
         await expect(this.homeLink).toBeVisible();
         await expect(this.productsLink).toBeVisible();

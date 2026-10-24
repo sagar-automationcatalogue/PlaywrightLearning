@@ -1,5 +1,8 @@
 import { expect, Locator, Page } from "@playwright/test";
 import { TC_04_BuildCustomizedComputer } from "../../test-data/demoWebShop";
+import {demoWebShopBaseURL, joinBaseURL} from '../config/EnvironmentConfig';
+import {URLConfig} from '../config/URLConfig';
+import { Constants } from "../constants/constants";
 
 export type CustomizedComputerCartState = {
     initialCartRows: string[];
@@ -47,7 +50,7 @@ export class DemoWebShop_CustomizedComputerPage {
         this.page = page;
         this.cartLink = page.locator("#topcartlink").getByRole("link");
         this.shoppingCartHeading = page.getByRole("heading", {
-            name: TC_04_BuildCustomizedComputer.shoppingCartHeading,
+            name: Constants.DemoWebShop.shoppingCartHeading,
             exact: true
         });
         this.cartRows = page.locator(".cart-item-row");
@@ -117,7 +120,7 @@ export class DemoWebShop_CustomizedComputerPage {
             .filter({ hasText: `Software: ${TC_04_BuildCustomizedComputer.officeSuite}` })
             .filter({ hasNotText: TC_04_BuildCustomizedComputer.otherOfficeSuite });
         this.updateShoppingCartButton = page.getByRole("button", { name: "Update shopping cart", exact: true });
-        this.emptyCartMessage = page.getByText(TC_04_BuildCustomizedComputer.emptyCartMessage, { exact: true });
+        this.emptyCartMessage = page.getByText(Constants.DemoWebShop.emptyCartMessage, { exact: true });
     }
 
     async captureInitialCartState(): Promise<CustomizedComputerCartState> {
@@ -142,7 +145,7 @@ export class DemoWebShop_CustomizedComputerPage {
 
     async openComputersAndVerifyCategories(): Promise<void> {
         await this.computersLink.click();
-        await expect(this.page).toHaveURL(/\/computers$/);
+        await expect(this.page).toHaveURL(new RegExp(`${URLConfig.UI.DemoWebShop.computersURL}$`));
         await expect(this.computersHeading).toBeVisible();
 
         await expect(this.desktopsLink).toBeVisible();
@@ -152,7 +155,7 @@ export class DemoWebShop_CustomizedComputerPage {
 
     async openDesktopsAndVerifyProducts(): Promise<void> {
         await this.desktopsLink.click();
-        await expect(this.page).toHaveURL(/\/desktops$/);
+        await expect(this.page).toHaveURL(new RegExp(`${URLConfig.UI.DemoWebShop.desktopsURL}$`));
         await expect(this.desktopsHeading).toBeVisible();
         await expect(this.desktopProducts.first()).toBeVisible();
         expect(await this.desktopProducts.count()).toBeGreaterThan(0);
@@ -226,7 +229,7 @@ export class DemoWebShop_CustomizedComputerPage {
     ): Promise<void> {
         await this.addToCartButton.click();
         await expect(this.addToCartNotification).toBeVisible();
-        await expect(this.addToCartNotification).toContainText(TC_04_BuildCustomizedComputer.addToCartConfirmation);
+        await expect(this.addToCartNotification).toContainText(Constants.DemoWebShop.addToCartConfirmation);
         console.log("Steps 18-20: Two configured computers successfully added to the cart.");
 
         await expect(this.headerCartQuantity).toHaveText(
@@ -234,7 +237,7 @@ export class DemoWebShop_CustomizedComputerPage {
         );
 
         await this.cartLink.click();
-        await expect(this.page).toHaveURL(/\/cart$/);
+        await expect(this.page).toHaveURL(joinBaseURL(demoWebShopBaseURL, URLConfig.UI.DemoWebShop.cart));
         await expect(this.shoppingCartHeading).toBeVisible();
 
         await expect(this.configuredComputerRow).toHaveCount(1);
@@ -274,7 +277,8 @@ export class DemoWebShop_CustomizedComputerPage {
     }
 
     async removeConfiguredComputerAndVerifyCart(state: CustomizedComputerCartState): Promise<void> {
-        await this.page.goto("https://demowebshop.tricentis.com/cart");
+        const cartURL = joinBaseURL(demoWebShopBaseURL, URLConfig.UI.DemoWebShop.cart);
+        await this.page.goto(cartURL);
         await expect(this.shoppingCartHeading).toBeVisible();
         if (await this.configuredComputerRow.count() === 1) {
             await this.configuredComputerRow.getByRole("checkbox").check();

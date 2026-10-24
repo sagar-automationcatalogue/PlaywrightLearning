@@ -1,5 +1,7 @@
 import { Page, Locator, expect } from '@playwright/test';
 import { TC_01_Login, TC_05_Favorites } from '../../test-data/practiceSoftware';
+import { joinBaseURL } from '../config/EnvironmentConfig';
+import { URLConfig } from '../config/URLConfig';
 
 export class PracticeSoftware_RegistrationPage {
     private customerRegistrationHeading: Locator;
@@ -37,7 +39,7 @@ export class PracticeSoftware_RegistrationPage {
     }
 
     async openRegistrationPage(homeUrl: string): Promise<void> {
-        await this.page.goto(`${homeUrl}auth/register`);
+        await this.page.goto(joinBaseURL(homeUrl, URLConfig.UI.PracticeSoftwareTesting.registrationURL));
         await expect(this.customerRegistrationHeading).toBeVisible();
     }
 
@@ -74,7 +76,10 @@ export class PracticeSoftware_RegistrationPage {
         }
         await expect(this.registrationForm).not.toHaveClass(/ng-invalid/);
         await this.registrationButton.click();
-        await expect(this.page).toHaveURL(/auth\/login|account/);
+        await expect(this.page).toHaveURL(new RegExp(
+            `${URLConfig.UI.PracticeSoftwareTesting.loginURL}|${URLConfig.UI.PracticeSoftwareTesting.accountURL}`,
+            'i'
+        ));
     }
 
     async registerFavoritesAccount(email: string, password: string, emptyValue: string): Promise<void> {

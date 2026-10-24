@@ -1,7 +1,7 @@
 import { test } from '@playwright/test';
-import { AutomationExercise_HomePage } from '../../../src/pages/AutomationExercise_HomePage.ts';
-import { AutomationExercise_LoginPage } from '../../../src/pages/AutomationExercise_LoginPage.ts';
-import { AutomationExercise_ProductsPage } from '../../../src/pages/AutomationExercise_ProductsPage.ts';
+import { AutomationExercise_HomePage } from '../../../src/pages/AutomationExercise_HomePage';
+import { AutomationExercise_LoginPage } from '../../../src/pages/AutomationExercise_LoginPage';
+import { AutomationExercise_ProductsPage } from '../../../src/pages/AutomationExercise_ProductsPage';
 
 /** Testcase developed by Soujanya - Completed */
 test(`@smoke TC_01_ValidateLogin: Invalid Login → Valid Login → Logout → Protected State Validation`, async({page, browserName}) =>{

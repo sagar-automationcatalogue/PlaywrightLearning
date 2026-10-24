@@ -1,10 +1,10 @@
 import { test } from '@playwright/test';
-import { TC_05_EmployeeAttachment } from '../../../test-data/orangeHRM.ts';
+import { TC_05_EmployeeAttachment } from '../../../test-data/orangeHRM';
 import * as path from 'node:path';
-import { OrangeHRM_LoginPage } from '../../../src/pages/OrangeHRM_LoginPage.ts';
-import { OrangeHRM_HomePage } from '../../../src/pages/OrangeHRM_HomePage.ts';
-import { OrangeHRM_EmployeeManagement } from '../../../src/pages/OrangeHRM_EmployeeManagement.ts';
-import { OrangeHRM_EmployeeProfile } from '../../../src/pages/OrangeHRM_EmployeeProfile.ts';
+import { OrangeHRM_LoginPage } from '../../../src/pages/OrangeHRM_LoginPage';
+import { OrangeHRM_HomePage } from '../../../src/pages/OrangeHRM_HomePage';
+import { OrangeHRM_EmployeeManagement } from '../../../src/pages/OrangeHRM_EmployeeManagement';
+import { OrangeHRM_EmployeeProfile } from '../../../src/pages/OrangeHRM_EmployeeProfile';
 
 test('@regression TC_05_EmployeeAttachment - Upload, download and delete employee attachment', async ({ page }) => {
   const pdfFilePath = path.resolve(

@@ -1,4 +1,6 @@
 import { Page, Locator, expect } from '@playwright/test';
+import { joinBaseURL, sauceDemoBaseURL } from "../config/EnvironmentConfig";
+import { URLConfig } from "../config/URLConfig";
 
 export class SauceDemo_InventoryPage {
     private productsHeading: Locator;
@@ -14,7 +16,7 @@ export class SauceDemo_InventoryPage {
     }
 
     async verifyInventoryLoaded(): Promise<void> {
-        await expect(this.page).toHaveURL('https://www.saucedemo.com/inventory.html');
+        await expect(this.page).toHaveURL(joinBaseURL(sauceDemoBaseURL, URLConfig.UI.SauceDemo.inventoryURL));
         await expect(this.productsHeading).toBeVisible();
         await expect(this.menuButton).toBeVisible();
         await expect(this.shoppingCartLink).toBeVisible();
@@ -24,6 +26,6 @@ export class SauceDemo_InventoryPage {
     async logout(): Promise<void> {
         await this.menuButton.click();
         await this.logoutLink.click();
-        await expect(this.page).toHaveURL('https://www.saucedemo.com/');
+        await expect(this.page).toHaveURL(sauceDemoBaseURL);
     }
 }

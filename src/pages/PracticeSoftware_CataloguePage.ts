@@ -1,5 +1,6 @@
 import { Page, Locator, expect } from '@playwright/test';
 import { TC_02_ProductSearch } from '../../test-data/practiceSoftware';
+import { URLConfig } from '../config/URLConfig';
 
 export class PracticeSoftware_CataloguePage {
     private productTitles: Locator;
@@ -370,7 +371,7 @@ export class PracticeSoftware_CataloguePage {
             .filter({ has: productHeading })
             .getByRole('heading', { name: productName, exact: true })
             .click();
-        await expect(this.page).toHaveURL(/\/product\//);
+        await expect(this.page).toHaveURL(new RegExp(`${URLConfig.UI.PracticeSoftwareTesting.productURL}/`));
     }
 
     async searchAndOpenAvailableHammer(): Promise<string> {
@@ -396,7 +397,7 @@ export class PracticeSoftware_CataloguePage {
             .filter({ has: this.page.getByRole('heading', { name: selectedHammerName, exact: true }) })
             .getByRole('heading', { name: selectedHammerName, exact: true })
             .click();
-        await expect(this.page).toHaveURL(/\/product\//);
+        await expect(this.page).toHaveURL(new RegExp(`${URLConfig.UI.PracticeSoftwareTesting.productURL}/`));
         return selectedHammerName;
     }
 }

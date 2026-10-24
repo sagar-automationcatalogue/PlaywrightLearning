@@ -1,8 +1,8 @@
 import { test } from '@playwright/test';
-import { TC_02_EmployeeSearch } from '../../../test-data/orangeHRM.ts';
-import { OrangeHRM_LoginPage } from '../../../src/pages/OrangeHRM_LoginPage.ts';
-import { OrangeHRM_HomePage } from '../../../src/pages/OrangeHRM_HomePage.ts';
-import { OrangeHRM_EmployeeManagement } from '../../../src/pages/OrangeHRM_EmployeeManagement.ts';
+import { TC_02_EmployeeSearch } from '../../../test-data/orangeHRM';
+import { OrangeHRM_LoginPage } from '../../../src/pages/OrangeHRM_LoginPage';
+import { OrangeHRM_HomePage } from '../../../src/pages/OrangeHRM_HomePage';
+import { OrangeHRM_EmployeeManagement } from '../../../src/pages/OrangeHRM_EmployeeManagement';
 
 test('@sanity TC_02_EmployeeSearch - Search and filter employee records', async ({ page }) => {
     const loginPage = new OrangeHRM_LoginPage(page);

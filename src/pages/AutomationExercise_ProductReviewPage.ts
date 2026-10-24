@@ -1,5 +1,8 @@
 import { expect, Locator, Page } from "@playwright/test";
 import { TC_05_ProductReview } from "../../test-data/automationExercise";
+import { automationExerciseBaseURL, joinBaseURL } from "../config/EnvironmentConfig";
+import { URLConfig } from "../config/URLConfig";
+import { Constants } from "../constants/constants";
 
 export class AutomationExercise_ProductReviewPage {
     private page: Page;
@@ -36,22 +39,22 @@ export class AutomationExercise_ProductReviewPage {
         this.reviewEmail = page.locator("#email");
         this.reviewText = page.locator("#review");
         this.submitReviewButton = page.getByRole("button", { name: "Submit" });
-        this.reviewSuccessMessage = page.getByText(TC_05_ProductReview.reviewSuccess, { exact: true });
+        this.reviewSuccessMessage = page.getByText(Constants.AutomationExercise.reviewSuccess, { exact: true });
         this.cartLink = page.getByRole("link", { name: "Cart" });
-        this.emptyCartMessage = page.getByText(TC_05_ProductReview.emptyCartMessage, { exact: false });
+        this.emptyCartMessage = page.getByText(Constants.AutomationExercise.emptyCartMessage, { exact: false });
     }
 
     async openProductsAndBlueTopDetails(): Promise<number> {
-        await this.page.goto("https://www.automationexercise.com/");
+        await this.page.goto(automationExerciseBaseURL);
         await this.productsLink.click();
-        await expect(this.page).toHaveURL("https://www.automationexercise.com/products");
+        await expect(this.page).toHaveURL(joinBaseURL(automationExerciseBaseURL, URLConfig.UI.AutomationExercise.productURL));
         console.log("All Products page is open");
 
         await expect(this.blueTopCard).toBeVisible();
         console.log("Blue Top is visible in the product list");
 
         await this.blueTopCard.getByRole("link", { name: "View Product" }).click();
-        await expect(this.page).toHaveURL(/product_details\/1/);
+        await expect(this.page).toHaveURL(new RegExp(`${URLConfig.UI.AutomationExercise.productDetailsURL}/1`));
         console.log("Blue Top detail page is open");
 
         await expect(this.productInformation.locator("h2")).toHaveText(TC_05_ProductReview.productName);
@@ -82,11 +85,11 @@ export class AutomationExercise_ProductReviewPage {
 
         await this.addToCartButton.click();
         await expect(this.cartModal).toBeVisible();
-        await expect(this.cartModal).toContainText(TC_05_ProductReview.cartConfirmation);
+        await expect(this.cartModal).toContainText(Constants.AutomationExercise.cartConfirmation);
         console.log("Add-to-cart confirmation is displayed");
 
         await this.cartModal.getByRole("link", { name: "View Cart" }).click();
-        await expect(this.page).toHaveURL("https://www.automationexercise.com/view_cart");
+        await expect(this.page).toHaveURL(joinBaseURL(automationExerciseBaseURL, URLConfig.UI.AutomationExercise.cartURL));
         console.log("Cart page is open");
 
         await expect(this.blueTopCartRow).toBeVisible();
@@ -106,7 +109,7 @@ export class AutomationExercise_ProductReviewPage {
 
     async submitProductReview(): Promise<void> {
         await this.page.goBack();
-        await expect(this.page).toHaveURL(/product_details\/1/);
+        await expect(this.page).toHaveURL(new RegExp(`${URLConfig.UI.AutomationExercise.productDetailsURL}/1`));
         console.log("Returned to Blue Top detail page");
 
         await this.reviewHeading.scrollIntoViewIfNeeded();
@@ -131,7 +134,7 @@ export class AutomationExercise_ProductReviewPage {
 
     async removeBlueTopFromCart(): Promise<void> {
         await this.cartLink.click();
-        await expect(this.page).toHaveURL("https://www.automationexercise.com/view_cart");
+        await expect(this.page).toHaveURL(joinBaseURL(automationExerciseBaseURL, URLConfig.UI.AutomationExercise.cartURL));
         await expect(this.blueTopCartRow).toBeVisible();
 
         await this.blueTopCartRow.locator(".cart_quantity_delete").click();

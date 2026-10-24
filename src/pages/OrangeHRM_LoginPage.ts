@@ -1,5 +1,8 @@
 import { Page, Locator, expect } from "@playwright/test";
 import { OrangeHRM_Data, TC_01_LoginOrangeHrm } from '../../test-data/orangeHRM';
+import { orangeHRMBaseURL } from "../config/EnvironmentConfig";
+import { URLConfig } from "../config/URLConfig";
+import { Constants } from "../constants/constants";
 
 export class OrangeHRM_LoginPage{
     page: Page;
@@ -20,14 +23,14 @@ export class OrangeHRM_LoginPage{
         this.loginBtn = page.getByRole('button', { name: 'Login' });
         this.formHeader = page.locator('.form-header');
         this.errorMessage = page.locator('.toast-message');
-        this.dashboardText = page.getByText(TC_01_LoginOrangeHrm.dashboardText, { exact: true });
+        this.dashboardText = page.getByText(Constants.OrangeHRM.dashboardText, { exact: true });
         this.logoutText = page.getByText('Log Out').first();
         this.usernamePlaceholderInput = page.getByPlaceholder('Username');
         this.passwordPlaceholderInput = page.getByPlaceholder('Password');
     }
 
     async openLoginPage(): Promise<void>{
-        await this.page.goto('https://automaetesting-trials821.orangehrmlive.com/', { waitUntil: 'domcontentloaded' });
+        await this.page.goto(orangeHRMBaseURL, { waitUntil: 'domcontentloaded' });
     }
 
     async loginAt(baseUrl: string, username: string, password: string): Promise<void>{
@@ -38,7 +41,7 @@ export class OrangeHRM_LoginPage{
     }
 
     async verifyDashboardLoaded(): Promise<void>{
-        await expect(this.page).toHaveURL(/dashboard/);
+        await expect(this.page).toHaveURL(new RegExp(URLConfig.UI.OrangeHRM.dashboardPathURL));
     }
 
     async logoutAndVerifyLoginPage(): Promise<void>{
@@ -47,7 +50,7 @@ export class OrangeHRM_LoginPage{
     }
 
     async verifyLoginRejected(errorPattern: RegExp): Promise<void>{
-        await expect(this.page).not.toHaveURL(/dashboard/);
+        await expect(this.page).not.toHaveURL(new RegExp(URLConfig.UI.OrangeHRM.dashboardPathURL));
         await expect(this.page.getByText(errorPattern)).toBeVisible();
     }
 
@@ -81,7 +84,7 @@ export class OrangeHRM_LoginPage{
     async verifyInvalidLogin(invalidCredentialsPattern: RegExp): Promise<void>{
         await expect(this.errorMessage).toBeVisible();
         await expect(this.errorMessage).toContainText(invalidCredentialsPattern);
-        await expect(this.page).toHaveURL(/securityAuthentication\/retryLogin/i);
+        await expect(this.page).toHaveURL(new RegExp(URLConfig.UI.OrangeHRM.retryLoginURL, 'i'));
         await expect(this.loginBtn).toBeVisible();
         await expect(this.dashboardText).toHaveCount(0);
     }
@@ -92,7 +95,10 @@ export class OrangeHRM_LoginPage{
     }
 
     async verifyLoggedOut(): Promise<void>{
-        await expect(this.page).toHaveURL(/auth\/(login|seamlessLogin)/i);
+        await expect(this.page).toHaveURL(new RegExp(
+            `${URLConfig.UI.OrangeHRM.loginURL}|${URLConfig.UI.OrangeHRM.seamlessLoginURL}`,
+            'i'
+        ));
         await expect(this.loginBtn).toBeVisible();
         await expect(this.usernameInput).toBeVisible();
         await expect(this.pwdInput).toBeVisible();

@@ -1,5 +1,5 @@
 import { test } from '@playwright/test';
-import { AutomationExercise_CategoryProductsPage } from '../../../src/pages/AutomationExercise_CategoryProductsPage.ts';
+import { AutomationExercise_CategoryProductsPage } from '../../../src/pages/AutomationExercise_CategoryProductsPage';
 
 /** Testcase developed by Vijaya Durgi - Completed */
 test('@regression TC_03_CategoryProducts:', async ({ page }) => {

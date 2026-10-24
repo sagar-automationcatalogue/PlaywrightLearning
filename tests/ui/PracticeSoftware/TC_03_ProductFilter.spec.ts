@@ -1,14 +1,15 @@
 import { test } from '@playwright/test';
-import { TC_03_ProductFilter } from '../../../test-data/practiceSoftware.ts';
-import { PracticeSoftware_HomePage } from '../../../src/pages/PracticeSoftware_HomePage.ts';
-import { PracticeSoftware_CataloguePage } from '../../../src/pages/PracticeSoftware_CataloguePage.ts';
+import { TC_03_ProductFilter } from '../../../test-data/practiceSoftware';
+import { PracticeSoftware_HomePage } from '../../../src/pages/PracticeSoftware_HomePage';
+import { PracticeSoftware_CataloguePage } from '../../../src/pages/PracticeSoftware_CataloguePage';
+import { practiceSoftwareTestingBaseURL } from '../../../src/config/EnvironmentConfig';
 
 test('@sanity TC_03_ProductFilter - Category + Brand + Price filtering', async ({ page }) => {
   const homePage = new PracticeSoftware_HomePage(page);
   const cataloguePage = new PracticeSoftware_CataloguePage(page);
 
   console.log('1. Open the product catalog');
-  await homePage.openHomeAndVerifyNavigation('https://practicesoftwaretesting.com/');
+  await homePage.openHomeAndVerifyNavigation(practiceSoftwareTestingBaseURL);
   const initialProductCount = await cataloguePage.captureInitialFilterProductCount();
 
   console.log('3. Locate the category filter section');

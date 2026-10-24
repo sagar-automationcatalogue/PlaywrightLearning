@@ -1,5 +1,7 @@
 import { expect, Locator, Page } from "@playwright/test";
 import { TC_02_AutomationExercise } from "../../test-data/automationExercise";
+import { automationExerciseBaseURL, joinBaseURL } from "../config/EnvironmentConfig";
+import { URLConfig } from "../config/URLConfig";
 
 export class AutomationExercise_ProductsPage {
     private page: Page;
@@ -39,14 +41,14 @@ export class AutomationExercise_ProductsPage {
     }
 
     async openHomeAndProductsCatalog(): Promise<number> {
-        await this.page.goto("https://www.automationexercise.com/");
-        await expect(this.page).toHaveURL("https://www.automationexercise.com/");
+        await this.page.goto(automationExerciseBaseURL);
+        await expect(this.page).toHaveURL(automationExerciseBaseURL);
         await expect(this.homeLink).toBeVisible();
         await expect(this.homeSlider).toBeVisible();
         console.log("Home page is displayed.");
 
         await this.productsLink.click();
-        await expect(this.page).toHaveURL("https://www.automationexercise.com/products");
+        await expect(this.page).toHaveURL(joinBaseURL(automationExerciseBaseURL, URLConfig.UI.AutomationExercise.productURL));
         await expect(this.allProductsHeading).toBeVisible();
 
         await expect(this.productCards.first()).toBeVisible();
@@ -86,7 +88,7 @@ export class AutomationExercise_ProductsPage {
                 });
                 await expect(relatedProductCard).toHaveCount(1);
                 await relatedProductCard.getByRole("link", { name: "View Product" }).click();
-                await expect(this.page).toHaveURL(/\/product_details\/\d+$/);
+                await expect(this.page).toHaveURL(new RegExp(`${URLConfig.UI.AutomationExercise.productDetailsURL}/\\d+$`));
                 await expect(this.productDetailHeading).toHaveText(productName);
                 await expect(this.productDetailCategory).toContainText(TC_02_AutomationExercise.expectedRelatedCategory);
                 console.log("Top-related category verified for:", productName);
@@ -129,7 +131,7 @@ export class AutomationExercise_ProductsPage {
         await viewProductLink.hover();
         await expect(viewProductLink).toBeVisible();
         await viewProductLink.click();
-        await expect(this.page).toHaveURL(/\/product_details\/\d+$/);
+        await expect(this.page).toHaveURL(new RegExp(`${URLConfig.UI.AutomationExercise.productDetailsURL}/\\d+$`));
 
         await expect(this.productDetailHeading).toHaveText(productName);
         await expect(this.productDetailCategory).toBeVisible();
@@ -147,7 +149,7 @@ export class AutomationExercise_ProductsPage {
 
     async restoreCatalogAndSearchJeans(baselineProductCount: number): Promise<void> {
         await this.productsLink.click();
-        await expect(this.page).toHaveURL("https://www.automationexercise.com/products");
+        await expect(this.page).toHaveURL(joinBaseURL(automationExerciseBaseURL, URLConfig.UI.AutomationExercise.productURL));
         await expect(this.allProductsHeading).toBeVisible();
         await expect(this.productCards).toHaveCount(baselineProductCount);
         console.log("Full product catalog is restored.");
@@ -173,7 +175,7 @@ export class AutomationExercise_ProductsPage {
     async openProductsAndVerifyAuthenticatedState(): Promise<void> {
         await this.productsLink.click();
         console.log("Navigated to Products page");
-        await expect(this.page).toHaveURL("https://www.automationexercise.com/products");
+        await expect(this.page).toHaveURL(joinBaseURL(automationExerciseBaseURL, URLConfig.UI.AutomationExercise.productURL));
         console.log("All products page is loaded");
     }
 }

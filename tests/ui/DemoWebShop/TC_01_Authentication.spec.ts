@@ -1,16 +1,17 @@
 import { expect, test } from '@playwright/test';
-import { TC_01_Authentication} from '../../../test-data/demoWebShop.ts';
-import { DemoWebShop_HomePage } from '../../../src/pages/DemoWebShop_HomePage.ts';
-import { DemoWebShop_LoginPage } from '../../../src/pages/DemoWebShop_LoginPage.ts';
-import { DemoWebShop_CustomerInfoPage } from '../../../src/pages/DemoWebShop_CustomerInfoPage.ts';
+import { TC_01_Authentication} from '../../../test-data/demoWebShop';
+import { DemoWebShop_HomePage } from '../../../src/pages/DemoWebShop_HomePage';
+import { DemoWebShop_LoginPage } from '../../../src/pages/DemoWebShop_LoginPage';
+import { DemoWebShop_CustomerInfoPage } from '../../../src/pages/DemoWebShop_CustomerInfoPage';
+import {demoWebShopBaseURL} from '../../../src/config/EnvironmentConfig';
 
 test('@smoke TC_01_Authentication: Invalid Login, Valid Login and Logout', async ({ page }) => {
 	// Step 1: Launch browser and open Demo Web Shop.
 	console.log('Launching Demo Web Shop');
-	await page.goto('https://demowebshop.tricentis.com/');	
+	await page.goto(demoWebShopBaseURL);
 
 	// Step 2,3,4: Verify the home page is loaded.
-	await expect(page).toHaveURL('https://demowebshop.tricentis.com/');
+	await expect(page).toHaveURL(demoWebShopBaseURL);
 	let ob_DemoWebShopHomePage = new DemoWebShop_HomePage(page);
 	ob_DemoWebShopHomePage.verifyDemoWebshopLinks();	
 	ob_DemoWebShopHomePage.clickLoginLink();	

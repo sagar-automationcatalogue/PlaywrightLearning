@@ -1,7 +1,8 @@
 import { expect, Locator, Page } from "@playwright/test";
 import { TC_01_ValidateLogin } from "../../test-data/automationExercise";
-import { automationExerciseBaseURL } from "../config/EnvironmentConfig";
+import { automationExerciseBaseURL, joinBaseURL } from "../config/EnvironmentConfig";
 import {URLConfig} from "../config/URLConfig";
+import { Constants } from "../constants/constants";
 
 export class AutomationExercise_LoginPage {
     private page: Page;
@@ -22,7 +23,7 @@ export class AutomationExercise_LoginPage {
         this.emailField = page.locator("//input[@data-qa='login-email']");
         this.passwordField = page.locator("//input[@data-qa='login-password']");
         this.loginButton = page.locator("//button[@data-qa='login-button']");
-        this.loginError = page.getByText(TC_01_ValidateLogin.loginError);
+        this.loginError = page.getByText(Constants.AutomationExercise.loginError);
         this.loggedInAs = page.getByText("Logged in as");
         this.logoutLink = page.getByText("Logout");
         this.signupLoginLink = page.getByRole("link", { name: "Signup / Login" });
@@ -57,10 +58,10 @@ export class AutomationExercise_LoginPage {
     }
 
     async submitValidCredentialsAndVerifyLogin(): Promise<void> {
-        await this.emailField.fill(TC_01_ValidateLogin.emptyValue);
-        await this.passwordField.fill(TC_01_ValidateLogin.emptyValue);
-        expect(await this.emailField.inputValue()).toBe(TC_01_ValidateLogin.emptyValue);
-        expect(await this.passwordField.inputValue()).toBe(TC_01_ValidateLogin.emptyValue);
+        await this.emailField.fill(Constants.emptyValue);
+        await this.passwordField.fill(Constants.emptyValue);
+        expect(await this.emailField.inputValue()).toBe(Constants.emptyValue);
+        expect(await this.passwordField.inputValue()).toBe(Constants.emptyValue);
         console.log("Email and password fields are cleared");
 
         await this.emailField.fill(TC_01_ValidateLogin.email);
@@ -88,7 +89,7 @@ export class AutomationExercise_LoginPage {
         await this.page.locator('//a[contains(@href, "/logout")]').click();
         console.log("Logout clicked");
         await expect(this.signupLoginLink).toBeVisible();
-        const loginURL = automationExerciseBaseURL + URLConfig.UI.AutomationExercise.loginURL;
+        const loginURL = joinBaseURL(automationExerciseBaseURL, URLConfig.UI.AutomationExercise.loginURL);
         await expect(this.page).toHaveURL(loginURL);
         await expect(this.loginForm).toBeVisible();
         console.log("User is navigated to login page and Login form is displayed");

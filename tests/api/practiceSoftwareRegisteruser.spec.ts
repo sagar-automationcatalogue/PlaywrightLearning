@@ -1,7 +1,9 @@
 import {expect, test} from '@playwright/test'
+import { joinBaseURL, practiceSoftwareTestingAPIBaseURL } from '../../src/config/EnvironmentConfig';
+import { URLConfig } from '../../src/config/URLConfig';
 
 test(`Register user in Practice Software testing`, async({request}) =>{
-    let response = await request.post(`https://api.practicesoftwaretesting.com/users/register`,{
+    let response = await request.post(joinBaseURL(practiceSoftwareTestingAPIBaseURL, URLConfig.API.PracticeSoftwareTesting.registerUser),{
         data:{            
             "first_name": "Sagar",
             "last_name": "Automation",

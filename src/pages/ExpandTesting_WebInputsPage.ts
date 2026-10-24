@@ -1,5 +1,7 @@
 import { expect, Locator, Page } from "@playwright/test";
 import { TC_03_WebInputsFormValidations } from "../../test-data/expnadTesting";
+import { expandTestingBaseURL, joinBaseURL } from "../config/EnvironmentConfig";
+import { URLConfig } from "../config/URLConfig";
 
 export class ExpandTesting_WebInputsPage {
     private page: Page;
@@ -29,8 +31,8 @@ export class ExpandTesting_WebInputsPage {
     }
 
     async openAndVerifyInputs(): Promise<void> {
-        await this.page.goto("https://practice.expandtesting.com/inputs");
-        await expect(this.page).toHaveURL("https://practice.expandtesting.com/inputs");
+        await this.page.goto(joinBaseURL(expandTestingBaseURL, URLConfig.UI.ExpandTesting.inputsURL));
+        await expect(this.page).toHaveURL(joinBaseURL(expandTestingBaseURL, URLConfig.UI.ExpandTesting.inputsURL));
         await expect(this.numberInput).toBeVisible();
         await expect(this.textInput).toBeVisible();
         await expect(this.passwordInput).toBeVisible();

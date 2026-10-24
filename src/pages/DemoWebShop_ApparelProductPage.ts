@@ -1,5 +1,8 @@
 import { expect, Locator, Page } from "@playwright/test";
 import { TC_05_ConfigureApparelProduct } from "../../test-data/demoWebShop";
+import { demoWebShopBaseURL, joinBaseURL } from "../config/EnvironmentConfig";
+import { URLConfig } from "../config/URLConfig";
+import { Constants } from "../constants/constants";
 
 export type ApparelProductStartingCounts = {
     wishlist: number;
@@ -74,7 +77,7 @@ export class DemoWebShop_ApparelProductPage {
         this.secondColorOption = page.locator(".color-squares label").nth(1);
         this.productQuantity = page.getByRole("textbox", { name: "Qty:" });
         this.addToWishlistButton = page.getByRole("button", { name: "Add to wishlist", exact: true });
-        this.wishlistConfirmation = page.getByText(TC_05_ConfigureApparelProduct.wishlistConfirmation, {
+        this.wishlistConfirmation = page.getByText(Constants.DemoWebShop.wishlistConfirmation, {
             exact: false
         });
         this.wishlistLink = page.getByRole("link", { name: /Wishlist \(\d+\)/ });
@@ -96,7 +99,7 @@ export class DemoWebShop_ApparelProductPage {
 
     async removePreviousSneakerEntriesAndCaptureCounts(): Promise<ApparelProductStartingCounts> {
         console.log("Removing any previous Blue and green Sneaker entries");
-        await this.page.goto("https://demowebshop.tricentis.com/wishlist");
+        await this.page.goto(joinBaseURL(demoWebShopBaseURL, URLConfig.UI.DemoWebShop.wishList));
         const oldWishlistSneakerCount = await this.oldWishlistSneakerRows.count();
 
         for (let index = 0; index < oldWishlistSneakerCount; index++) {
@@ -108,7 +111,7 @@ export class DemoWebShop_ApparelProductPage {
             await expect(this.oldWishlistSneakerRows).toHaveCount(0);
         }
 
-        await this.page.goto("https://demowebshop.tricentis.com/cart");
+        await this.page.goto(joinBaseURL(demoWebShopBaseURL, URLConfig.UI.DemoWebShop.cart));
         const oldCartSneakerCount = await this.oldCartSneakerRows.count();
 
         for (let index = 0; index < oldCartSneakerCount; index++) {
@@ -130,7 +133,7 @@ export class DemoWebShop_ApparelProductPage {
 
     async openApparelCategoryAndCapturePrice(): Promise<number> {
         await this.apparelShoesLink.click();
-        await expect(this.page).toHaveURL("https://demowebshop.tricentis.com/apparel-shoes");
+        await expect(this.page).toHaveURL(joinBaseURL(demoWebShopBaseURL, URLConfig.UI.DemoWebShop.apparelShoes));
         await expect(this.apparelShoesHeading).toBeVisible();
         console.log("Apparel & Shoes category page is displayed");
 
@@ -141,7 +144,7 @@ export class DemoWebShop_ApparelProductPage {
         console.log(`${TC_05_ConfigureApparelProduct.productName} catalog price: ${catalogPriceText}`);
 
         await this.sneakerProductLink.click();
-        await expect(this.page).toHaveURL("https://demowebshop.tricentis.com/blue-and-green-sneaker");
+        await expect(this.page).toHaveURL(joinBaseURL(demoWebShopBaseURL, URLConfig.UI.DemoWebShop.blueGreenSneaker));
         await expect(this.productHeading).toBeVisible();
         await expect(this.productAvailability).toBeVisible();
         await expect(this.productAvailability).toContainText(TC_05_ConfigureApparelProduct.availability);
@@ -180,7 +183,7 @@ export class DemoWebShop_ApparelProductPage {
 
     async addWishlistSneakerToCartAndVerify(startingCartCount: number, catalogPrice: number): Promise<void> {
         await this.wishlistLink.click();
-        await expect(this.page).toHaveURL("https://demowebshop.tricentis.com/wishlist");
+        await expect(this.page).toHaveURL(joinBaseURL(demoWebShopBaseURL, URLConfig.UI.DemoWebShop.wishList));
 
         await expect(this.wishlistSneakerRow).toBeVisible();
         await expect(this.wishlistSneakerRow).toContainText(`Size: ${TC_05_ConfigureApparelProduct.size}`);
@@ -193,7 +196,7 @@ export class DemoWebShop_ApparelProductPage {
         await this.addToCartCheckbox.check();
         await expect(this.addToCartCheckbox).toBeChecked();
         await this.addToCartButton.click();
-        await expect(this.page).toHaveURL("https://demowebshop.tricentis.com/cart");
+        await expect(this.page).toHaveURL(joinBaseURL(demoWebShopBaseURL, URLConfig.UI.DemoWebShop.cart));
 
         const cartCountAfterAdding = Number.parseInt(
             (await this.cartCount.innerText()).replace(/[^\d]/g, ""),

@@ -9,14 +9,14 @@ export const TC_02_DynamicRegistration={
     registrationPassword:"Automation@123",
     mismatchPassword:"Automation@456",
     usernamePrefix:"student-",
-    username:``,
+    /*username:``,
     emptyValue:``,
     messages:{
         requiredFields:"All fields are required.",
         passwordsDoNotMatch:"Passwords do not match.",
         registrationSuccess:"Successfully registered, you can log in now.",
         loginSuccess:"You logged into a secure area!"
-    }
+    }*/
 }
 
 export const TC_03_WebInputsFormValidations = {    
@@ -32,13 +32,13 @@ export const TC_03_WebInputsFormValidations = {
         contactNumber: `012-3456789`,
         pickupDate: `2026-09-20`,
         paymentMethod: `cashondelivery`,
-        requiredMessages: {
+        /*requiredMessages: {
             contactName: `Please enter your Contact name.`,
             contactNumber: `Please provide your Contact number.`,
             pickupDate: `Please provide valid Date.`,
             paymentMethod: `Please select the Paymeny Method.`
         },
-        successMessage: `Thank you for validating your ticket`
+        successMessage: `Thank you for validating your ticket`*/
     },
     dropdownValues: {
         simple: `1`,

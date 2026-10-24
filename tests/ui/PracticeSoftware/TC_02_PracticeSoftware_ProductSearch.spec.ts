@@ -1,10 +1,11 @@
 import { test } from '@playwright/test';
-import { TC_02_ProductSearch } from '../../../test-data/practiceSoftware.ts';
-import { PracticeSoftware_HomePage } from '../../../src/pages/PracticeSoftware_HomePage.ts';
-import { PracticeSoftware_CataloguePage } from '../../../src/pages/PracticeSoftware_CataloguePage.ts';
+import { TC_02_ProductSearch } from '../../../test-data/practiceSoftware';
+import { PracticeSoftware_HomePage } from '../../../src/pages/PracticeSoftware_HomePage';
+import { PracticeSoftware_CataloguePage } from '../../../src/pages/PracticeSoftware_CataloguePage';
+import { practiceSoftwareTestingBaseURL } from '../../../src/config/EnvironmentConfig';
 
 test('@sanity TC_02_PracticeSoftware_ProductSearch: Search → Sort → Pagination → Reset', async ({ page }) => {
-    const homeUrl = 'https://practicesoftwaretesting.com/';
+    const homeUrl = practiceSoftwareTestingBaseURL;
     const homePage = new PracticeSoftware_HomePage(page);
     const cataloguePage = new PracticeSoftware_CataloguePage(page);
 

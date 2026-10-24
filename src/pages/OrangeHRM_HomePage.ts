@@ -1,5 +1,7 @@
 import {Page, Locator, expect} from '@playwright/test'
 import { TC_01_LoginOrangeHrm } from '../../test-data/orangeHRM';
+import { URLConfig } from "../config/URLConfig";
+import { Constants } from "../constants/constants";
 
 export class OrangeHRM_HomePage{
     page: Page;
@@ -15,7 +17,7 @@ export class OrangeHRM_HomePage{
     constructor(page: Page){
         this.page = page;
         this.employeeManagementLnk = page.locator(`span[data-tooltip='Employee Management']`).first();
-        this.dashboardText = page.getByText(TC_01_LoginOrangeHrm.dashboardText, { exact: true });
+        this.dashboardText = page.getByText(Constants.OrangeHRM.dashboardText, { exact: true });
         this.userMenu = page.getByRole('link', { name: 'arrow_drop_down' });
         this.logoutFromAllBrowsersLink = page.getByRole('link', { name: 'Logout from all browsers' });
         this.logoutButton = page.getByRole('link', { name: 'oxd_logout_round Log Out' });
@@ -25,12 +27,12 @@ export class OrangeHRM_HomePage{
     }
 
     async verifyDashboard(): Promise<void>{
-        await expect(this.page).toHaveURL(/dashboard/i);
+        await expect(this.page).toHaveURL(new RegExp(URLConfig.UI.OrangeHRM.dashboardPathURL, 'i'));
         await expect(this.dashboardText.first()).toBeVisible();
     }
 
     async verifyDashboardLoaded(): Promise<void>{
-        await this.page.waitForURL(/.*dashboard/, { timeout: 30000 });
+        await this.page.waitForURL(new RegExp(URLConfig.UI.OrangeHRM.dashboardPathURL), { timeout: 30000 });
     }
 
     async clickEmployeeList(): Promise<void>{

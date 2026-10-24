@@ -1,8 +1,9 @@
 import { test } from '@playwright/test';
-import { DemoWebShop_HomePage } from '../../../src/pages/DemoWebShop_HomePage.ts';
-import { DemoWebShop_LoginPage } from '../../../src/pages/DemoWebShop_LoginPage.ts';
-import { DemoWebShop_CustomizedComputerPage } from '../../../src/pages/DemoWebShop_CustomizedComputerPage.ts';
-import { TC_04_BuildCustomizedComputer } from '../../../test-data/demoWebShop.ts';
+import { DemoWebShop_HomePage } from '../../../src/pages/DemoWebShop_HomePage';
+import { DemoWebShop_LoginPage } from '../../../src/pages/DemoWebShop_LoginPage';
+import { DemoWebShop_CustomizedComputerPage } from '../../../src/pages/DemoWebShop_CustomizedComputerPage';
+import { TC_04_BuildCustomizedComputer } from '../../../test-data/demoWebShop';
+import { demoWebShopBaseURL } from '../../../src/config/EnvironmentConfig';
 
 test('@regression TC_04_BuildCustomizedComputer: Configure a computer, verify cart prices and remove it', async ({ page }) => {
     const homePage = new DemoWebShop_HomePage(page);
@@ -10,7 +11,7 @@ test('@regression TC_04_BuildCustomizedComputer: Configure a computer, verify ca
     const customizedComputerPage = new DemoWebShop_CustomizedComputerPage(page);
 
     // Step 1: Log in with the existing user.
-    await page.goto('https://demowebshop.tricentis.com/');
+    await page.goto(demoWebShopBaseURL);
     await homePage.clickLoginLink();
     await loginPage.login_DemoWeshop(TC_04_BuildCustomizedComputer.email, TC_04_BuildCustomizedComputer.password);
     await loginPage.verifyLoginSuccessful();

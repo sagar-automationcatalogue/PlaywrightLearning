@@ -1,4 +1,6 @@
 import { Page, Locator, expect } from '@playwright/test';
+import { joinBaseURL } from '../config/EnvironmentConfig';
+import { URLConfig } from '../config/URLConfig';
 
 export class PracticeSoftware_HomePage {
     private mainNavigation: Locator;
@@ -35,13 +37,13 @@ export class PracticeSoftware_HomePage {
 
     async verifyAccountAndOpenAccountMenu(): Promise<void> {
         await expect(this.mainMenu).toBeVisible();
-        await expect(this.page).toHaveURL(/\/account/);
+        await expect(this.page).toHaveURL(new RegExp(URLConfig.UI.PracticeSoftwareTesting.accountURL));
         await expect(this.accountHeading).toBeVisible();
         await expect(this.accountMenuItem).toBeVisible();
         await this.accountMenuItem.click();
         await expect(this.myAccountLink).toBeVisible();
         await this.myAccountLink.click();
-        await expect(this.page).toHaveURL(/\/account/);
+        await expect(this.page).toHaveURL(new RegExp(URLConfig.UI.PracticeSoftwareTesting.accountURL));
         await expect(this.accountHeading).toBeVisible();
     }
 
@@ -56,7 +58,7 @@ export class PracticeSoftware_HomePage {
 
     async openProtectedAccountAndVerifyRedirect(homeUrl: string): Promise<void> {
         await expect(this.signInLink).toBeVisible();
-        await this.page.goto(`${homeUrl}account`);
-        await expect(this.page).toHaveURL(/\/auth\/login/);
+        await this.page.goto(joinBaseURL(homeUrl, URLConfig.UI.PracticeSoftwareTesting.accountURL));
+        await expect(this.page).toHaveURL(new RegExp(URLConfig.UI.PracticeSoftwareTesting.loginURL));
     }
 }

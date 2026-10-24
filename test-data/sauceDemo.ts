@@ -4,14 +4,14 @@ export const TC_01_LoginMatrix = {
     invalidUsername: 'Test12345',
     validPassword: 'secret_sauce',
     invalidPassword: '123456',
-    emptyValue: '',
+    /*emptyValue: '',
     errors: {
         usernameRequired: 'Epic sadface: Username is required',
         passwordRequired: 'Epic sadface: Password is required',
         invalidCredentials: 'Epic sadface: Username and password do not match any user in this service',
         lockedOut: 'Epic sadface: Sorry, this user has been locked out.',
         protectedRoute: "Epic sadface: You can only access '/inventory.html' when you are logged in."
-    }
+    }*/
 }
 
 export const TC_07_CheckoutInfo = {
@@ -22,11 +22,11 @@ export const TC_07_CheckoutInfo = {
     firstName: 'Playwright',
     lastName: 'Student',
     postalCode: '500081',
-    emptyValue: '',
+    /*emptyValue: '',
     errors: {
         firstNameRequired: 'Error: First Name is required',
         lastNameRequired: 'Error: Last Name is required',
         postalCodeRequired: 'Error: Postal Code is required'
-    }
+    }*/
 }
 

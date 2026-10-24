@@ -1,4 +1,5 @@
 import { Page, Locator, expect } from "@playwright/test";
+import { URLConfig } from "../config/URLConfig";
 
 export class DemoWebShop_OrdersPage {
     private page: Page;
@@ -14,7 +15,7 @@ export class DemoWebShop_OrdersPage {
     }
 
     async verifyOrderNumber(): Promise<void>{
-        await expect(this.page).toHaveURL(/\/checkout\/completed/);
+        await expect(this.page).toHaveURL(new RegExp(URLConfig.UI.DemoWebShop.completedOrderURL));
         await expect(this.thankYouTxt).toBeVisible();
         await expect(this.orderConfirmationTxt).toContainText('Your order has been successfully processed');        
         await expect(this.orderNumberItem).toHaveCount(1);

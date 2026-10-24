@@ -1,7 +1,6 @@
-import { expect, test } from '@playwright/test';
-import { TC_02_BooksCategory } from '../../../test-data/demoWebShop.ts';
-import { DemoWebShop_HomePage } from '../../../src/pages/DemoWebShop_HomePage.ts';
-import { DemoWebShop_CataloguePage } from '../../../src/pages/DemoWebShop_CataloguePage.ts';
+import { test } from '@playwright/test';
+import { DemoWebShop_HomePage } from '../../../src/pages/DemoWebShop_HomePage';
+import { DemoWebShop_CataloguePage } from '../../../src/pages/DemoWebShop_CataloguePage';
 
 test('@sanity TC_02_BooksCategory: Verify sorting, price filtering, page size and view', async ({ page }) => {
     // Step 1: Open Demo Web Shop and verify the home page.

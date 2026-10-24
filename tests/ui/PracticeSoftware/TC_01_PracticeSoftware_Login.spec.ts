@@ -1,11 +1,13 @@
 import { test } from '@playwright/test';
-import { TC_01_Login } from '../../../test-data/practiceSoftware.ts';
-import { PracticeSoftware_RegistrationPage } from '../../../src/pages/PracticeSoftware_RegistrationPage.ts';
-import { PracticeSoftware_LoginPage } from '../../../src/pages/PracticeSoftware_LoginPage.ts';
-import { PracticeSoftware_HomePage } from '../../../src/pages/PracticeSoftware_HomePage.ts';
+import { TC_01_Login } from '../../../test-data/practiceSoftware';
+import { PracticeSoftware_RegistrationPage } from '../../../src/pages/PracticeSoftware_RegistrationPage';
+import { PracticeSoftware_LoginPage } from '../../../src/pages/PracticeSoftware_LoginPage';
+import { PracticeSoftware_HomePage } from '../../../src/pages/PracticeSoftware_HomePage';
+import { practiceSoftwareTestingBaseURL } from '../../../src/config/EnvironmentConfig';
+import { Constants } from '../../../src/constants/constants';
 
 test('@smoke TC_01_PracticeSoftware_Login: Invalid Login → Valid Login → Account → Logout → Protected Route', async ({ page }) => {
-    const homeUrl = 'https://practicesoftwaretesting.com/';
+    const homeUrl = practiceSoftwareTestingBaseURL;
     const email = `${TC_01_Login.emailPrefix}${Date.now()}${TC_01_Login.emailDomain}`;
     const validPassword = TC_01_Login.validPassword;
     const registrationPage = new PracticeSoftware_RegistrationPage(page);
@@ -34,7 +36,7 @@ test('@smoke TC_01_PracticeSoftware_Login: Invalid Login → Valid Login → Acc
         email,
         TC_01_Login.registration.weakPassword,
         validPassword,
-        TC_01_Login.emptyValue
+        Constants.emptyValue
     );
 
     if (await page.getByPlaceholder('Your email').count()) {

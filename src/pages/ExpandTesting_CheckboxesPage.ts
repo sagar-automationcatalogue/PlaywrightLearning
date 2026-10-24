@@ -1,4 +1,6 @@
 import { expect, Locator, Page } from "@playwright/test";
+import { expandTestingBaseURL, joinBaseURL } from "../config/EnvironmentConfig";
+import { URLConfig } from "../config/URLConfig";
 
 export class ExpandTesting_CheckboxesPage {
     private page: Page;
@@ -12,8 +14,8 @@ export class ExpandTesting_CheckboxesPage {
     }
 
     async toggleCheckboxesAndVerifyStates(): Promise<void> {
-        await this.page.goto("https://practice.expandtesting.com/checkboxes");
-        await expect(this.page).toHaveURL("https://practice.expandtesting.com/checkboxes");
+        await this.page.goto(joinBaseURL(expandTestingBaseURL, URLConfig.UI.ExpandTesting.checkboxesURL));
+        await expect(this.page).toHaveURL(joinBaseURL(expandTestingBaseURL, URLConfig.UI.ExpandTesting.checkboxesURL));
         await this.checkbox1.check();
         await this.checkbox2.uncheck();
         await expect(this.checkbox1).toBeChecked();

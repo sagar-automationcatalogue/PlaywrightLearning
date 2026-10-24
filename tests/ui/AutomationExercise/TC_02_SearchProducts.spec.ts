@@ -1,5 +1,5 @@
 import { test } from '@playwright/test';
-import { AutomationExercise_ProductsPage } from '../../../src/pages/AutomationExercise_ProductsPage.ts';
+import { AutomationExercise_ProductsPage } from '../../../src/pages/AutomationExercise_ProductsPage';
 
 /** Testcase developed by Brahmam - Completed */
 test('@sanity TC_02_AutomationExercise: Search Products, Validate Results, Hover and Open Details', async ({ page }) => {

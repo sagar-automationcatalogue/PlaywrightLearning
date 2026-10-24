@@ -1,5 +1,7 @@
 import { Page, Locator, expect } from '@playwright/test';
 import { TC_01_Login } from '../../test-data/practiceSoftware';
+import { URLConfig } from '../config/URLConfig';
+import { Constants } from '../constants/constants';
 
 export class PracticeSoftware_LoginPage {
     private emailField: Locator;
@@ -21,7 +23,7 @@ export class PracticeSoftware_LoginPage {
     async openLoginFromSignIn(): Promise<void> {
         await expect(this.signInLink).toBeVisible();
         await this.signInLink.click();
-        await expect(this.page).toHaveURL(/\/auth\/login/);
+        await expect(this.page).toHaveURL(new RegExp(URLConfig.UI.PracticeSoftwareTesting.loginURL));
     }
 
     async verifyLoginControls(): Promise<void> {
@@ -47,26 +49,26 @@ export class PracticeSoftware_LoginPage {
         if (await this.invalidLoginMessage.count()) {
             await expect(this.invalidLoginMessage.first()).toBeVisible();
         }
-        await expect(this.page).toHaveURL(/\/auth\/login/);
+        await expect(this.page).toHaveURL(new RegExp(URLConfig.UI.PracticeSoftwareTesting.loginURL));
         await expect(this.signInLink).toBeVisible();
     }
 
     async submitValidLoginAndVerifyAccount(email: string, password: string): Promise<void> {
         await this.emailField.clear();
         await this.passwordField.clear();
-        await expect(this.emailField).toHaveValue(TC_01_Login.emptyValue);
-        await expect(this.passwordField).toHaveValue(TC_01_Login.emptyValue);
+        await expect(this.emailField).toHaveValue(Constants.emptyValue);
+        await expect(this.passwordField).toHaveValue(Constants.emptyValue);
         await this.emailField.fill(email);
         await this.passwordField.fill(password);
         await this.loginButton.click();
-        await expect(this.page).toHaveURL(/\/account/);
+        await expect(this.page).toHaveURL(new RegExp(URLConfig.UI.PracticeSoftwareTesting.accountURL));
     }
 
     async loginAndVerifyAccount(email: string, password: string): Promise<void> {
         await this.emailField.fill(email);
         await this.passwordField.fill(password);
         await this.loginButton.click();
-        await expect(this.page).toHaveURL(/\/account/);
+        await expect(this.page).toHaveURL(new RegExp(URLConfig.UI.PracticeSoftwareTesting.accountURL));
     }
 
     async verifyLoginFieldsVisible(): Promise<void> {
@@ -78,7 +80,7 @@ export class PracticeSoftware_LoginPage {
         await this.emailField.fill(email);
         await this.favoritesPasswordField.fill(password);
         await this.loginButton.click();
-        await expect(this.page).toHaveURL(/\/account/);
+        await expect(this.page).toHaveURL(new RegExp(URLConfig.UI.PracticeSoftwareTesting.accountURL));
         await expect(this.page.getByRole('heading', { name: 'My account', exact: true })).toBeVisible();
     }
 

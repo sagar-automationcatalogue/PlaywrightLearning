@@ -1,4 +1,5 @@
 import { Page, Locator, expect } from '@playwright/test';
+import { URLConfig } from '../config/URLConfig';
 
 export class PracticeSoftware_FavoritesPage {
     private mainMenu: Locator;
@@ -41,11 +42,11 @@ export class PracticeSoftware_FavoritesPage {
     async openFavoritesFromHomeViaAccount(): Promise<void> {
         await this.mainMenu.getByRole('menuitem').last().getByRole('button').click();
         await this.accountMenuLink.click();
-        await expect(this.page).toHaveURL(/\/account/);
+        await expect(this.page).toHaveURL(new RegExp(URLConfig.UI.PracticeSoftwareTesting.accountURL));
         const accountMenu = this.page.getByRole('menubar', { name: 'Main menu' });
         await accountMenu.getByRole('menuitem').last().getByRole('button').click();
         await accountMenu.getByRole('link', { name: /my favorites/i }).click();
-        await expect(this.page).toHaveURL(/\/account\/favorites/);
+        await expect(this.page).toHaveURL(new RegExp(URLConfig.UI.PracticeSoftwareTesting.favoritesURL));
     }
 
     async verifyBothFavoritesAndRemove(

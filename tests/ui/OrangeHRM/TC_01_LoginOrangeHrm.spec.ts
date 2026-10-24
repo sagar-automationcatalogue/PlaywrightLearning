@@ -1,7 +1,8 @@
 import { test } from '@playwright/test';
 import { OrangeHRM_HomePage } from '../../../src/pages/OrangeHRM_HomePage';
 import { OrangeHRM_LoginPage } from '../../../src/pages/OrangeHRM_LoginPage'
-import { TC_01_LoginOrangeHrm } from '../../../test-data/orangeHRM.ts';
+import { TC_01_LoginOrangeHrm } from '../../../test-data/orangeHRM';
+import { Constants } from '../../../src/constants/constants';
 
 test('@smoke TC_01_LoginOrangeHrm: Login → Valid Login → Dashboard → Logout', async ({ page }) => {
     const loginPage = new OrangeHRM_LoginPage(page);
@@ -15,11 +16,11 @@ test('@smoke TC_01_LoginOrangeHrm: Login → Valid Login → Dashboard → Logou
 
     console.log('Step 3: Submit an invalid password');
     await loginPage.loginWithCredentials(TC_01_LoginOrangeHrm.username, TC_01_LoginOrangeHrm.invalidPassword);
-    await loginPage.verifyInvalidLogin(TC_01_LoginOrangeHrm.invalidCredentialsPattern);
+    await loginPage.verifyInvalidLogin(Constants.OrangeHRM.invalidCredentialsPattern);
     console.log('Invalid credentials were rejected; the login page remains visible');
 
     console.log('Step 4: Clear the fields and log in with valid credentials');
-    await loginPage.verifyCredentialsCleared(TC_01_LoginOrangeHrm.emptyValue);
+    await loginPage.verifyCredentialsCleared(Constants.emptyValue);
     await loginPage.loginWithCredentials(TC_01_LoginOrangeHrm.username, TC_01_LoginOrangeHrm.validPassword);
     await homePage.verifyDashboard();
     console.log('Valid login succeeded and the Dashboard is visible');

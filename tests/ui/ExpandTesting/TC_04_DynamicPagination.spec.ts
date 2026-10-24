@@ -1,5 +1,5 @@
 import { test } from '@playwright/test';
-import { ExpandTesting_DynamicPaginationPage } from '../../../src/pages/ExpandTesting_DynamicPaginationPage.ts';
+import { ExpandTesting_DynamicPaginationPage } from '../../../src/pages/ExpandTesting_DynamicPaginationPage';
 
 test('@regression TC_04_DynamicPagination: Page Size, Search, Sorting, and Integrity', async ({ page }) => {
 	const dynamicPaginationPage = new ExpandTesting_DynamicPaginationPage(page);

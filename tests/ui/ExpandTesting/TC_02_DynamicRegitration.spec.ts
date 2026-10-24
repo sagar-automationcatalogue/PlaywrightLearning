@@ -1,6 +1,6 @@
 import { test } from "@playwright/test";
-import { ExpandTesting_LoginPage } from "../../../src/pages/ExpandTesting_LoginPage.ts";
-import { ExpandTesting_RegistrationPage } from "../../../src/pages/ExpandTesting_RegistrationPage.ts";
+import { ExpandTesting_LoginPage } from "../../../src/pages/ExpandTesting_LoginPage";
+import { ExpandTesting_RegistrationPage } from "../../../src/pages/ExpandTesting_RegistrationPage";
 
 /** Testcase developed by Soujanya - Completed */
 test(`@sanity TC_02_DynamicRegistration validation and login`, async ({ page }) => {

@@ -1,4 +1,5 @@
 import { Page, Locator, expect } from "@playwright/test";
+import { URLConfig } from "../config/URLConfig";
 
 export class OrangeHRM_EmployeeManagement{
     page: Page;
@@ -75,7 +76,7 @@ export class OrangeHRM_EmployeeManagement{
     }
 
     async verifyEmployeeListOpened(): Promise<void>{
-        await this.page.waitForURL(/.*pim.*employees/, { timeout: 30000 });
+        await this.page.waitForURL(new RegExp(URLConfig.UI.OrangeHRM.employeeListURL), { timeout: 30000 });
     }
 
     async openEmployeeProfile(employeeName: string): Promise<void>{
@@ -86,7 +87,7 @@ export class OrangeHRM_EmployeeManagement{
     }
 
     async searchEmployeeForAttachment(partialEmployeeName: string, employeeName: string): Promise<void>{
-        await expect(this.page).toHaveURL(/pim\/employees/i);
+        await expect(this.page).toHaveURL(new RegExp(URLConfig.UI.OrangeHRM.employeeListURL, 'i'));
         await expect(this.attachmentEmployeeTable).toBeVisible();
         await this.attachmentEmployeeNameSearch.pressSequentially(partialEmployeeName);
         const employeeSuggestion = this.attachmentAutocompleteSuggestions
@@ -110,7 +111,7 @@ export class OrangeHRM_EmployeeManagement{
     }
 
     async captureInitialEmployeeResultCount(): Promise<number>{
-        await expect(this.page).toHaveURL(/pim\/employees/i);
+        await expect(this.page).toHaveURL(new RegExp(URLConfig.UI.OrangeHRM.employeeListURL, 'i'));
         console.log('Step 2.2: Verify the Employee List and result table are displayed');
         await expect(this.employeeTable).toBeVisible();
         await expect(this.employeeRows.first()).toBeVisible();

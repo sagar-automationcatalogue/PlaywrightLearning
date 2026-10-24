@@ -1,9 +1,11 @@
 import { expect, Locator, Page } from "@playwright/test";
 import { TC_04_DynamicPagination } from "../../test-data/expnadTesting";
+import { expandTestingBaseURL, joinBaseURL } from "../config/EnvironmentConfig";
+import { URLConfig } from "../config/URLConfig";
 
 export class ExpandTesting_DynamicPaginationPage {
     private page: Page;
-    private readonly pageUrl = "https://practice.expandtesting.com/dynamic-pagination-table";
+    private readonly pageUrl = joinBaseURL(expandTestingBaseURL, URLConfig.UI.ExpandTesting.dynamicPaginationURL);
     private pageSizeSelect: Locator;
     private searchInput: Locator;
     private table: Locator;

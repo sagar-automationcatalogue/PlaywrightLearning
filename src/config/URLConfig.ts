@@ -4,6 +4,9 @@ export const URLConfig = {
             loginURL: '/login',
             productURL:'/products',
             cartURL: '/view_cart',
+            categoryProductsURL: '/category_products',
+            brandProductsURL: '/brand_products',
+            productDetailsURL: '/product_details',
         },
         DemoWebShop: {            
             loginURL: '/login',
@@ -14,6 +17,10 @@ export const URLConfig = {
             books: '/books',
             registerURL: '/register',
             searchURL: '/search',
+            computersURL: '/computers',
+            desktopsURL: '/desktops',
+            notebooksURL: '/notebooks',
+            completedOrderURL: '/checkout/completed',
         },
         ExpandTesting: {            
             dynamicControlsURL: '/dynamic-controls',
@@ -32,7 +39,18 @@ export const URLConfig = {
             loginURL: '/auth/login',
             dashboardURL: '/client/#/dashboard',
             demoLoginURL: '/web/index.php/auth/login',
-        },                
+            dashboardPathURL: '/dashboard',
+            employeeListURL: '/pim/employees',
+            retryLoginURL: '/securityAuthentication/retryLogin',
+            seamlessLoginURL: '/auth/seamlessLogin',
+        },
+        PracticeSoftwareTesting: {
+            accountURL: '/account',
+            favoritesURL: '/account/favorites',
+            loginURL: '/auth/login',
+            productURL: '/product',
+            registrationURL: '/auth/register',
+        },
         SauceDemo:{            
             inventoryURL: '/inventory.html',
         }        
@@ -40,6 +58,7 @@ export const URLConfig = {
     API:{        
         createUser: '/api/createAccount',
         AutomationExercise: {
+            createUser: '/createAccount',
             deleteUser: '/api/deleteAccount',
             getUserDetails: '/api/getUserDetailByEmai',
             productsList: '/api/productsList',

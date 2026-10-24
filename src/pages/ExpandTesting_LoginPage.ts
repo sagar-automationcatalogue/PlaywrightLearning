@@ -1,10 +1,13 @@
 import { expect, Locator, Page } from "@playwright/test";
 import { TC_01_LoginScenarios, TC_02_DynamicRegistration } from "../../test-data/expnadTesting";
+import { expandTestingBaseURL, joinBaseURL } from "../config/EnvironmentConfig";
+import { URLConfig } from "../config/URLConfig";
+import { Constants } from "../constants/constants";
 
 export class ExpandTesting_LoginPage {
     private page: Page;
-    private readonly loginUrl = "https://practice.expandtesting.com/login";
-    private readonly secureUrl = "https://practice.expandtesting.com/secure";
+    private readonly loginUrl = joinBaseURL(expandTestingBaseURL, URLConfig.UI.ExpandTesting.loginURL);
+    private readonly secureUrl = joinBaseURL(expandTestingBaseURL, URLConfig.UI.ExpandTesting.secureURL);
     private usernameField: Locator;
     private passwordField: Locator;
     private loginButton: Locator;
@@ -29,8 +32,8 @@ export class ExpandTesting_LoginPage {
         this.logoutMessage = page.getByText("You logged out of the secure area!", { exact: true });
         this.dynamicRegistrationLoginButton = page.getByRole("button", { name: "Login" });
         this.dynamicRegistrationLogoutButton = page.getByRole("link", { name: "Logout" });
-        this.dynamicRegistrationSuccessMessage = page.getByText(
-            TC_02_DynamicRegistration.messages.loginSuccess
+        this.dynamicRegistrationSuccessMessage = page.getByText(            
+            Constants.ExpandTesting.messages.loginSuccess
         );
     }
 
@@ -88,12 +91,12 @@ export class ExpandTesting_LoginPage {
         await this.loginButton.click();
         console.log("Submitting valid login credentials");
 
-        await expect(this.page).toHaveURL(/\/secure/);
+        await expect(this.page).toHaveURL(this.secureUrl);
         await expect(this.loginSuccessMessage).toBeVisible();
         await expect(this.logoutButton).toBeVisible();
 
         await this.page.reload();
-        await expect(this.page).toHaveURL(/\/secure/);
+        await expect(this.page).toHaveURL(this.secureUrl);
         await expect(this.secureAreaHeading).toBeVisible();
         await expect(this.logoutButton).toBeVisible();
         console.log("Authenticated state remains after refreshing the secure page");

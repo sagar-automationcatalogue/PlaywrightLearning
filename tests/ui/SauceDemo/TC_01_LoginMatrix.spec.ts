@@ -1,7 +1,8 @@
 import { test } from '@playwright/test';
-import { TC_01_LoginMatrix } from '../../../test-data/sauceDemo.ts';
-import { SauceDemo_LoginPage } from '../../../src/pages/SauceDemo_LoginPage.ts';
-import { SauceDemo_InventoryPage } from '../../../src/pages/SauceDemo_InventoryPage.ts';
+import { TC_01_LoginMatrix } from '../../../test-data/sauceDemo';
+import { SauceDemo_LoginPage } from '../../../src/pages/SauceDemo_LoginPage';
+import { SauceDemo_InventoryPage } from '../../../src/pages/SauceDemo_InventoryPage';
+import { Constants} from '../../../src/constants/constants';
 
 test('@smoke TC_01_Login matrix: Data-Driven Login Matrix:Empty->Invalid->Locked Out->Standard User', async ({ page }) => {
     const loginPage = new SauceDemo_LoginPage(page);
@@ -31,27 +32,27 @@ test('@smoke TC_01_Login matrix: Data-Driven Login Matrix:Empty->Invalid->Locked
     await loginPage.reloadLoginPage();
     await loginPage.submitWithoutPasswordAndVerify(
         TC_01_LoginMatrix.invalidUsername,
-        TC_01_LoginMatrix.emptyValue,
-        TC_01_LoginMatrix.errors.passwordRequired
+        Constants.emptyValue,
+        Constants.SauceDemo.errors.passwordRequired
     );
     console.log('Second negative login is submitted');
 
     await loginPage.reloadLoginPage();
     await loginPage.submitWithoutPasswordAndVerify(
         TC_01_LoginMatrix.standardUsername,
-        TC_01_LoginMatrix.emptyValue,
-        TC_01_LoginMatrix.errors.passwordRequired
+        Constants.emptyValue,
+        Constants.SauceDemo.errors.passwordRequired
     );
     console.log('Empty Password is rejected');
 
-    await loginPage.clearCredentialsAndVerify(TC_01_LoginMatrix.emptyValue);
+    await loginPage.clearCredentialsAndVerify(Constants.emptyValue);
     console.log('Inputs return to baseline');
 
     await loginPage.reloadLoginPage();
     await loginPage.submitInvalidCredentialsAndVerify(
         TC_01_LoginMatrix.invalidUsername,
         TC_01_LoginMatrix.invalidPassword,
-        TC_01_LoginMatrix.errors.invalidCredentials
+        Constants.SauceDemo.errors.invalidCredentials
     );
     console.log('Invalid credentials are populated');
 
@@ -66,11 +67,11 @@ test('@smoke TC_01_Login matrix: Data-Driven Login Matrix:Empty->Invalid->Locked
     await loginPage.submitLockedCredentialsAndVerify(
         TC_01_LoginMatrix.lockedOutUsername,
         TC_01_LoginMatrix.validPassword,
-        TC_01_LoginMatrix.errors.lockedOut
+        Constants.SauceDemo.errors.lockedOut
     );
     console.log('Locked user authentication is attempted');
 
-    await loginPage.clearCredentialsAndVerify(TC_01_LoginMatrix.emptyValue);
+    await loginPage.clearCredentialsAndVerify(Constants.emptyValue);
     console.log('Locked account behavior is correct');
 
     await loginPage.reloadLoginPage();
@@ -89,6 +90,6 @@ test('@smoke TC_01_Login matrix: Data-Driven Login Matrix:Empty->Invalid->Locked
     console.log('Logout succeeds');
 
     await page.goBack();
-    await loginPage.verifyProtectedRouteDenied(TC_01_LoginMatrix.errors.protectedRoute);
+    await loginPage.verifyProtectedRouteDenied(Constants.SauceDemo.errors.protectedRoute);
     console.log('Logged out state remains effective');
 });

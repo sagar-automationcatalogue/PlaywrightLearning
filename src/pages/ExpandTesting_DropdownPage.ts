@@ -1,5 +1,7 @@
 import { expect, Locator, Page } from "@playwright/test";
 import { TC_03_WebInputsFormValidations } from "../../test-data/expnadTesting";
+import { expandTestingBaseURL, joinBaseURL } from "../config/EnvironmentConfig";
+import { URLConfig } from "../config/URLConfig";
 
 export class ExpandTesting_DropdownPage {
     private page: Page;
@@ -15,8 +17,8 @@ export class ExpandTesting_DropdownPage {
     }
 
     async selectDropdownValuesAndVerify(): Promise<void> {
-        await this.page.goto("https://practice.expandtesting.com/dropdown");
-        await expect(this.page).toHaveURL("https://practice.expandtesting.com/dropdown");
+        await this.page.goto(joinBaseURL(expandTestingBaseURL, URLConfig.UI.ExpandTesting.dropdownURL));
+        await expect(this.page).toHaveURL(joinBaseURL(expandTestingBaseURL, URLConfig.UI.ExpandTesting.dropdownURL));
         await this.simpleDropdown.selectOption(TC_03_WebInputsFormValidations.dropdownValues.simple);
         await this.elementsPerPage.selectOption(TC_03_WebInputsFormValidations.dropdownValues.elementsPerPage);
         await this.countryDropdown.selectOption(TC_03_WebInputsFormValidations.dropdownValues.country);

@@ -1,9 +1,9 @@
 import { test } from '@playwright/test';
-import { TC_04_UpdateEmployee } from '../../../test-data/orangeHRM.ts';
-import { OrangeHRM_LoginPage } from '../../../src/pages/OrangeHRM_LoginPage.ts';
-import { OrangeHRM_HomePage } from '../../../src/pages/OrangeHRM_HomePage.ts';
-import { OrangeHRM_EmployeeManagement } from '../../../src/pages/OrangeHRM_EmployeeManagement.ts';
-import { OrangeHRM_EmployeeProfile } from '../../../src/pages/OrangeHRM_EmployeeProfile.ts';
+import { TC_04_UpdateEmployee } from '../../../test-data/orangeHRM';
+import { OrangeHRM_LoginPage } from '../../../src/pages/OrangeHRM_LoginPage';
+import { OrangeHRM_HomePage } from '../../../src/pages/OrangeHRM_HomePage';
+import { OrangeHRM_EmployeeManagement } from '../../../src/pages/OrangeHRM_EmployeeManagement';
+import { OrangeHRM_EmployeeProfile } from '../../../src/pages/OrangeHRM_EmployeeProfile';
 
 test('@sanity TC_04_UpdateEmployee - Update employee personal and contact details', async ({ page }) => {
   test.setTimeout(180000);

@@ -1,5 +1,8 @@
 import { expect, Locator, Page } from "@playwright/test";
 import { TC_03_WebInputsFormValidations } from "../../test-data/expnadTesting";
+import { expandTestingBaseURL, joinBaseURL } from "../config/EnvironmentConfig";
+import { URLConfig } from "../config/URLConfig";
+import { Constants } from "../constants/constants";
 
 export class ExpandTesting_FormValidationPage {
     private page: Page;
@@ -21,24 +24,24 @@ export class ExpandTesting_FormValidationPage {
         this.pickupDate = page.locator('[name="pickupdate"]');
         this.paymentMethod = page.locator('[name="payment"]');
         this.registerButton = page.getByRole("button", { name: " Register " });
-        this.requiredContactNameMessage = page.getByText(
-            TC_03_WebInputsFormValidations.formValidation.requiredMessages.contactName
+        this.requiredContactNameMessage = page.getByText(            
+            Constants.ExpandTesting.formValidation.requiredMessages.contactName
         );
-        this.requiredContactNumberMessage = page.getByText(
-            TC_03_WebInputsFormValidations.formValidation.requiredMessages.contactNumber
+        this.requiredContactNumberMessage = page.getByText(            
+            Constants.ExpandTesting.formValidation.requiredMessages.contactNumber
         );
-        this.requiredPickupDateMessage = page.getByText(
-            TC_03_WebInputsFormValidations.formValidation.requiredMessages.pickupDate
+        this.requiredPickupDateMessage = page.getByText(            
+            Constants.ExpandTesting.formValidation.requiredMessages.pickupDate
         );
-        this.requiredPaymentMethodMessage = page.getByText(
-            TC_03_WebInputsFormValidations.formValidation.requiredMessages.paymentMethod
+        this.requiredPaymentMethodMessage = page.getByText(            
+            Constants.ExpandTesting.formValidation.requiredMessages.paymentMethod
         );
-        this.successMessage = page.getByText(TC_03_WebInputsFormValidations.formValidation.successMessage);
+        this.successMessage = page.getByText(Constants.ExpandTesting.formValidation.successMessage);
     }
 
     async openAndVerifyRequiredFieldValidation(): Promise<void> {
-        await this.page.goto("https://practice.expandtesting.com/form-validation");
-        await expect(this.page).toHaveURL("https://practice.expandtesting.com/form-validation");
+        await this.page.goto(joinBaseURL(expandTestingBaseURL, URLConfig.UI.ExpandTesting.formValidationURL));
+        await expect(this.page).toHaveURL(joinBaseURL(expandTestingBaseURL, URLConfig.UI.ExpandTesting.formValidationURL));
         await this.contactName.fill(TC_03_WebInputsFormValidations.emptyValue);
         await this.contactNumber.fill(TC_03_WebInputsFormValidations.emptyValue);
         await this.pickupDate.fill(TC_03_WebInputsFormValidations.emptyValue);

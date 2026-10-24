@@ -1,17 +1,18 @@
 import { test } from '@playwright/test';
-import {DemoWebShop_HomePage} from '../../../src/pages/DemoWebShop_HomePage.ts'
-import {DemoWebShop_LoginPage } from '../../../src/pages/DemoWebShop_LoginPage.ts';
-import {DemoWebShop_CataloguePage} from '../../../src/pages/DemoWebShop_CataloguePage.ts'
-import {DemoWebShop_ShoppingCartPage} from '../../../src/pages/DemoWebshop_ShoppingCartPage.ts'
-import { DemoWebShop_CheckoutPage } from '../../../src/pages/DemoWebShop_CheckoutPage.ts';
-import { DemoWebShop_OrdersPage } from '../../../src/pages/DemoWebShop_OrdersPage.ts';
-import { TC_01_Authentication } from '../../../test-data/demoWebShop.ts';
+import {DemoWebShop_HomePage} from '../../../src/pages/DemoWebShop_HomePage'
+import {DemoWebShop_LoginPage } from '../../../src/pages/DemoWebShop_LoginPage';
+import {DemoWebShop_CataloguePage} from '../../../src/pages/DemoWebShop_CataloguePage'
+import {DemoWebShop_ShoppingCartPage} from '../../../src/pages/DemoWebshop_ShoppingCartPage'
+import { DemoWebShop_CheckoutPage } from '../../../src/pages/DemoWebShop_CheckoutPage';
+import { DemoWebShop_OrdersPage } from '../../../src/pages/DemoWebShop_OrdersPage';
+import { TC_01_Authentication } from '../../../test-data/demoWebShop';
+import { demoWebShopBaseURL } from '../../../src/config/EnvironmentConfig';
 
 test('@regression TC_DemoWebShop_OrderPlacement: Place an order for a notebook', async ({ page }) => {
     //HomePage
 
     console.log('Opening Demo Web Shop and logging in');
-    await page.goto('https://demowebshop.tricentis.com/');    
+    await page.goto(demoWebShopBaseURL);
     let ob_HomePage = new DemoWebShop_HomePage(page);
     await ob_HomePage.clickLoginLink();
 

@@ -1,7 +1,9 @@
 import {test, expect} from '@playwright/test'
+import { automationExerciseAPIBaseURL, joinBaseURL } from '../../src/config/EnvironmentConfig';
+import { URLConfig } from '../../src/config/URLConfig';
 
 test(`Retrive all Products-GET Request`, async({request})=>{
-    let response = await request.post(`https://automationexercise.com/api/createAccount`,
+    let response = await request.post(joinBaseURL(automationExerciseAPIBaseURL, URLConfig.API.AutomationExercise.createUser),
         {
             multipart:{
                 name: `test rao`,

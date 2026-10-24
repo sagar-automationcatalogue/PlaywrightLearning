@@ -1,5 +1,7 @@
 import { expect, Locator, Page } from "@playwright/test";
 import { TC_03_CategoryProducts } from "../../test-data/automationExercise";
+import { automationExerciseBaseURL, joinBaseURL } from "../config/EnvironmentConfig";
+import { URLConfig } from "../config/URLConfig";
 
 export class AutomationExercise_CategoryProductsPage {
     private page: Page;
@@ -49,8 +51,8 @@ export class AutomationExercise_CategoryProductsPage {
     }
 
     async openHomeAndVerifyCategoryAndBrandSidebars(): Promise<void> {
-        await this.page.goto("https://www.automationexercise.com/");
-        await expect(this.page).toHaveURL("https://www.automationexercise.com/");
+        await this.page.goto(automationExerciseBaseURL);
+        await expect(this.page).toHaveURL(automationExerciseBaseURL);
         await expect(this.categories).toBeVisible();
         await expect(this.categoryHeading).toBeVisible();
         await expect(this.brands).toBeVisible();
@@ -70,7 +72,7 @@ export class AutomationExercise_CategoryProductsPage {
         console.log("Women subcategories Dress, Tops and Saree are visible.");
 
         await this.womenTopsLink.click();
-        await expect(this.page).toHaveURL(/\/category_products\/\d+$/);
+        await expect(this.page).toHaveURL(new RegExp(`${URLConfig.UI.AutomationExercise.categoryProductsURL}/\\d+$`));
         await expect(this.page.getByRole("heading", { name: /^Women - Tops Products$/i })).toBeVisible();
 
         await expect(this.productNames.first()).toBeVisible();
@@ -87,7 +89,7 @@ export class AutomationExercise_CategoryProductsPage {
         await expect(this.menPanel).toBeVisible();
         await expect(this.menJeansLink).toBeVisible();
         await this.menJeansLink.click();
-        await expect(this.page).toHaveURL(/\/category_products\/\d+$/);
+        await expect(this.page).toHaveURL(new RegExp(`${URLConfig.UI.AutomationExercise.categoryProductsURL}/\\d+$`));
         await expect(this.page.getByRole("heading", { name: /^Men - Jeans Products$/i })).toBeVisible();
         const menJeansUrl = this.page.url();
         expect(menJeansUrl).not.toBe(womenTopsUrl);
@@ -101,7 +103,7 @@ export class AutomationExercise_CategoryProductsPage {
 
     async openAllProductsAndVerifyBrandLabels(): Promise<void> {
         await this.productsNavLink.click();
-        await expect(this.page).toHaveURL("https://www.automationexercise.com/products");
+        await expect(this.page).toHaveURL(joinBaseURL(automationExerciseBaseURL, URLConfig.UI.AutomationExercise.productURL));
         await expect(this.allProductsHeading).toBeVisible();
         await expect(this.brands).toBeVisible();
         await expect(this.poloLink).toBeVisible();
@@ -119,7 +121,7 @@ export class AutomationExercise_CategoryProductsPage {
 
     async selectPoloAndCaptureProducts(): Promise<string> {
         await this.poloLink.click();
-        await expect(this.page).toHaveURL(/\/brand_products\/Polo$/);
+        await expect(this.page).toHaveURL(new RegExp(`${URLConfig.UI.AutomationExercise.brandProductsURL}/Polo$`));
         await expect(this.poloProductsHeading).toBeVisible();
         await expect(this.productNames.first()).toBeVisible();
         const poloProductNames = await this.productNames.allTextContents();
@@ -131,7 +133,7 @@ export class AutomationExercise_CategoryProductsPage {
 
     async selectHmAndVerifyDifferentBrand(poloUrl: string): Promise<void> {
         await this.hmLink.click();
-        await expect(this.page).toHaveURL(/\/brand_products\/H(%26|&)M$/);
+        await expect(this.page).toHaveURL(new RegExp(`${URLConfig.UI.AutomationExercise.brandProductsURL}/H(%26|&)M$`));
         await expect(this.hmProductsHeading).toBeVisible();
         await expect(this.productNames.first()).toBeVisible();
         const hmProductNames = await this.productNames.allTextContents();
@@ -143,7 +145,7 @@ export class AutomationExercise_CategoryProductsPage {
 
     async restoreAllProductsAndVerifySidebarsUsable(): Promise<void> {
         await this.productsNavLink.click();
-        await expect(this.page).toHaveURL("https://www.automationexercise.com/products");
+        await expect(this.page).toHaveURL(joinBaseURL(automationExerciseBaseURL, URLConfig.UI.AutomationExercise.productURL));
         await expect(this.allProductsHeading).toBeVisible();
         await expect(this.categories).toBeVisible();
         await expect(this.brands).toBeVisible();

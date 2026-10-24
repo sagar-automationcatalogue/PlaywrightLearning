@@ -1,10 +1,13 @@
 import { expect, test } from '@playwright/test';
-import { TC_03_AdvancedSearch } from '../../../test-data/demoWebShop.ts';
+import { TC_03_AdvancedSearch } from '../../../test-data/demoWebShop';
+import { demoWebShopBaseURL, joinBaseURL } from '../../../src/config/EnvironmentConfig';
+import { URLConfig } from '../../../src/config/URLConfig';
+import { Constants } from '../../../src/constants/constants';
 
 test('@regression TC_03_AdvancedSearch: Advanced Search with Category, Subcategory and Price', async ({ page }) => {
     // Step 1: Open Demo Web Shop and verify the home page.
-    await page.goto('https://demowebshop.tricentis.com/');
-    await expect(page).toHaveURL('https://demowebshop.tricentis.com/');
+    await page.goto(demoWebShopBaseURL);
+    await expect(page).toHaveURL(demoWebShopBaseURL);
     await expect(page.getByRole('heading', { name: 'Welcome to our store', exact: true })).toBeVisible();
     console.log('Step 1: Demo Web Shop home page loaded.');
 
@@ -17,7 +20,7 @@ test('@regression TC_03_AdvancedSearch: Advanced Search with Category, Subcatego
     await storeSearch.fill(TC_03_AdvancedSearch.keyword);
     await expect(storeSearch).toHaveValue(TC_03_AdvancedSearch.keyword);
     await page.locator('.search-box').getByRole('button', { name: 'Search', exact: true }).click();
-    await expect(page).toHaveURL(new RegExp(`/search\\?q=${TC_03_AdvancedSearch.keyword}`, 'i'));
+    await expect(page).toHaveURL(new RegExp(`${URLConfig.UI.DemoWebShop.searchURL}\\?q=${TC_03_AdvancedSearch.keyword}`, 'i'));
 
     // Step 4: Verify the Search Results page is displayed.
     await expect(page.getByRole('heading', { name: 'Search', exact: true })).toBeVisible();
@@ -47,8 +50,8 @@ test('@regression TC_03_AdvancedSearch: Advanced Search with Category, Subcatego
     expect(hasComputerResult).toBe(true);
 
     // Step 8: Navigate to the dedicated Search page.
-    await page.goto('https://demowebshop.tricentis.com/search');
-    await expect(page).toHaveURL('https://demowebshop.tricentis.com/search');
+    await page.goto(joinBaseURL(demoWebShopBaseURL, URLConfig.UI.DemoWebShop.searchURL));
+    await expect(page).toHaveURL(joinBaseURL(demoWebShopBaseURL, URLConfig.UI.DemoWebShop.searchURL));
     await expect(page.getByRole('heading', { name: 'Search', exact: true })).toBeVisible();
 
     // Step 9: Enable Advanced search and verify its controls are visible.
@@ -93,7 +96,7 @@ test('@regression TC_03_AdvancedSearch: Advanced Search with Category, Subcatego
     // Step 16: Click the Search button in the search form.
     const searchButton = page.locator('.search-input').getByRole('button', { name: 'Search', exact: true });
     await searchButton.click();
-    await expect(page).toHaveURL(/\/search\?/);
+    await expect(page).toHaveURL(new RegExp(`${URLConfig.UI.DemoWebShop.searchURL}\\?`));
     expect(new URL(page.url()).searchParams.get('Isc')).toBe(TC_03_AdvancedSearch.subcategorySearchEnabled);
 
     // Step 17: Verify advanced search returns one or more products.
@@ -141,7 +144,7 @@ test('@regression TC_03_AdvancedSearch: Advanced Search with Category, Subcatego
     expect(new URL(page.url()).searchParams.get('Isc')).toBe(TC_03_AdvancedSearch.subcategorySearchDisabled);
     await expect(searchResults).toBeVisible();
     // The live store returns no matches for the parent category alone.
-    await expect(searchResults.getByText(TC_03_AdvancedSearch.noProductsMessage, { exact: true })).toBeVisible();
+    await expect(searchResults.getByText(Constants.DemoWebShop.noProductsMessage, { exact: true })).toBeVisible();
     await expect(products).toHaveCount(0);
     const secondAdvancedResultNames = await products.locator('.product-title').allInnerTexts();
     console.log('Steps 22-23: Products without subcategory search:', secondAdvancedResultNames);

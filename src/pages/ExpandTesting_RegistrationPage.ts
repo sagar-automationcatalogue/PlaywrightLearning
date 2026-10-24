@@ -1,10 +1,13 @@
 import { expect, Locator, Page } from "@playwright/test";
 import { TC_02_DynamicRegistration } from "../../test-data/expnadTesting";
+import { expandTestingBaseURL, joinBaseURL } from "../config/EnvironmentConfig";
+import { URLConfig } from "../config/URLConfig";
+import { Constants } from "../constants/constants";
 
 export class ExpandTesting_RegistrationPage {
     private page: Page;
-    private readonly registrationUrl = "https://practice.expandtesting.com/register";
-    private readonly loginUrl = "https://practice.expandtesting.com/login";
+    private readonly registrationUrl = joinBaseURL(expandTestingBaseURL, URLConfig.UI.ExpandTesting.registrationURL);
+    private readonly loginUrl = joinBaseURL(expandTestingBaseURL, URLConfig.UI.ExpandTesting.loginURL);
     private usernameField: Locator;
     private passwordField: Locator;
     private confirmPasswordField: Locator;
@@ -19,9 +22,9 @@ export class ExpandTesting_RegistrationPage {
         this.passwordField = page.getByLabel("Password", { exact: true });
         this.confirmPasswordField = page.getByLabel("Confirm Password");
         this.registerButton = page.getByRole("button", { name: "Register" });
-        this.requiredFieldsMessage = page.getByText(TC_02_DynamicRegistration.messages.requiredFields);
-        this.passwordMismatchMessage = page.getByText(TC_02_DynamicRegistration.messages.passwordsDoNotMatch);
-        this.registrationSuccessMessage = page.getByText(TC_02_DynamicRegistration.messages.registrationSuccess);
+        this.requiredFieldsMessage = page.getByText(Constants.ExpandTesting.messages.requiredFields);
+        this.passwordMismatchMessage = page.getByText(Constants.ExpandTesting.messages.passwordsDoNotMatch);
+        this.registrationSuccessMessage = page.getByText(Constants.ExpandTesting.messages.registrationSuccess);
     }
 
     async openRegistrationPageAndVerifyControls(): Promise<void> {
@@ -32,9 +35,9 @@ export class ExpandTesting_RegistrationPage {
         await expect(this.confirmPasswordField).toBeVisible();
         await expect(this.registerButton).toBeVisible();
 
-        await expect(this.usernameField).toHaveValue(TC_02_DynamicRegistration.emptyValue);
-        await expect(this.passwordField).toHaveValue(TC_02_DynamicRegistration.emptyValue);
-        await expect(this.confirmPasswordField).toHaveValue(TC_02_DynamicRegistration.emptyValue);
+        await expect(this.usernameField).toHaveValue(Constants.emptyValue);
+        await expect(this.passwordField).toHaveValue(Constants.emptyValue);
+        await expect(this.confirmPasswordField).toHaveValue(Constants.emptyValue);
     }
 
     async submitEmptyFormAndVerifyRequiredFields(): Promise<void> {
@@ -44,28 +47,28 @@ export class ExpandTesting_RegistrationPage {
     }
 
     async submitUsernameWithoutPasswordAndVerifyRequiredFields(): Promise<string> {
-        TC_02_DynamicRegistration.username =
+        Constants.ExpandTesting.username =
             `${TC_02_DynamicRegistration.usernamePrefix}${Date.now()}`;
-        console.log(`Generated registration username: ${TC_02_DynamicRegistration.username}`);
+        console.log(`Generated registration username: ${Constants.ExpandTesting.username}`);
 
-        await this.usernameField.fill(TC_02_DynamicRegistration.username);
+        await this.usernameField.fill(Constants.ExpandTesting.username);
         await this.confirmPasswordField.fill(TC_02_DynamicRegistration.registrationPassword);
-        await expect(this.usernameField).toHaveValue(TC_02_DynamicRegistration.username);
-        await expect(this.passwordField).toHaveValue(TC_02_DynamicRegistration.emptyValue);
+        await expect(this.usernameField).toHaveValue(Constants.ExpandTesting.username);
+        await expect(this.passwordField).toHaveValue(Constants.emptyValue);
         await expect(this.confirmPasswordField).toHaveValue(TC_02_DynamicRegistration.registrationPassword);
         await this.registerButton.click();
         await expect(this.requiredFieldsMessage).toBeVisible();
         console.log("Missing-password validation verified");
-        return TC_02_DynamicRegistration.username;
+        return Constants.ExpandTesting.username;
     }
 
     async clearFieldsAndVerifyReset(): Promise<void> {
-        await this.usernameField.fill(TC_02_DynamicRegistration.emptyValue);
-        await this.passwordField.fill(TC_02_DynamicRegistration.emptyValue);
-        await this.confirmPasswordField.fill(TC_02_DynamicRegistration.emptyValue);
-        await expect(this.usernameField).toHaveValue(TC_02_DynamicRegistration.emptyValue);
-        await expect(this.passwordField).toHaveValue(TC_02_DynamicRegistration.emptyValue);
-        await expect(this.confirmPasswordField).toHaveValue(TC_02_DynamicRegistration.emptyValue);
+        await this.usernameField.fill(Constants.emptyValue);
+        await this.passwordField.fill(Constants.emptyValue);
+        await this.confirmPasswordField.fill(Constants.emptyValue);
+        await expect(this.usernameField).toHaveValue(Constants.emptyValue);
+        await expect(this.passwordField).toHaveValue(Constants.emptyValue);
+        await expect(this.confirmPasswordField).toHaveValue(Constants.emptyValue);
     }
 
     async submitMismatchedPasswordsAndVerifyError(username: string): Promise<void> {

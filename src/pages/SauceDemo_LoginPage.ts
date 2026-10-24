@@ -1,5 +1,7 @@
 import { Page, Locator, expect } from '@playwright/test';
 import { TC_01_LoginMatrix } from '../../test-data/sauceDemo';
+import { sauceDemoBaseURL } from "../config/EnvironmentConfig";
+import { Constants } from '../constants/constants';
 
 export class SauceDemo_LoginPage {
     private usernameInput: Locator;
@@ -17,7 +19,7 @@ export class SauceDemo_LoginPage {
     }
 
     async openLoginPage(): Promise<void> {
-        await this.page.goto('https://www.saucedemo.com/');
+        await this.page.goto(sauceDemoBaseURL);
     }
 
     async reloadLoginPage(): Promise<void> {
@@ -35,14 +37,14 @@ export class SauceDemo_LoginPage {
 
     async submitEmptyLoginAndVerify(): Promise<void> {
         await this.loginButton.click();
-        await expect(this.errorMessage).toHaveText(TC_01_LoginMatrix.errors.usernameRequired);
+        await expect(this.errorMessage).toHaveText(Constants.SauceDemo.errors.usernameRequired);
     }
 
     async submitPasswordWithoutUsernameAndVerify(password: string): Promise<void> {
         await expect(this.usernameInput).toHaveText('');
         await this.passwordInput.fill(password);
         await this.loginButton.click();
-        await expect(this.errorMessage).toHaveText(TC_01_LoginMatrix.errors.usernameRequired);
+        await expect(this.errorMessage).toHaveText(Constants.SauceDemo.errors.usernameRequired);
     }
 
     async dismissLoginError(): Promise<void> {

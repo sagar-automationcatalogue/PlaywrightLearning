@@ -1,5 +1,8 @@
 import { Page, Locator,expect } from "@playwright/test";
 import { TC_02_BooksCategory } from "../../test-data/demoWebShop";
+import { demoWebShopBaseURL, joinBaseURL } from "../config/EnvironmentConfig";
+import { URLConfig } from "../config/URLConfig";
+import { Constants } from "../constants/constants";
 
 export class DemoWebShop_CataloguePage {
     private page: Page
@@ -45,7 +48,7 @@ export class DemoWebShop_CataloguePage {
         this.viewDropdown = page.locator('#products-viewmode');
         this.productItems = page.locator('.product-item');
         this.priceFilterLnk = page.getByRole('link', { name: TC_02_BooksCategory.priceFilterLabel, exact: true });
-        this.removeFilterLnk = page.getByRole('link', { name: TC_02_BooksCategory.removeFilterLabel, exact: true });
+        this.removeFilterLnk = page.getByRole('link', { name: Constants.DemoWebShop.removeFilterLabel, exact: true });
         this.productGrid = page.locator('.product-grid');
         this.productList = page.locator('.product-list');
         this.viewLayOut = page.locator(`#products-viewmode`)
@@ -53,7 +56,7 @@ export class DemoWebShop_CataloguePage {
 
     async openBooksCategory(): Promise<void>{
         await this.booksLnk.first().click();
-        await expect(this.page).toHaveURL('https://demowebshop.tricentis.com/books');
+        await expect(this.page).toHaveURL(joinBaseURL(demoWebShopBaseURL, URLConfig.UI.DemoWebShop.books));
         await expect(this.booksHdr).toBeVisible();
         console.log('Books category page is displayed');
     }
@@ -66,7 +69,7 @@ export class DemoWebShop_CataloguePage {
     }
 
     async sortProductsByNameAndVerify(): Promise<void>{
-        await this.sortDropdown.selectOption({ label: TC_02_BooksCategory.sortByName });
+        await this.sortDropdown.selectOption({ label: Constants.DemoWebShop.sortByName });
         await expect(this.page).toHaveURL(/orderby=5/);
 
         const sortedProductNames = await this.productTitles.allInnerTexts();
@@ -81,7 +84,7 @@ export class DemoWebShop_CataloguePage {
     }
 
     async sortProductsByPriceAndVerify(): Promise<void>{
-        await this.sortDropdown.selectOption({ label: TC_02_BooksCategory.sortByPrice });
+        await this.sortDropdown.selectOption({ label: Constants.DemoWebShop.sortByPrice });
         await expect(this.page).toHaveURL(/orderby=10/);
 
         const priceTexts = await this.productPrices.allInnerTexts();
@@ -178,9 +181,9 @@ export class DemoWebShop_CataloguePage {
     async openProductCategory(): Promise<void>{
         console.log('Opening the Computers > Notebooks category');
         await this.computersLnk.click();
-        await expect(this.page).toHaveURL(/\/computers$/);
+        await expect(this.page).toHaveURL(new RegExp(`${URLConfig.UI.DemoWebShop.computersURL}$`));
         await this.NotebookLnk.click();
-        await expect(this.page).toHaveURL(/\/notebooks$/);
+        await expect(this.page).toHaveURL(new RegExp(`${URLConfig.UI.DemoWebShop.notebooksURL}$`));
         await expect(this.NotebookHdr).toBeVisible();
     }
 
