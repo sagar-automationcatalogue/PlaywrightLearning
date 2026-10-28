@@ -2,6 +2,7 @@ import { expect, Locator, Page } from "@playwright/test";
 import { TC_02_AutomationExercise } from "../../test-data/automationExercise";
 import { automationExerciseBaseURL, joinBaseURL } from "../config/EnvironmentConfig";
 import { URLConfig } from "../config/URLConfig";
+import { PlaywrightUtils } from "../utils/PlaywrightUtils";
 
 export class AutomationExercise_ProductsPage {
     private page: Page;
@@ -41,8 +42,6 @@ export class AutomationExercise_ProductsPage {
     }
 
     async openHomeAndProductsCatalog(): Promise<number> {
-        await this.page.goto(automationExerciseBaseURL);
-        await expect(this.page).toHaveURL(automationExerciseBaseURL);
         await expect(this.homeLink).toBeVisible();
         await expect(this.homeSlider).toBeVisible();
         console.log("Home page is displayed.");
@@ -60,8 +59,11 @@ export class AutomationExercise_ProductsPage {
 
     async searchTopProductsAndVerifyRelatedCategories(baselineProductCount: number): Promise<string[]> {
         await expect(this.searchInput).toBeVisible();
-        await this.searchInput.fill(TC_02_AutomationExercise.category);
-        await expect(this.searchInput).toHaveValue(TC_02_AutomationExercise.category);
+        await PlaywrightUtils.clearAndFillInput(
+            this.searchInput,
+            TC_02_AutomationExercise.category,
+            "Search Product"
+        );
         await expect(this.searchButton).toBeVisible();
         await this.searchButton.click();
         await expect(this.searchedProductsHeading).toBeVisible();

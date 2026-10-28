@@ -3,12 +3,15 @@ import { OrangeHRM_HomePage } from '../../../src/pages/OrangeHRM_HomePage';
 import { OrangeHRM_LoginPage } from '../../../src/pages/OrangeHRM_LoginPage'
 import { TC_01_LoginOrangeHrm } from '../../../test-data/orangeHRM';
 import { Constants } from '../../../src/constants/constants';
+import { orangeHRMBaseURL } from '../../../src/config/EnvironmentConfig';
+import { PlaywrightUtils } from '../../../src/utils/PlaywrightUtils';
 
 test('@smoke TC_01_LoginOrangeHrm: Login → Valid Login → Dashboard → Logout', async ({ page }) => {
     const loginPage = new OrangeHRM_LoginPage(page);
     const homePage = new OrangeHRM_HomePage(page);
 
     console.log('Step 1: Open the OrangeHRM login page');
+    await PlaywrightUtils.navigateToURL(page, orangeHRMBaseURL);
     await loginPage.openLoginPage();
 
     console.log('Step 2: Verify the login page and its controls');

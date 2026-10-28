@@ -38,8 +38,10 @@ export class PracticeSoftware_RegistrationPage {
         this.registrationForm = page.locator('form');
     }
 
-    async openRegistrationPage(homeUrl: string): Promise<void> {
-        await this.page.goto(joinBaseURL(homeUrl, URLConfig.UI.PracticeSoftwareTesting.registrationURL));
+    async openRegistrationPage(homeUrl: string, navigate = true): Promise<void> {
+        if (navigate) {
+            await this.page.goto(joinBaseURL(homeUrl, URLConfig.UI.PracticeSoftwareTesting.registrationURL));
+        }
         await expect(this.customerRegistrationHeading).toBeVisible();
     }
 

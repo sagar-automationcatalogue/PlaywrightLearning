@@ -3,6 +3,7 @@ import { TC_05_ConfigureApparelProduct } from "../../test-data/demoWebShop";
 import { demoWebShopBaseURL, joinBaseURL } from "../config/EnvironmentConfig";
 import { URLConfig } from "../config/URLConfig";
 import { Constants } from "../constants/constants";
+import { HeaderComponents } from "../components/HeaderComponents";
 
 export type ApparelProductStartingCounts = {
     wishlist: number;
@@ -19,7 +20,6 @@ export class DemoWebShop_ApparelProductPage {
     private updateShoppingCartButton: Locator;
     private wishlistCount: Locator;
     private cartCount: Locator;
-    private apparelShoesLink: Locator;
     private apparelShoesHeading: Locator;
     private sneakerProduct: Locator;
     private sneakerProductLink: Locator;
@@ -42,9 +42,11 @@ export class DemoWebShop_ApparelProductPage {
     private cartQuantityField: Locator;
     private cartUnitPrice: Locator;
     private cartSubtotal: Locator;
+    private header: HeaderComponents;
 
     constructor(page: Page) {
         this.page = page;
+        this.header = new HeaderComponents(page);
         this.wishlistRows = page.locator(".cart-item-row");
         this.oldWishlistSneakerRows = this.wishlistRows.filter({
             hasText: TC_05_ConfigureApparelProduct.productName
@@ -57,7 +59,6 @@ export class DemoWebShop_ApparelProductPage {
         this.updateShoppingCartButton = page.getByRole("button", { name: "Update shopping cart", exact: true });
         this.wishlistCount = page.locator(".wishlist-qty");
         this.cartCount = page.locator(".cart-qty");
-        this.apparelShoesLink = page.getByRole("link", { name: "Apparel & Shoes", exact: true }).first();
         this.apparelShoesHeading = page.getByRole("heading", { name: "Apparel & Shoes", exact: true });
         this.sneakerProduct = page.locator(".product-item").filter({
             has: page.getByRole("link", { name: TC_05_ConfigureApparelProduct.productName, exact: true })
@@ -132,8 +133,7 @@ export class DemoWebShop_ApparelProductPage {
     }
 
     async openApparelCategoryAndCapturePrice(): Promise<number> {
-        await this.apparelShoesLink.click();
-        await expect(this.page).toHaveURL(joinBaseURL(demoWebShopBaseURL, URLConfig.UI.DemoWebShop.apparelShoes));
+        await this.header.openApparelAndShoes();
         await expect(this.apparelShoesHeading).toBeVisible();
         console.log("Apparel & Shoes category page is displayed");
 

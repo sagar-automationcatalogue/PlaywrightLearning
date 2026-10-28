@@ -1,6 +1,7 @@
 import {test , expect} from '@playwright/test'
 import { TC_07_CheckoutInfo } from '../../../test-data/sauceDemo';
 import { sauceDemoBaseURL } from '../../../src/config/EnvironmentConfig';
+import { PlaywrightUtils } from '../../../src/utils/PlaywrightUtils';
 import { Constants } from '../../../src/constants/constants';
 
 /** Testcase developed by Tarun - Need to check Completed */
@@ -8,7 +9,7 @@ test('@sanity TC_07_CheckoutInfo:Checkout Information Required-Field Validation 
 
 const context = await browser.newContext();
 const page = await context.newPage();
-await page.goto(sauceDemoBaseURL);
+await PlaywrightUtils.navigateToURL(page, sauceDemoBaseURL);
 await page.getByPlaceholder('Username').fill(TC_07_CheckoutInfo.username);
 await page.getByPlaceholder('Password').fill(TC_07_CheckoutInfo.password);
 await page.getByRole('button').click();

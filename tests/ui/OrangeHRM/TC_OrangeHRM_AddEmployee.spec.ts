@@ -3,9 +3,10 @@ import { OrangeHRM_LoginPage } from '../../../src/pages/OrangeHRM_LoginPage';
 import { OrangeHRM_HomePage } from '../../../src/pages/OrangeHRM_HomePage';
 import { OrangeHRM_EmployeeManagement } from '../../../src/pages/OrangeHRM_EmployeeManagement';
 import { orangeHRMBaseURL } from '../../../src/config/EnvironmentConfig';
+import { PlaywrightUtils } from '../../../src/utils/PlaywrightUtils';
 
 test(`OrangeHRM - Add Employee`, async({page})=>{
-    await page.goto(orangeHRMBaseURL);
+    await PlaywrightUtils.navigateToURL(page, orangeHRMBaseURL);
     
     let ob = new OrangeHRM_LoginPage(page);
     await ob.login();

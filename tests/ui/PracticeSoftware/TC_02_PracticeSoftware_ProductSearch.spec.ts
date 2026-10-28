@@ -3,13 +3,15 @@ import { TC_02_ProductSearch } from '../../../test-data/practiceSoftware';
 import { PracticeSoftware_HomePage } from '../../../src/pages/PracticeSoftware_HomePage';
 import { PracticeSoftware_CataloguePage } from '../../../src/pages/PracticeSoftware_CataloguePage';
 import { practiceSoftwareTestingBaseURL } from '../../../src/config/EnvironmentConfig';
+import { PlaywrightUtils } from '../../../src/utils/PlaywrightUtils';
 
 test('@sanity TC_02_PracticeSoftware_ProductSearch: Search → Sort → Pagination → Reset', async ({ page }) => {
     const homeUrl = practiceSoftwareTestingBaseURL;
     const homePage = new PracticeSoftware_HomePage(page);
     const cataloguePage = new PracticeSoftware_CataloguePage(page);
 
-    await homePage.openHomeAndVerifyNavigation(homeUrl);
+    await PlaywrightUtils.navigateToURL(page, homeUrl);
+    await homePage.openHomeAndVerifyNavigation(homeUrl, false);
     const initialCount = await cataloguePage.captureInitialProductCount();
 
     const pliersNames = await cataloguePage.searchAndVerifyResults(

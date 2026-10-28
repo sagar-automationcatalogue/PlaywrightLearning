@@ -1,6 +1,5 @@
 import { Page, Locator, expect } from "@playwright/test";
 import { OrangeHRM_Data, TC_01_LoginOrangeHrm } from '../../test-data/orangeHRM';
-import { orangeHRMBaseURL } from "../config/EnvironmentConfig";
 import { URLConfig } from "../config/URLConfig";
 import { Constants } from "../constants/constants";
 
@@ -30,7 +29,7 @@ export class OrangeHRM_LoginPage{
     }
 
     async openLoginPage(): Promise<void>{
-        await this.page.goto(orangeHRMBaseURL, { waitUntil: 'domcontentloaded' });
+        await expect(this.usernameInput).toBeVisible();
     }
 
     async loginAt(baseUrl: string, username: string, password: string): Promise<void>{

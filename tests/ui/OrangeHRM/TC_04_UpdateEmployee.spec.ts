@@ -1,5 +1,7 @@
 import { test } from '@playwright/test';
 import { TC_04_UpdateEmployee } from '../../../test-data/orangeHRM';
+import { orangeHRMBaseURL } from '../../../src/config/EnvironmentConfig';
+import { PlaywrightUtils } from '../../../src/utils/PlaywrightUtils';
 import { OrangeHRM_LoginPage } from '../../../src/pages/OrangeHRM_LoginPage';
 import { OrangeHRM_HomePage } from '../../../src/pages/OrangeHRM_HomePage';
 import { OrangeHRM_EmployeeManagement } from '../../../src/pages/OrangeHRM_EmployeeManagement';
@@ -14,6 +16,7 @@ test('@sanity TC_04_UpdateEmployee - Update employee personal and contact detail
   const employeeProfilePage = new OrangeHRM_EmployeeProfile(page);
 
   // Step 1: Open OrangeHRM login page
+  await PlaywrightUtils.navigateToURL(page, orangeHRMBaseURL);
   await loginPage.openLoginPage();
   await loginPage.verifyLoginPageHeader();
 

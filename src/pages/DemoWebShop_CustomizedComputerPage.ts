@@ -3,6 +3,7 @@ import { TC_04_BuildCustomizedComputer } from "../../test-data/demoWebShop";
 import {demoWebShopBaseURL, joinBaseURL} from '../config/EnvironmentConfig';
 import {URLConfig} from '../config/URLConfig';
 import { Constants } from "../constants/constants";
+import { HeaderComponents } from "../components/HeaderComponents";
 
 export type CustomizedComputerCartState = {
     initialCartRows: string[];
@@ -13,11 +14,8 @@ export type CustomizedComputerCartState = {
 
 export class DemoWebShop_CustomizedComputerPage {
     private page: Page;
-    private cartLink: Locator;
     private shoppingCartHeading: Locator;
     private cartRows: Locator;
-    private headerCartQuantity: Locator;
-    private computersLink: Locator;
     private computersHeading: Locator;
     private subcategories: Locator;
     private desktopsLink: Locator;
@@ -45,17 +43,16 @@ export class DemoWebShop_CustomizedComputerPage {
     private configuredComputerRow: Locator;
     private updateShoppingCartButton: Locator;
     private emptyCartMessage: Locator;
+    private header: HeaderComponents;
 
     constructor(page: Page) {
         this.page = page;
-        this.cartLink = page.locator("#topcartlink").getByRole("link");
+        this.header = new HeaderComponents(page);
         this.shoppingCartHeading = page.getByRole("heading", {
             name: Constants.DemoWebShop.shoppingCartHeading,
             exact: true
         });
         this.cartRows = page.locator(".cart-item-row");
-        this.headerCartQuantity = page.locator("#topcartlink .cart-qty");
-        this.computersLink = page.locator(".top-menu").getByRole("link", { name: "Computers", exact: true });
         this.computersHeading = page.getByRole("heading", { name: "Computers", exact: true });
         this.subcategories = page.locator(".sub-category-grid");
         this.desktopsLink = this.subcategories.getByRole("link", { name: "Desktops", exact: true });
@@ -124,14 +121,14 @@ export class DemoWebShop_CustomizedComputerPage {
     }
 
     async captureInitialCartState(): Promise<CustomizedComputerCartState> {
-        await this.cartLink.click();
+        await this.header.openCart();
         await expect(this.shoppingCartHeading).toBeVisible();
         const initialCartRows = await this.cartRows.allInnerTexts();
         const initialQuantities: string[] = [];
         for (const row of await this.cartRows.all()) {
             initialQuantities.push(await row.locator(".qty-input").inputValue());
         }
-        const initialCartCountText = await this.headerCartQuantity.innerText();
+        const initialCartCountText = await this.header.getCartQuantityText();
         const initialCartCount = Number(initialCartCountText.replace(/[^0-9]/g, ""));
         expect(Number.isInteger(initialCartCount)).toBe(true);
 
@@ -144,8 +141,7 @@ export class DemoWebShop_CustomizedComputerPage {
     }
 
     async openComputersAndVerifyCategories(): Promise<void> {
-        await this.computersLink.click();
-        await expect(this.page).toHaveURL(new RegExp(`${URLConfig.UI.DemoWebShop.computersURL}$`));
+        await this.header.openComputers();
         await expect(this.computersHeading).toBeVisible();
 
         await expect(this.desktopsLink).toBeVisible();
@@ -232,13 +228,11 @@ export class DemoWebShop_CustomizedComputerPage {
         await expect(this.addToCartNotification).toContainText(Constants.DemoWebShop.addToCartConfirmation);
         console.log("Steps 18-20: Two configured computers successfully added to the cart.");
 
-        await expect(this.headerCartQuantity).toHaveText(
-            `(${initialCartCount + TC_04_BuildCustomizedComputer.requestedQuantity})`
+        await expect.poll(() => this.header.getCartQuantity()).toBe(
+            initialCartCount + TC_04_BuildCustomizedComputer.requestedQuantity
         );
 
-        await this.cartLink.click();
-        await expect(this.page).toHaveURL(joinBaseURL(demoWebShopBaseURL, URLConfig.UI.DemoWebShop.cart));
-        await expect(this.shoppingCartHeading).toBeVisible();
+        await this.header.openCart();
 
         await expect(this.configuredComputerRow).toHaveCount(1);
         await expect(this.configuredComputerRow).toBeVisible();
@@ -287,7 +281,7 @@ export class DemoWebShop_CustomizedComputerPage {
         await expect(this.configuredComputerRow).toHaveCount(0);
         console.log("Step 31: Configured computer removed.");
 
-        await expect(this.headerCartQuantity).toHaveText(state.initialCartCountText);
+        await expect(await this.header.getCartQuantityText()).toBe(state.initialCartCountText);
         await expect(this.cartRows).toHaveCount(state.initialCartRows.length);
         expect(await this.cartRows.allInnerTexts()).toEqual(state.initialCartRows);
         const remainingQuantities: string[] = [];

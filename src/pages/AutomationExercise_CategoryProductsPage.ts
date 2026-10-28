@@ -51,8 +51,6 @@ export class AutomationExercise_CategoryProductsPage {
     }
 
     async openHomeAndVerifyCategoryAndBrandSidebars(): Promise<void> {
-        await this.page.goto(automationExerciseBaseURL);
-        await expect(this.page).toHaveURL(automationExerciseBaseURL);
         await expect(this.categories).toBeVisible();
         await expect(this.categoryHeading).toBeVisible();
         await expect(this.brands).toBeVisible();

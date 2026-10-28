@@ -4,11 +4,12 @@ import { DemoWebShop_HomePage } from '../../../src/pages/DemoWebShop_HomePage';
 import { DemoWebShop_LoginPage } from '../../../src/pages/DemoWebShop_LoginPage';
 import { DemoWebShop_CustomerInfoPage } from '../../../src/pages/DemoWebShop_CustomerInfoPage';
 import {demoWebShopBaseURL} from '../../../src/config/EnvironmentConfig';
+import { PlaywrightUtils } from '../../../src/utils/PlaywrightUtils';
 
 test('@smoke TC_01_Authentication: Invalid Login, Valid Login and Logout', async ({ page }) => {
 	// Step 1: Launch browser and open Demo Web Shop.
 	console.log('Launching Demo Web Shop');
-	await page.goto(demoWebShopBaseURL);
+	await PlaywrightUtils.navigateToURL(page, demoWebShopBaseURL);
 
 	// Step 2,3,4: Verify the home page is loaded.
 	await expect(page).toHaveURL(demoWebShopBaseURL);

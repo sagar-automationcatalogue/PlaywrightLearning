@@ -39,8 +39,6 @@ export class ExpandTesting_LoginPage {
 
     async openLoginPage(): Promise<void> {
         console.log("Opening the ExpandTesting Login page");
-        await this.page.goto(this.loginUrl);
-        await expect(this.page).toHaveURL(this.loginUrl);
         await expect(this.page.getByRole("heading").first()).toBeVisible();
 
         await expect(this.usernameField).toBeVisible();

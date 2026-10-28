@@ -23,15 +23,19 @@ export class PracticeSoftware_HomePage {
         this.signOutOption = this.mainMenu.getByText('Sign out', { exact: true });
     }
 
-    async openHomeAndVerifyShell(homeUrl: string): Promise<void> {
-        await this.page.goto(homeUrl);
+    async openHomeAndVerifyShell(homeUrl: string, navigate = true): Promise<void> {
+        if (navigate) {
+            await this.page.goto(homeUrl);
+        }
         await expect(this.page).toHaveTitle(/Practice Software Testing.*Toolshop/i);
         await expect(this.mainNavigation).toBeVisible();
         await expect(this.signInLink).toBeVisible();
     }
 
-    async openHomeAndVerifyNavigation(homeUrl: string): Promise<void> {
-        await this.page.goto(homeUrl);
+    async openHomeAndVerifyNavigation(homeUrl: string, navigate = true): Promise<void> {
+        if (navigate) {
+            await this.page.goto(homeUrl);
+        }
         await expect(this.mainNavigation).toBeVisible();
     }
 

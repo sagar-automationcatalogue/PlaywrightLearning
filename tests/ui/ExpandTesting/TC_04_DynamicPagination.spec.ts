@@ -1,5 +1,8 @@
 import { test } from '@playwright/test';
 import { ExpandTesting_DynamicPaginationPage } from '../../../src/pages/ExpandTesting_DynamicPaginationPage';
+import { expandTestingBaseURL, joinBaseURL } from '../../../src/config/EnvironmentConfig';
+import { URLConfig } from '../../../src/config/URLConfig';
+import { PlaywrightUtils } from '../../../src/utils/PlaywrightUtils';
 
 test('@regression TC_04_DynamicPagination: Page Size, Search, Sorting, and Integrity', async ({ page }) => {
 	const dynamicPaginationPage = new ExpandTesting_DynamicPaginationPage(page);
@@ -19,6 +22,10 @@ test('@regression TC_04_DynamicPagination: Page Size, Search, Sorting, and Integ
 		}
 	});
 
+	await PlaywrightUtils.navigateToURL(
+		page,
+		joinBaseURL(expandTestingBaseURL, URLConfig.UI.ExpandTesting.dynamicPaginationURL)
+	);
 	await dynamicPaginationPage.openTableAndSelectInitialPageSize();
 	await dynamicPaginationPage.verifyNextPageAndSetExpandedPageSize();
 	await dynamicPaginationPage.searchAndClearResults();

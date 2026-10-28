@@ -4,6 +4,7 @@ import { DemoWebShop_LoginPage } from '../../../src/pages/DemoWebShop_LoginPage'
 import { DemoWebShop_CustomizedComputerPage } from '../../../src/pages/DemoWebShop_CustomizedComputerPage';
 import { TC_04_BuildCustomizedComputer } from '../../../test-data/demoWebShop';
 import { demoWebShopBaseURL } from '../../../src/config/EnvironmentConfig';
+import { PlaywrightUtils } from '../../../src/utils/PlaywrightUtils';
 
 test('@regression TC_04_BuildCustomizedComputer: Configure a computer, verify cart prices and remove it', async ({ page }) => {
     const homePage = new DemoWebShop_HomePage(page);
@@ -11,7 +12,7 @@ test('@regression TC_04_BuildCustomizedComputer: Configure a computer, verify ca
     const customizedComputerPage = new DemoWebShop_CustomizedComputerPage(page);
 
     // Step 1: Log in with the existing user.
-    await page.goto(demoWebShopBaseURL);
+    await PlaywrightUtils.navigateToURL(page, demoWebShopBaseURL);
     await homePage.clickLoginLink();
     await loginPage.login_DemoWeshop(TC_04_BuildCustomizedComputer.email, TC_04_BuildCustomizedComputer.password);
     await loginPage.verifyLoginSuccessful();

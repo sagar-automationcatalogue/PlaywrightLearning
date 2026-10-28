@@ -35,8 +35,6 @@ export class ExpandTesting_DynamicPaginationPage {
     }
 
     async openTableAndSelectInitialPageSize(): Promise<void> {
-        await this.page.goto(this.pageUrl);
-        await expect(this.page).toHaveURL(this.pageUrl);
         this.defaultStudentNameSort = await this.studentNameHeader.getAttribute("aria-label");
 
         await expect(this.tableHeaders).toHaveText(TC_04_DynamicPagination.expectedHeaders);

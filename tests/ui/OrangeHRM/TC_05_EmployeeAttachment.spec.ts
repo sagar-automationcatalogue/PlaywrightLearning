@@ -5,6 +5,8 @@ import { OrangeHRM_LoginPage } from '../../../src/pages/OrangeHRM_LoginPage';
 import { OrangeHRM_HomePage } from '../../../src/pages/OrangeHRM_HomePage';
 import { OrangeHRM_EmployeeManagement } from '../../../src/pages/OrangeHRM_EmployeeManagement';
 import { OrangeHRM_EmployeeProfile } from '../../../src/pages/OrangeHRM_EmployeeProfile';
+import { orangeHRMBaseURL } from '../../../src/config/EnvironmentConfig';
+import { PlaywrightUtils } from '../../../src/utils/PlaywrightUtils';
 
 test('@regression TC_05_EmployeeAttachment - Upload, download and delete employee attachment', async ({ page }) => {
   const pdfFilePath = path.resolve(
@@ -19,6 +21,7 @@ test('@regression TC_05_EmployeeAttachment - Upload, download and delete employe
   const employeeProfilePage = new OrangeHRM_EmployeeProfile(page);
 
   console.log('Step 1: Open OrangeHRM and log in as Admin');
+  await PlaywrightUtils.navigateToURL(page, orangeHRMBaseURL);
   await loginPage.openLoginPage();
   await loginPage.loginWithCredentials(
     TC_05_EmployeeAttachment.adminUsername,

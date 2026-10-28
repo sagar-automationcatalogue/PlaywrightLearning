@@ -4,6 +4,9 @@ import { ExpandTesting_FormValidationPage } from "../../../src/pages/ExpandTesti
 import { ExpandTesting_RadioButtonsPage } from "../../../src/pages/ExpandTesting_RadioButtonsPage";
 import { ExpandTesting_CheckboxesPage } from "../../../src/pages/ExpandTesting_CheckboxesPage";
 import { ExpandTesting_DropdownPage } from "../../../src/pages/ExpandTesting_DropdownPage";
+import { expandTestingBaseURL, joinBaseURL } from "../../../src/config/EnvironmentConfig";
+import { URLConfig } from "../../../src/config/URLConfig";
+import { PlaywrightUtils } from "../../../src/utils/PlaywrightUtils";
 
 /** Developed by Surekha - Incomplete */
 test(`@regression TC_03_WebInputsFormValidation:`, async ({ page, browserName }) => {
@@ -35,6 +38,10 @@ test(`@regression TC_03_WebInputsFormValidation:`, async ({ page, browserName })
         }
     });
 
+    await PlaywrightUtils.navigateToURL(
+        page,
+        joinBaseURL(expandTestingBaseURL, URLConfig.UI.ExpandTesting.inputsURL)
+    );
     await webInputsPage.openAndVerifyInputs();
     await webInputsPage.enterDisplayAndClearInputValues();
     await formValidationPage.openAndVerifyRequiredFieldValidation();

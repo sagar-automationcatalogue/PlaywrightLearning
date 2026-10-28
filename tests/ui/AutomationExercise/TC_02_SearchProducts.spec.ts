@@ -1,12 +1,16 @@
 import { test } from '@playwright/test';
 import { AutomationExercise_ProductsPage } from '../../../src/pages/AutomationExercise_ProductsPage';
+import { HandlingPopups } from '../../../src/components/HandlingPopups';
+import { PlaywrightUtils } from '../../../src/utils/PlaywrightUtils';
+import { automationExerciseBaseURL } from '../../../src/config/EnvironmentConfig';
 
 /** Testcase developed by Brahmam - Completed */
 test('@sanity TC_02_AutomationExercise: Search Products, Validate Results, Hover and Open Details', async ({ page }) => {
   const productsPage = new AutomationExercise_ProductsPage(page);
 
-  // Prevent third-party advertisements from covering the product actions.
-  await page.route(/googleads|googlesyndication|doubleclick|googletagservices|adservice\.google/, route => route.abort());
+  let ob_handlingPopups = new HandlingPopups();
+  await ob_handlingPopups.handleGoogleAds(page);
+  await PlaywrightUtils.navigateToURL(page, automationExerciseBaseURL);
 
   const baselineProductCount = await productsPage.openHomeAndProductsCatalog();
   const productNames = await productsPage.searchTopProductsAndVerifyRelatedCategories(baselineProductCount);

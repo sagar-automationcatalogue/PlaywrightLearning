@@ -3,6 +3,7 @@ import { TC_01_ValidateLogin } from "../../test-data/automationExercise";
 import { automationExerciseBaseURL, joinBaseURL } from "../config/EnvironmentConfig";
 import {URLConfig} from "../config/URLConfig";
 import { Constants } from "../constants/constants";
+import { AssertionUtils } from "../utils/AssertionUtils";
 
 export class AutomationExercise_LoginPage {
     private page: Page;
@@ -30,8 +31,8 @@ export class AutomationExercise_LoginPage {
     }
 
     async verifyLoginForm(): Promise<void> {
-        await expect(this.loginForm).toBeVisible();
-        await expect(this.newUserSignup).toBeVisible();
+        await AssertionUtils.verifyVisible(this.loginForm, false, "Login form");
+        await AssertionUtils.verifyVisible(this.newUserSignup, false, "New user signup");
         console.log("Signup/Login page opened successfully");
         await expect(this.emailField).toBeVisible();
         await expect(this.emailField).toBeEnabled();

@@ -1,6 +1,5 @@
 import { Page, Locator, expect } from '@playwright/test';
 import { TC_01_LoginMatrix } from '../../test-data/sauceDemo';
-import { sauceDemoBaseURL } from "../config/EnvironmentConfig";
 import { Constants } from '../constants/constants';
 
 export class SauceDemo_LoginPage {
@@ -19,7 +18,7 @@ export class SauceDemo_LoginPage {
     }
 
     async openLoginPage(): Promise<void> {
-        await this.page.goto(sauceDemoBaseURL);
+        await expect(this.usernameInput).toBeVisible();
     }
 
     async reloadLoginPage(): Promise<void> {

@@ -45,7 +45,6 @@ export class AutomationExercise_ProductReviewPage {
     }
 
     async openProductsAndBlueTopDetails(): Promise<number> {
-        await this.page.goto(automationExerciseBaseURL);
         await this.productsLink.click();
         await expect(this.page).toHaveURL(joinBaseURL(automationExerciseBaseURL, URLConfig.UI.AutomationExercise.productURL));
         console.log("All Products page is open");

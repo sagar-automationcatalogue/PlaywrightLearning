@@ -1,5 +1,4 @@
 import { expect, Locator, Page } from "@playwright/test";
-import { automationExerciseBaseURL } from "../config/EnvironmentConfig";
 
 export class AutomationExercise_HomePage {
     private page: Page;
@@ -17,8 +16,6 @@ export class AutomationExercise_HomePage {
     }
 
     async openAndVerifyHomePage(): Promise<void> {
-        await this.page.goto(automationExerciseBaseURL);
-        console.log("Home page is loaded successfully");
         await expect(this.homeLink).toBeVisible();
         await expect(this.productsLink).toBeVisible();
         await expect(this.cartLink).toBeVisible();

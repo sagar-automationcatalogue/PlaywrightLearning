@@ -1,12 +1,19 @@
 import { test } from "@playwright/test";
 import { ExpandTesting_LoginPage } from "../../../src/pages/ExpandTesting_LoginPage";
 import { ExpandTesting_RegistrationPage } from "../../../src/pages/ExpandTesting_RegistrationPage";
+import { expandTestingBaseURL, joinBaseURL } from "../../../src/config/EnvironmentConfig";
+import { URLConfig } from "../../../src/config/URLConfig";
+import { PlaywrightUtils } from "../../../src/utils/PlaywrightUtils";
 
 /** Testcase developed by Soujanya - Completed */
 test(`@sanity TC_02_DynamicRegistration validation and login`, async ({ page }) => {
     const registrationPage = new ExpandTesting_RegistrationPage(page);
     const loginPage = new ExpandTesting_LoginPage(page);
 
+    await PlaywrightUtils.navigateToURL(
+        page,
+        joinBaseURL(expandTestingBaseURL, URLConfig.UI.ExpandTesting.registrationURL)
+    );
     await registrationPage.openRegistrationPageAndVerifyControls();
     await registrationPage.submitEmptyFormAndVerifyRequiredFields();
     const username = await registrationPage.submitUsernameWithoutPasswordAndVerifyRequiredFields();

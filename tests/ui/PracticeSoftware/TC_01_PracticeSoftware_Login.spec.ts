@@ -5,6 +5,9 @@ import { PracticeSoftware_LoginPage } from '../../../src/pages/PracticeSoftware_
 import { PracticeSoftware_HomePage } from '../../../src/pages/PracticeSoftware_HomePage';
 import { practiceSoftwareTestingBaseURL } from '../../../src/config/EnvironmentConfig';
 import { Constants } from '../../../src/constants/constants';
+import { PlaywrightUtils } from '../../../src/utils/PlaywrightUtils';
+import { joinBaseURL } from '../../../src/config/EnvironmentConfig';
+import { URLConfig } from '../../../src/config/URLConfig';
 
 test('@smoke TC_01_PracticeSoftware_Login: Invalid Login → Valid Login → Account → Logout → Protected Route', async ({ page }) => {
     const homeUrl = practiceSoftwareTestingBaseURL;
@@ -16,7 +19,11 @@ test('@smoke TC_01_PracticeSoftware_Login: Invalid Login → Valid Login → Acc
 
     // Register a fresh learner account so this test does not depend on the
     // shared demo account's lockout state.
-    await registrationPage.openRegistrationPage(homeUrl);
+    await PlaywrightUtils.navigateToURL(
+        page,
+        joinBaseURL(homeUrl, URLConfig.UI.PracticeSoftwareTesting.registrationURL)
+    );
+    await registrationPage.openRegistrationPage(homeUrl, false);
     await page.route(/zippopotam|postcode|postal|zip/i, async route => {
         await route.fulfill({
             status: 200,
@@ -45,7 +52,8 @@ test('@smoke TC_01_PracticeSoftware_Login: Invalid Login → Valid Login → Acc
     }
 
     // Open Toolshop and verify the application shell and sign-in navigation.
-    await homePage.openHomeAndVerifyShell(homeUrl);
+    await PlaywrightUtils.navigateToURL(page, homeUrl);
+    await homePage.openHomeAndVerifyShell(homeUrl, false);
     await loginPage.openLoginFromSignIn();
     await loginPage.verifyLoginControls();
 

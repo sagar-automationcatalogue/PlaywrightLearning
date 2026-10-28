@@ -6,7 +6,9 @@ import { PracticeSoftware_HomePage } from '../../../src/pages/PracticeSoftware_H
 import { PracticeSoftware_CataloguePage } from '../../../src/pages/PracticeSoftware_CataloguePage';
 import { PracticeSoftware_ProductPage } from '../../../src/pages/PracticeSoftware_ProductPage';
 import { PracticeSoftware_FavoritesPage } from '../../../src/pages/PracticeSoftware_FavoritesPage';
-import { practiceSoftwareTestingBaseURL } from '../../../src/config/EnvironmentConfig';
+import { joinBaseURL, practiceSoftwareTestingBaseURL } from '../../../src/config/EnvironmentConfig';
+import { PlaywrightUtils } from '../../../src/utils/PlaywrightUtils';
+import { URLConfig } from '../../../src/config/URLConfig';
 
 test('@sanity TC_05_Favorites: Add Multiple Products → Validate → Remove', async ({ page }) => {
     const toolshopUrl = practiceSoftwareTestingBaseURL;
@@ -19,7 +21,11 @@ test('@sanity TC_05_Favorites: Add Multiple Products → Validate → Remove', a
     const productPage = new PracticeSoftware_ProductPage(page);
     const favoritesPage = new PracticeSoftware_FavoritesPage(page);
 
-    await registrationPage.openRegistrationPage(toolshopUrl);
+    await PlaywrightUtils.navigateToURL(
+        page,
+        joinBaseURL(toolshopUrl, URLConfig.UI.PracticeSoftwareTesting.registrationURL)
+    );
+    await registrationPage.openRegistrationPage(toolshopUrl, false);
     await page.route(/zippopotam|postcode|postal|zip/i, async route => {
         await route.fulfill({
             status: 200,

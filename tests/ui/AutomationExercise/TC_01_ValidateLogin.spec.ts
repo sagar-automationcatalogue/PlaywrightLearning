@@ -2,6 +2,9 @@ import { test } from '@playwright/test';
 import { AutomationExercise_HomePage } from '../../../src/pages/AutomationExercise_HomePage';
 import { AutomationExercise_LoginPage } from '../../../src/pages/AutomationExercise_LoginPage';
 import { AutomationExercise_ProductsPage } from '../../../src/pages/AutomationExercise_ProductsPage';
+import { HandlingPopups } from '../../../src/components/HandlingPopups';
+import { PlaywrightUtils } from '../../../src/utils/PlaywrightUtils';
+import { automationExerciseBaseURL } from '../../../src/config/EnvironmentConfig';
 
 /** Testcase developed by Soujanya - Completed */
 test(`@smoke TC_01_ValidateLogin: Invalid Login → Valid Login → Logout → Protected State Validation`, async({page, browserName}) =>{
@@ -14,26 +17,9 @@ test(`@smoke TC_01_ValidateLogin: Invalid Login → Valid Login → Logout → P
         test.slow();
         //test.setTimeout(90_000);
     }
-    // =========================================================
-    // Ignore / Block Google Advertisements
-    // Keep this before page.goto()
-    // =========================================================
-    await page.route('**/*', async (route) => {
-        const url = route.request().url();
-        if (
-            url.includes('googleads') ||
-            url.includes('googlesyndication') ||
-            url.includes('doubleclick') ||
-            url.includes('googletagservices') ||
-            url.includes('adservice.google') ||
-            url.includes('google_vignette')
-        ) {
-            await route.abort();
-        }
-        else {
-            await route.continue();
-        }
-    });
+    let ob_handlingPopups = new HandlingPopups();
+    await ob_handlingPopups.handleGoogleAds(page);
+    await PlaywrightUtils.navigateToURL(page, automationExerciseBaseURL);
 
     await homePage.openAndVerifyHomePage();
     await homePage.openSignupLoginPage();

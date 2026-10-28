@@ -28,8 +28,6 @@ export class ExpandTesting_RegistrationPage {
     }
 
     async openRegistrationPageAndVerifyControls(): Promise<void> {
-        await this.page.goto(this.registrationUrl);
-        await expect(this.page).toHaveURL(this.registrationUrl);
         await expect(this.usernameField).toBeVisible();
         await expect(this.passwordField).toBeVisible();
         await expect(this.confirmPasswordField).toBeVisible();

@@ -2,12 +2,15 @@ import { test } from '@playwright/test';
 import { TC_01_LoginMatrix } from '../../../test-data/sauceDemo';
 import { SauceDemo_LoginPage } from '../../../src/pages/SauceDemo_LoginPage';
 import { SauceDemo_InventoryPage } from '../../../src/pages/SauceDemo_InventoryPage';
+import { sauceDemoBaseURL } from '../../../src/config/EnvironmentConfig';
+import { PlaywrightUtils } from '../../../src/utils/PlaywrightUtils';
 import { Constants} from '../../../src/constants/constants';
 
 test('@smoke TC_01_Login matrix: Data-Driven Login Matrix:Empty->Invalid->Locked Out->Standard User', async ({ page }) => {
     const loginPage = new SauceDemo_LoginPage(page);
     const inventoryPage = new SauceDemo_InventoryPage(page);
 
+    await PlaywrightUtils.navigateToURL(page, sauceDemoBaseURL);
     await loginPage.openLoginPage();
     console.log('Login page is displayed');
 

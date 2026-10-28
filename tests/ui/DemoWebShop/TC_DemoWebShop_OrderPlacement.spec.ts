@@ -7,12 +7,13 @@ import { DemoWebShop_CheckoutPage } from '../../../src/pages/DemoWebShop_Checkou
 import { DemoWebShop_OrdersPage } from '../../../src/pages/DemoWebShop_OrdersPage';
 import { TC_01_Authentication } from '../../../test-data/demoWebShop';
 import { demoWebShopBaseURL } from '../../../src/config/EnvironmentConfig';
+import { PlaywrightUtils } from '../../../src/utils/PlaywrightUtils';
 
 test('@regression TC_DemoWebShop_OrderPlacement: Place an order for a notebook', async ({ page }) => {
     //HomePage
 
     console.log('Opening Demo Web Shop and logging in');
-    await page.goto(demoWebShopBaseURL);
+    await PlaywrightUtils.navigateToURL(page, demoWebShopBaseURL);
     let ob_HomePage = new DemoWebShop_HomePage(page);
     await ob_HomePage.clickLoginLink();
 

@@ -3,27 +3,23 @@ import { TC_03_AdvancedSearch } from '../../../test-data/demoWebShop';
 import { demoWebShopBaseURL, joinBaseURL } from '../../../src/config/EnvironmentConfig';
 import { URLConfig } from '../../../src/config/URLConfig';
 import { Constants } from '../../../src/constants/constants';
+import { HeaderComponents } from '../../../src/components/HeaderComponents';
+import { PlaywrightUtils } from '../../../src/utils/PlaywrightUtils';
 
 test('@regression TC_03_AdvancedSearch: Advanced Search with Category, Subcategory and Price', async ({ page }) => {
+    const header = new HeaderComponents(page);
     // Step 1: Open Demo Web Shop and verify the home page.
-    await page.goto(demoWebShopBaseURL);
+    await PlaywrightUtils.navigateToURL(page, demoWebShopBaseURL);
     await expect(page).toHaveURL(demoWebShopBaseURL);
     await expect(page.getByRole('heading', { name: 'Welcome to our store', exact: true })).toBeVisible();
     console.log('Step 1: Demo Web Shop home page loaded.');
 
     // Step 2: Locate the store search textbox.
     // The store textbox has no accessible name, so locate it inside the search box.
-    const storeSearch = page.locator('.search-box').getByRole('textbox');
-    await expect(storeSearch).toBeVisible();
-
     // Step 3: Enter computer and submit the store search.
-    await storeSearch.fill(TC_03_AdvancedSearch.keyword);
-    await expect(storeSearch).toHaveValue(TC_03_AdvancedSearch.keyword);
-    await page.locator('.search-box').getByRole('button', { name: 'Search', exact: true }).click();
-    await expect(page).toHaveURL(new RegExp(`${URLConfig.UI.DemoWebShop.searchURL}\\?q=${TC_03_AdvancedSearch.keyword}`, 'i'));
+    await header.searchStore(TC_03_AdvancedSearch.keyword);
 
     // Step 4: Verify the Search Results page is displayed.
-    await expect(page.getByRole('heading', { name: 'Search', exact: true })).toBeVisible();
     const searchResults = page.locator('.search-results');
     await expect(searchResults).toBeVisible();
     console.log('Steps 2-4: Store search completed and the Search page is displayed.');

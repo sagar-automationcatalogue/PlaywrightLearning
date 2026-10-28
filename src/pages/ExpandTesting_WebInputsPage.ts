@@ -31,8 +31,6 @@ export class ExpandTesting_WebInputsPage {
     }
 
     async openAndVerifyInputs(): Promise<void> {
-        await this.page.goto(joinBaseURL(expandTestingBaseURL, URLConfig.UI.ExpandTesting.inputsURL));
-        await expect(this.page).toHaveURL(joinBaseURL(expandTestingBaseURL, URLConfig.UI.ExpandTesting.inputsURL));
         await expect(this.numberInput).toBeVisible();
         await expect(this.textInput).toBeVisible();
         await expect(this.passwordInput).toBeVisible();

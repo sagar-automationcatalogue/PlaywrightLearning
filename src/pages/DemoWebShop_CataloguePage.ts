@@ -3,10 +3,10 @@ import { TC_02_BooksCategory } from "../../test-data/demoWebShop";
 import { demoWebShopBaseURL, joinBaseURL } from "../config/EnvironmentConfig";
 import { URLConfig } from "../config/URLConfig";
 import { Constants } from "../constants/constants";
+import { HeaderComponents } from "../components/HeaderComponents";
 
 export class DemoWebShop_CataloguePage {
     private page: Page
-    private computersLnk: Locator;
     private NotebookLnk: Locator;
     private NotebookHdr: Locator;
     private productNameTxt: Locator;
@@ -15,7 +15,6 @@ export class DemoWebShop_CataloguePage {
     private addToCartBtn:Locator;
     private barNotificationTxt: Locator;
     private notebookName:string = '14.1-inch Laptop';
-    private booksLnk: Locator;
     private booksHdr: Locator;
     private productTitles: Locator;
     private productPrices: Locator;
@@ -28,10 +27,11 @@ export class DemoWebShop_CataloguePage {
     private productGrid: Locator;
     private productList: Locator;
     private viewLayOut: Locator;
+    private header: HeaderComponents;
 
     constructor(page: Page){
         this.page = page;
-        this.computersLnk = page.locator('.top-menu').getByRole('link', { name: 'Computers', exact: true });
+        this.header = new HeaderComponents(page);
         this.NotebookLnk = page.locator('.sub-category-grid').getByRole('link', { name: 'Notebooks', exact: true });
         this.NotebookHdr = page.getByRole('heading', { name: 'Notebooks', exact: true });
         this.productNameTxt = page.locator('.product-item').filter({ has: page.getByRole('link', { name: this.notebookName, exact: true })});
@@ -39,7 +39,6 @@ export class DemoWebShop_CataloguePage {
         this.productNameHdr = page.getByRole('heading', { name: this.notebookName, exact: true });
         this.addToCartBtn = page.locator('.product-essential').getByRole('button', { name: 'Add to cart', exact: true });
         this.barNotificationTxt = page.locator('.bar-notification');
-        this.booksLnk = page.getByRole('link', { name: 'Books', exact: true });
         this.booksHdr = page.getByRole('heading', { name: TC_02_BooksCategory.booksHeading });
         this.productTitles = page.locator('.product-title');
         this.productPrices = page.locator('.actual-price');
@@ -55,8 +54,7 @@ export class DemoWebShop_CataloguePage {
     }
 
     async openBooksCategory(): Promise<void>{
-        await this.booksLnk.first().click();
-        await expect(this.page).toHaveURL(joinBaseURL(demoWebShopBaseURL, URLConfig.UI.DemoWebShop.books));
+        await this.header.openBooks();
         await expect(this.booksHdr).toBeVisible();
         console.log('Books category page is displayed');
     }
@@ -180,8 +178,7 @@ export class DemoWebShop_CataloguePage {
 
     async openProductCategory(): Promise<void>{
         console.log('Opening the Computers > Notebooks category');
-        await this.computersLnk.click();
-        await expect(this.page).toHaveURL(new RegExp(`${URLConfig.UI.DemoWebShop.computersURL}$`));
+        await this.header.openComputers();
         await this.NotebookLnk.click();
         await expect(this.page).toHaveURL(new RegExp(`${URLConfig.UI.DemoWebShop.notebooksURL}$`));
         await expect(this.NotebookHdr).toBeVisible();

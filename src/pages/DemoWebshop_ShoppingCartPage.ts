@@ -1,7 +1,7 @@
 import { Page, Locator,expect } from "@playwright/test";
+import { HeaderComponents } from "../components/HeaderComponents";
 
 export class DemoWebShop_ShoppingCartPage{
-    private topCartLnk:Locator;
     private shoppingCartHdr:Locator;
     private cartItemRow:Locator;
     private qtyInput:Locator;
@@ -9,9 +9,10 @@ export class DemoWebShop_ShoppingCartPage{
     private termsOfServiceChkbx:Locator;
     private checkoutBtn:Locator;
     private notebookName:string = '14.1-inch Laptop';
+    private header: HeaderComponents;
     
     constructor(page: Page){
-        this.topCartLnk = page.locator('#topcartlink').getByRole('link');
+        this.header = new HeaderComponents(page);
         this.shoppingCartHdr = page.getByRole('heading', { name: 'Shopping cart', exact: true });
         this.cartItemRow = page.locator('.cart-item-row').filter({ has: page.getByRole('link', { name: this.notebookName, exact: true })});
         this.qtyInput = this.cartItemRow.locator('.qty-input');
@@ -22,8 +23,7 @@ export class DemoWebShop_ShoppingCartPage{
 
     async clickShoppingCart(): Promise<void>{
         console.log('Opening the shopping cart and setting the quantity to 2');
-        await this.topCartLnk.click();
-        await expect(this.shoppingCartHdr).toBeVisible();
+        await this.header.openCart();
     }
 
     async updateShoppingCart(): Promise<void>{        
