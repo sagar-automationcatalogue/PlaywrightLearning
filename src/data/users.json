@@ -1,0 +1,16 @@
+{
+  "first_name": "ramya_test",
+  "last_name": "automation",
+  "address": {
+    "street": "KPHB board",
+    "house_number": "123",
+    "city": "Hyderabad",
+    "state": "Telanagana",
+    "country": "USA",
+    "postal_code": "500072"
+  },
+  "phone": "4234242424",
+  "dob": "2020-12-12",
+  "password": "test@123",
+  "email": "ramya_test.api001@example.com"
+}

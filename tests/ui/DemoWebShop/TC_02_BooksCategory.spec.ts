@@ -1,13 +1,10 @@
-import { test } from '@playwright/test';
+import { test } from '../../../src/fixtures/test-fixtures';
 import { DemoWebShop_HomePage } from '../../../src/pages/DemoWebShop_HomePage';
 import { DemoWebShop_CataloguePage } from '../../../src/pages/DemoWebShop_CataloguePage';
-import { demoWebShopBaseURL } from '../../../src/config/EnvironmentConfig';
-import { PlaywrightUtils } from '../../../src/utils/PlaywrightUtils';
 
-test('@sanity TC_02_BooksCategory: Verify sorting, price filtering, page size and view', async ({ page }) => {
+test('@sanity TC_02_BooksCategory: Verify sorting, price filtering, page size and view', async ({ page, login_demoWebShop: _login_demoWebShop }) => {
     // Step 1: Open Demo Web Shop and verify the home page.
     let ob1 = new DemoWebShop_HomePage(page);
-    await PlaywrightUtils.navigateToURL(page, demoWebShopBaseURL);
     await ob1.openDemoWebShopAndVerifyHomePage();
 
     // Steps 2-3: Open Books and verify the category heading.

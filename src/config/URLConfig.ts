@@ -63,15 +63,15 @@ export const URLConfig = {
     API:{        
         createUser: '/api/createAccount',
         AutomationExercise: {
-            createUser: '/createAccount',
+            createUser: '/api/createAccount',
             deleteUser: '/api/deleteAccount',
             getUserDetails: '/api/getUserDetailByEmai',
             productsList: '/api/productsList',
             updateUser: '/api/updateAccount',
         },        
-        PracticeSoftwareTesting: {            
-            registerUser: '/register',
-            loginUser: '/login',
+        PracticeSoftwareTesting: {               
+            registerUser: '/users/register',
+            loginUser: '/users/login',
             currentUser: '/users/me',
             userDetails: '/users/01m3ned2h3ed0xm0ydatt48sry',
         },
