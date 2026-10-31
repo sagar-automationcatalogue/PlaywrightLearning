@@ -8,14 +8,16 @@ const sauceDemoBaseURL = process.env.sauceDemo_UI_baseURL? process.env.sauceDemo
 const practiceSoftwareTestingBaseURL = process.env.practiceSoftwareTesting_UI_baseURL? process.env.practiceSoftwareTesting_UI_baseURL : 'https://practicesoftwaretesting.com/';
 const practiceSoftwareTestingAPIBaseURL = process.env.practiceSoftwareTesting_API_baseURL? process.env.practiceSoftwareTesting_API_baseURL : 'https://api.practicesoftwaretesting.com/users/';
 const automationExerciseAPIBaseURL = process.env.automationExercise_API_baseURL? process.env.automationExercise_API_baseURL : 'https://automationexercise.com/api/';
+const thinkingBaseURL:any = process.env.thinking_baseURL;
 
 if (!automationExerciseBaseURL || !demoWebShopBaseURL || !expandTestingBaseURL || !orangeHRMBaseURL
-     || !sauceDemoBaseURL || !practiceSoftwareTestingBaseURL || !practiceSoftwareTestingAPIBaseURL || !automationExerciseAPIBaseURL) {
+     || !sauceDemoBaseURL || !practiceSoftwareTestingBaseURL || !practiceSoftwareTestingAPIBaseURL 
+     || !automationExerciseAPIBaseURL || !thinkingBaseURL) {
   throw new Error('One or more required environment variables are not set');
 }
 
 export { automationExerciseBaseURL, demoWebShopBaseURL, expandTestingBaseURL, orangeHRMBaseURL, sauceDemoBaseURL, 
-    practiceSoftwareTestingBaseURL, practiceSoftwareTestingAPIBaseURL, automationExerciseAPIBaseURL };
+    practiceSoftwareTestingBaseURL, practiceSoftwareTestingAPIBaseURL, automationExerciseAPIBaseURL, thinkingBaseURL };
 
 export const joinBaseURL = (baseURL: string, endpoint: string): string =>
     `${baseURL.replace(/\/+$/, '')}/${endpoint.replace(/^\/+/, '')}`;

@@ -75,6 +75,10 @@ export const URLConfig = {
             currentUser: '/users/me',
             userDetails: '/users/01m3ned2h3ed0xm0ydatt48sry',
         },
+        ThinkingTester:{
+            createUser:'/users',
+            getContacts:'/contacts'            
+        }
     },
     
 }
